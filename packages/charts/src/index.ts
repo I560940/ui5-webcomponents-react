@@ -9,6 +9,9 @@ import { ColumnChartWithTrendPlaceholder } from './components/ColumnChartWithTre
 import { ComposedChart } from './components/ComposedChart/index.js';
 import { ComposedChartPlaceholder } from './components/ComposedChart/Placeholder.js';
 import { DonutChart } from './components/DonutChart/DonutChart.js';
+import { GanttChart } from './components/GanttChart/GanttChart.js';
+import { GanttChartAnnotation } from './components/GanttChart/GanttChartAnnotation.js';
+import { GanttChartPlaceholder } from './components/GanttChart/Placeholder.js';
 import { LineChart } from './components/LineChart/LineChart.js';
 import { LineChartPlaceholder } from './components/LineChart/Placeholder.js';
 import { MicroBarChart } from './components/MicroBarChart/MicroBarChart.js';
@@ -45,5 +48,8 @@ export {
   PieChartPlaceholder,
   ScatterChartPlaceholder,
   ColumnChartWithTrendPlaceholder,
-  TimelineChartPlaceholder
+  TimelineChartPlaceholder,
+  GanttChartPlaceholder,
+  GanttChart,
+  GanttChartAnnotation
 };
