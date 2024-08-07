@@ -1,5 +1,6 @@
 {
   "name": "ui5-webcomponents-react",
+  "version": "1.0.0",
   "workspaces": [
     "packages/*"
   ],
