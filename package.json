@@ -80,7 +80,6 @@
     "eslint-plugin-storybook": "^0.8.0",
     "glob": "^10.3.10",
     "handlebars": "^4.7.7",
-    "husky": "^9.0.6",
     "identity-obj-proxy": "^3.0.0",
     "lerna": "^8.0.0",
     "lint-staged": "^15.0.0",
