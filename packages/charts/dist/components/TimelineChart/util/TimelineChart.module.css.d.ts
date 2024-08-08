@@ -1,0 +1,22 @@
+import type { StyleDataCSP } from '@ui5/webcomponents-base/dist/types.js';
+export declare const styleData: StyleDataCSP;
+export declare const classNames: {
+  readonly onlyOutline: 'TimelineChart_onlyOutline_109sc_1';
+  readonly main: 'TimelineChart_main_109sc_5';
+  readonly bodyContainer: 'TimelineChart_bodyContainer_109sc_12';
+  readonly columnTitle: 'TimelineChart_columnTitle_109sc_16';
+  readonly annotation: 'TimelineChart_annotation_109sc_25';
+  readonly rowLabels: 'TimelineChart_rowLabels_109sc_29';
+  readonly rowLabelsItem: 'TimelineChart_rowLabelsItem_109sc_34';
+  readonly columnLabel: 'TimelineChart_columnLabel_109sc_44';
+  readonly columnTitlePlaceHolder: 'TimelineChart_columnTitlePlaceHolder_109sc_49';
+  readonly columnLabelItems: 'TimelineChart_columnLabelItems_109sc_55';
+  readonly rowTitleTop: 'TimelineChart_rowTitleTop_109sc_61';
+  readonly rowTitleBottom: 'TimelineChart_rowTitleBottom_109sc_65';
+  readonly chartBody: 'TimelineChart_chartBody_109sc_71';
+  readonly tooltipContainer: 'TimelineChart_tooltipContainer_109sc_76';
+  readonly tooltip: 'TimelineChart_tooltip_109sc_76';
+  readonly tooltipLabel: 'TimelineChart_tooltipLabel_109sc_96';
+  readonly tooltipColorBar: 'TimelineChart_tooltipColorBar_109sc_100';
+  readonly layer: 'TimelineChart_layer_109sc_105';
+};
