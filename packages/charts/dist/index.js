@@ -9,6 +9,9 @@ import { ColumnChartWithTrendPlaceholder } from './components/ColumnChartWithTre
 import { ComposedChart } from './components/ComposedChart/index.js';
 import { ComposedChartPlaceholder } from './components/ComposedChart/Placeholder.js';
 import { DonutChart } from './components/DonutChart/DonutChart.js';
+import { GanttChart } from './components/GanttChart/GanttChart.js';
+import { GanttChartAnnotation } from './components/GanttChart/GanttChartAnnotation.js';
+import { GanttChartPlaceholder } from './components/GanttChart/Placeholder.js';
 import { LineChart } from './components/LineChart/LineChart.js';
 import { LineChartPlaceholder } from './components/LineChart/Placeholder.js';
 import { MicroBarChart } from './components/MicroBarChart/MicroBarChart.js';
@@ -21,9 +24,6 @@ import { ScatterChart } from './components/ScatterChart/ScatterChart.js';
 import { TimelineChartPlaceholder } from './components/TimelineChart/Placeholder.js';
 import { TimelineChart } from './components/TimelineChart/TimelineChart.js';
 import { TimelineChartAnnotation } from './components/TimelineChart/TimelineChartAnnotation.js';
-import { GanttChartPlaceholder } from './components/GanttChart/Placeholder.js';
-import { GanttChart } from './components/GanttChart/GanttChart.js';
-import { GanttChartAnnotation } from './components/GanttChart/GanttChartAnnotation.js';
 export {
   BarChart,
   BulletChart,

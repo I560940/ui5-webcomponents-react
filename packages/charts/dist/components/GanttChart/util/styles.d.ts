@@ -1,11 +1,12 @@
 export declare const useStyles: (data?: {
   theme?: Jss.Theme;
 }) => import('jss').Classes<
-  | 'columnTitle'
-  | 'onlyOutline'
+  | 'tooltip'
   | 'main'
-  | 'bodyContainer'
   | 'annotation'
+  | 'onlyOutline'
+  | 'bodyContainer'
+  | 'columnTitle'
   | 'rowLabels'
   | 'rowLabelsItem'
   | 'columnLabel'
@@ -15,7 +16,6 @@ export declare const useStyles: (data?: {
   | 'rowTitleBottom'
   | 'chartBody'
   | 'tooltipContainer'
-  | 'tooltip'
   | 'tooltipLabel'
   | 'tooltipColorBar'
   | 'layer'

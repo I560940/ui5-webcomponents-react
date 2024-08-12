@@ -1,8 +1,8 @@
 import { throttle } from '@ui5/webcomponents-react-base';
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
-import { GanttChartBody } from './chartbody/GanttChartBody.js';
-import { GanttChartColumnLabel, GanttChartRowTitle, GanttChartRowLabels } from './GanttChartHeaders.js';
-import { GanttChartPlaceholder } from './Placeholder.js';
+import { TimelineChartBody } from './chartbody/TimelineChartBody.js';
+import { TimelineChartPlaceholder } from './Placeholder.js';
+import { TimelineChartColumnLabel, TimelineChartRowTitle, TimelineChartRowLabels } from './TimelineChartHeaders.js';
 import {
   DEFAULT_ROW_HEIGHT,
   DEFAULT_WIDTH,
@@ -22,18 +22,18 @@ import { useStyles } from './util/styles.js';
  * > Therefore, you could face breaking changes when updating versions.
  * > Please use with caution!
  *
- * A `GanttChart` is a data visualization chart that can be used to represent
- * Gantt charts or any other Gantt-based visualizations. The component has a
+ * A `TimelineChart` is a data visualization chart that can be used to represent
+ * Gantt charts or any other timeline-based visualizations. The component has a
  * rich set of various properties that allows the user to:
  * * Zoom the chart body to see the visualizations clearer using the mouse wheel.
  * * Pan the zoomed chart horizonatally by holding down the left click button.
- * * Add annotations to highlight or illustrate different points on the Gantt.
- * * Use annotations to create custom Gantt visualizations.
- * * Choose whether the Gantt is discrete or continous.
- * * Show relationships between different items on the Gantt using different
+ * * Add annotations to highlight or illustrate different points on the timeline.
+ * * Use annotations to create custom Timeline visualizations.
+ * * Choose whether the timeline is discrete or continous.
+ * * Show relationships between different items on the timeline using different
  * connections.
  */
-const GanttChart = forwardRef(
+const TimelineChart = forwardRef(
   (
     {
       dataset,
@@ -132,23 +132,23 @@ const GanttChart = forwardRef(
     const unscaledBodyWidth = dimensions.width - ROW_TITLE_WIDTH;
     const bodyWidth = unscaledBodyWidth * chartBodyScale;
     if (!dataset || dataset?.length === 0) {
-      return React.createElement(GanttChartPlaceholder, null);
+      return React.createElement(TimelineChartPlaceholder, null);
     }
     return React.createElement(
       'div',
       { ref: fRef, ...rest },
       React.createElement(
         'div',
-        { className: classes.main, ref: ref, style: style, 'data-component-name': 'GanttChart' },
+        { className: classes.main, ref: ref, style: style, 'data-component-name': 'TimelineChart' },
         React.createElement(
           'div',
           { style: { width: ROW_TITLE_WIDTH, height: height } },
-          React.createElement(GanttChartRowTitle, {
+          React.createElement(TimelineChartRowTitle, {
             width: ROW_TITLE_WIDTH,
             height: COLUMN_HEADER_HEIGHT,
             rowTitle: rowTitle
           }),
-          React.createElement(GanttChartRowLabels, {
+          React.createElement(TimelineChartRowLabels, {
             width: ROW_TITLE_WIDTH,
             height: height - COLUMN_HEADER_HEIGHT,
             rowHeight: rowHeight,
@@ -158,7 +158,7 @@ const GanttChart = forwardRef(
         React.createElement(
           'div',
           {
-            'data-component-name': 'GanttChartBodyContainer',
+            'data-component-name': 'TimelineChartBodyContainer',
             className: classes.bodyContainer,
             ref: bodyConRef,
             style: {
@@ -184,7 +184,7 @@ const GanttChart = forwardRef(
             ' ',
             unit != null ? `(${unit})` : ''
           ),
-          React.createElement(GanttChartColumnLabel, {
+          React.createElement(TimelineChartColumnLabel, {
             width: bodyWidth,
             height: COLUMN_HEADER_HEIGHT,
             isDiscrete: isDiscrete,
@@ -195,7 +195,7 @@ const GanttChart = forwardRef(
             unscaledWidth: unscaledBodyWidth,
             valueFormat: valueFormat
           }),
-          React.createElement(GanttChartBody, {
+          React.createElement(TimelineChartBody, {
             dataset: dataset,
             width: bodyWidth,
             height: height - COLUMN_HEADER_HEIGHT,
@@ -219,7 +219,7 @@ const GanttChart = forwardRef(
     );
   }
 );
-GanttChart.displayName = 'GanttChart';
+TimelineChart.displayName = 'TimelineChart';
 const validateConnections = (dataset) => {
   for (const row of dataset) {
     if (row.tasks != null) {
@@ -238,4 +238,4 @@ const validateConnections = (dataset) => {
     }
   }
 };
-export { GanttChart };
+export { TimelineChart };
