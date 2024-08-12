@@ -181,7 +181,7 @@ const GanttChartRowTitle = ({ width, height, rowTitle }) => {
   const style = {
     width: width,
     height: height,
-    color: ThemingParameters.sapTitleColor
+    color: 'red'
   };
   return React.createElement(
     'div',
