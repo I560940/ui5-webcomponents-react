@@ -208,7 +208,7 @@ const GanttChartRowTitle = ({ width, height, rowTitle }: GanttChartRowTitleProps
   const style: CSSProperties = {
     width: width,
     height: height,
-    color: ThemingParameters.sapTitleColor
+    color: 'red'
   };
   return (
     <div className={classes.onlyOutline} style={style}>
