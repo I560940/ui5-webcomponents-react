@@ -1,46 +1,8 @@
 import { ThemingParameters } from '@ui5/webcomponents-react-base';
 import type { CSSProperties, ReactElement } from 'react';
 import React, { useEffect, useState } from 'react';
-import type { IGanttChartRow } from './types/GanttChartTypes.js';
-import { DEFAULT_CHART_VERTICAL_COLS, SPACING, TICK_LENGTH, TOLERANCE } from './util/constants.js';
-import { useStyles } from './util/styles.js';
-
-interface GanttChartRowLabelsProps {
-  width: number;
-  height: number;
-  rowHeight: number;
-  dataset: IGanttChartRow[];
-}
-
-const GanttChartRowLabels = ({ width, height, rowHeight, dataset }: GanttChartRowLabelsProps) => {
-  const classes = useStyles();
-  const rowLabels = dataset.map((data) => data.label);
-  const style: CSSProperties = {
-    width: width,
-    height: `${rowLabels.length * rowHeight}px`
-  };
-
-  const itemStyle: CSSProperties = {
-    height: `${rowHeight}px`,
-    lineHeight: `${rowHeight}px`
-  };
-
-  return (
-    <div style={{ height: height }}>
-      <div className={classes.rowLabels} style={style}>
-        {rowLabels.map((label, index) => {
-          return (
-            <div key={index} className={classes.rowLabelsItem} style={itemStyle}>
-              <span style={{ paddingInline: '10px' }} title={`Item ${label}`}>
-                {label}
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
+import { DEFAULT_CHART_VERTICAL_COLS, SPACING, TICK_LENGTH, TOLERANCE } from '../util/constants.js';
+import { useStyles } from '../util/styles.js';
 
 interface GanttChartColumnLabelProps {
   width: number;
@@ -54,7 +16,7 @@ interface GanttChartColumnLabelProps {
   valueFormat?: (value: number) => string;
 }
 
-const GanttChartColumnLabel = ({
+export const GanttChartColumnLabel = ({
   width,
   height,
   isDiscrete,
@@ -196,26 +158,3 @@ const generateIntermediateTicks = (
     </>
   );
 };
-
-interface GanttChartRowTitleProps {
-  width: number;
-  height: number;
-  rowTitle: string;
-}
-
-const GanttChartRowTitle = ({ width, height, rowTitle }: GanttChartRowTitleProps) => {
-  const classes = useStyles();
-  const style: CSSProperties = {
-    width: width,
-    height: height,
-    color: 'red'
-  };
-  return (
-    <div className={classes.onlyOutline} style={style}>
-      <div className={classes.rowTitleTop}></div>
-      <div className={classes.rowTitleBottom}>{rowTitle}</div>
-    </div>
-  );
-};
-
-export { GanttChartColumnLabel, GanttChartRowTitle, GanttChartRowLabels };

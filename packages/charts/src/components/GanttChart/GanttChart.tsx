@@ -3,21 +3,22 @@ import { throttle } from '@ui5/webcomponents-react-base';
 import type { CSSProperties, ReactNode } from 'react';
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import { GanttChartBody } from './chartbody/GanttChartBody.js';
-import { GanttChartColumnLabel, GanttChartRowTitle, GanttChartRowLabels } from './GanttChartHeaders.js';
+import { GanttChartColumnLabel } from './headers/GanttChartColumnLabel.js';
+import { GanttChartRowLabels } from './headers/GanttChartRowLabels.js';
+import { GanttChartRowTitle } from './headers/GanttChartRowTitle.js';
 import { GanttChartPlaceholder } from './Placeholder.js';
 import type { IGanttChartRow } from './types/GanttChartTypes.js';
 import {
   DEFAULT_ROW_HEIGHT,
   DEFAULT_WIDTH,
   COLUMN_HEADER_HEIGHT,
-  ILLEGAL_CONNECTION_MESSAGE,
   INVALID_DISCRETE_LABELS_MESSAGE,
   MOUSE_CURSOR_AUTO,
   MOUSE_CURSOR_GRAB,
   MOUSE_CURSOR_GRABBING,
   ROW_TITLE_WIDTH
 } from './util/constants.js';
-import { IllegalConnectionError, InvalidDiscreteLabelError } from './util/error.js';
+import { InvalidDiscreteLabelError } from './util/error.js';
 import { useStyles } from './util/styles.js';
 
 interface GanttChartProps extends CommonProps {
@@ -134,7 +135,6 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
       isDiscrete,
       annotations,
       showAnnotation,
-      showConnection,
       hideTooltip,
       unit,
       rowTitle = 'Activities',
@@ -192,17 +192,11 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
       }
     }, [isDiscrete, discreteLabels, totalDuration]);
 
-    useEffect(() => {
-      if (showConnection && dataset?.length > 0) {
-        validateConnections(dataset);
-      }
-    }, [showConnection, dataset]);
-
-    const scaleChartBody = (value: number) => setChartBodyScale(value);
-
-    const resetScroll = () => {
-      bodyConRef.current.scrollTo({ left: 0 });
-    };
+    // const scaleChartBody = (value: number) => setChartBodyScale(value);
+    //
+    // const resetScroll = () => {
+    //   bodyConRef.current.scrollTo({ left: 0 });
+    // };
 
     const onMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       if (chartBodyScale > 1) {
@@ -296,13 +290,12 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
               isDiscrete={isDiscrete}
               annotations={annotations}
               showAnnotation={showAnnotation}
-              showConnection={showConnection}
               showTooltip={!hideTooltip}
               unit={unit}
-              onScale={scaleChartBody}
+              // onScale={scaleChartBody}
               start={start}
               valueFormat={valueFormat}
-              resetScroll={resetScroll}
+              // resetScroll={resetScroll}
               unscaledWidth={unscaledBodyWidth}
             />
           </div>
@@ -313,25 +306,5 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
 );
 
 GanttChart.displayName = 'GanttChart';
-
-const validateConnections = (dataset: IGanttChartRow[]) => {
-  for (const row of dataset) {
-    if (row.tasks != null) {
-      for (const item of row.tasks) {
-        if (item.connections != null && item.connections.length !== 0 && item.id == null) {
-          throw new IllegalConnectionError(ILLEGAL_CONNECTION_MESSAGE);
-        }
-      }
-    }
-
-    if (row.milestones != null) {
-      for (const item of row.milestones) {
-        if (item.connections != null && item.connections.length !== 0 && item.id == null) {
-          throw new IllegalConnectionError(ILLEGAL_CONNECTION_MESSAGE);
-        }
-      }
-    }
-  }
-};
 
 export { GanttChart };

@@ -303,7 +303,6 @@ interface GanttChartRowGroupProps {
   GanttStart: number;
   showTooltip: (...x: unknown[]) => void;
   hideTooltip: () => void;
-  postRender: () => void;
 }
 const GanttChartRowGroup = ({
   dataset,
@@ -311,13 +310,8 @@ const GanttChartRowGroup = ({
   totalDuration,
   GanttStart,
   showTooltip,
-  hideTooltip,
-  postRender
+  hideTooltip
 }: GanttChartRowGroupProps) => {
-  useEffect(() => {
-    postRender();
-  }, []);
-
   return (
     <svg width="100%" height="100%">
       {dataset.map((data, index) => {
