@@ -1,13 +1,13 @@
 import type { CSSProperties, ReactNode } from 'react';
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import type { IGanttChartRow } from '../types/GanttChartTypes.js';
-import { MAX_BODY_WIDTH, SCALE_FACTOR } from '../util/constants.js';
 import { GanttChartBodyCtx } from '../util/context.js';
 import { useStyles } from '../util/styles.js';
 import { GanttChartGrid } from './GanttChartGrid.js';
 import { GanttChartLayer } from './GanttChartLayer.js';
 import { GanttChartRowGroup } from './GanttChartRow.js';
-import { GanttChartConnections } from './GanttConnections.js';
+import type { GanttTooltipHandle } from './GanttChartTooltip.js';
+import { GanttChartTooltip } from './GanttChartTooltip.js';
 
 interface GanttChartBodyProps {
   dataset: IGanttChartRow[];
@@ -24,9 +24,9 @@ interface GanttChartBodyProps {
   unit: string;
   start: number;
   unscaledWidth?: number;
-  onScale: (x: number) => void;
+  // onScale: (x: number) => void;
   valueFormat?: (value: number) => string;
-  resetScroll: () => void;
+  // resetScroll: () => void;
 }
 
 const GanttChartBody = ({
@@ -38,28 +38,18 @@ const GanttChartBody = ({
   isDiscrete,
   annotations,
   showAnnotation,
-  showConnection,
   showTooltip,
   unit,
   start,
   unscaledWidth,
-  onScale,
-  valueFormat,
-  resetScroll
+  // onScale,
+  valueFormat
+  // resetScroll
 }: GanttChartBodyProps) => {
   const classes = useStyles();
   const tooltipRef = useRef<GanttTooltipHandle>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
-  const scaleExpRef = useRef(0);
-  const [displayArrows, setDisplayArrows] = useState(false);
-
-  useEffect(() => {
-    const bodyElement = bodyRef.current;
-    bodyElement?.addEventListener('wheel', onMouseWheelEvent);
-    return () => {
-      bodyElement?.removeEventListener('wheel', onMouseWheelEvent);
-    };
-  }, []);
+  // const scaleExpRef = useRef(0);
 
   const style: CSSProperties = {
     width: `${width}px`,
@@ -79,26 +69,24 @@ const GanttChartBody = ({
   };
   const hideTooltip = () => tooltipRef.current?.onLeaveItem();
 
-  const onMouseWheelEvent = (evt: WheelEvent) => {
-    evt.preventDefault();
-    if (evt.deltaY < 0) {
-      // Only scale up if scaled width will not exceed MAX_BODY_WIDTH
-      const msrWidth = bodyRef.current.getBoundingClientRect().width;
-      if (msrWidth * SCALE_FACTOR < MAX_BODY_WIDTH) {
-        scaleExpRef.current++;
-      }
-    } else {
-      // Only scale down if scaled width will not be less than original
-      // width
-      if (scaleExpRef.current > 0) {
-        resetScroll();
-        scaleExpRef.current--;
-      }
-    }
-    onScale(Math.pow(SCALE_FACTOR, scaleExpRef.current));
-  };
-
-  const showArrows = () => setDisplayArrows(true);
+  // const onMouseWheelEvent = (evt: WheelEvent) => {
+  //   evt.preventDefault();
+  //   if (evt.deltaY < 0) {
+  //     // Only scale up if scaled width will not exceed MAX_BODY_WIDTH
+  //     const msrWidth = bodyRef.current.getBoundingClientRect().width;
+  //     if (msrWidth * SCALE_FACTOR < MAX_BODY_WIDTH) {
+  //       scaleExpRef.current++;
+  //     }
+  //   } else {
+  //     // Only scale down if scaled width will not be less than original
+  //     // width
+  //     if (scaleExpRef.current > 0) {
+  //       resetScroll();
+  //       scaleExpRef.current--;
+  //     }
+  //   }
+  //   onScale(Math.pow(SCALE_FACTOR, scaleExpRef.current));
+  // };
 
   return (
     <div data-component-name="GanttChartBody" ref={bodyRef} className={classes.chartBody} style={style}>
@@ -112,18 +100,6 @@ const GanttChartBody = ({
           unscaledWidth={unscaledWidth}
         />
       </GanttChartLayer>
-
-      {showConnection && displayArrows ? (
-        <GanttChartLayer name="GanttChartConnectionLayer" ignoreClick>
-          <GanttChartConnections
-            dataSet={dataset}
-            width={width}
-            rowHeight={rowHeight}
-            bodyRect={bodyRef.current?.getBoundingClientRect()}
-          />
-        </GanttChartLayer>
-      ) : null}
-
       <GanttChartLayer name="GanttChartRowsLayer" ignoreClick>
         <GanttChartRowGroup
           dataset={dataset}
@@ -132,7 +108,6 @@ const GanttChartBody = ({
           GanttStart={start}
           showTooltip={showTooltipOnHover}
           hideTooltip={hideTooltip}
-          postRender={showArrows}
         />
       </GanttChartLayer>
 
@@ -146,106 +121,5 @@ const GanttChartBody = ({
     </div>
   );
 };
-
-interface GanttTooltipHandle {
-  onHoverItem: (
-    mouseX: number,
-    mouseY: number,
-    label: string,
-    startTime: number,
-    duration: number,
-    color: string,
-    isMilestone: boolean
-  ) => void;
-  onLeaveItem: () => void;
-}
-
-interface GanttTooltipChartProps {
-  unit: string;
-  valueFormat?: (value: number) => string;
-}
-
-const GanttChartTooltip = forwardRef<GanttTooltipHandle, GanttTooltipChartProps>(function GanttChartTooltip(
-  { unit, valueFormat },
-  ref
-) {
-  const [state, setState] = useState({
-    x: 0,
-    y: 0,
-    label: '',
-    visible: false,
-    startTime: 0,
-    duration: 0,
-    color: 'black',
-    isMilestone: false
-  });
-  const divRef = useRef<HTMLDivElement>(null);
-  const popupRef = useRef<HTMLSpanElement>(null);
-  const classes = useStyles();
-
-  const onHoverItem = (
-    mouseX: number,
-    mouseY: number,
-    label: string,
-    startTime: number,
-    duration: number,
-    color: string,
-    isMilestone: boolean
-  ) => {
-    const { x, y, width, height } = divRef.current?.getBoundingClientRect();
-    // Adjust the x and y position of the tooltip popover in order to try
-    // to prevent it from being cut off by the bounds of the parent div.
-    const offSetX = mouseX - x;
-    const offSetY = mouseY - y;
-    const xPos = offSetX < width - 80 ? offSetX : offSetX - 120;
-    const yPos = offSetY < height - 70 ? offSetY : offSetY - 70;
-    setState({ x: xPos, y: yPos, label, visible: true, startTime, duration, color, isMilestone });
-  };
-
-  const onLeaveItem = () => {
-    setState({ ...state, visible: false });
-  };
-
-  useImperativeHandle(ref, () => ({
-    onHoverItem: onHoverItem,
-    onLeaveItem: onLeaveItem
-  }));
-
-  return (
-    <div data-component-name="GanttChartTooltipContainer" className={classes.tooltipContainer} ref={divRef}>
-      {state.visible ? (
-        <span
-          data-component-name="GanttChartTooltip"
-          className={classes.tooltip}
-          ref={popupRef}
-          style={{
-            insetInlineStart: state.x,
-            insetBlockStart: state.y
-          }}
-        >
-          <span className={classes.tooltipLabel}>
-            <strong>{state.label}</strong>
-          </span>
-          <span className={classes.tooltipColorBar} style={{ backgroundColor: state.color }}></span>
-          <span>
-            Start: {valueFormat != null ? valueFormat(state.startTime) : state.startTime}
-            {unit}
-          </span>
-          {state.isMilestone ? null : (
-            <span>
-              Duration: {valueFormat != null ? valueFormat(state.duration) : state.duration}
-              {unit}
-            </span>
-          )}
-          <span>
-            End:{' '}
-            {valueFormat != null ? valueFormat(state.startTime + state.duration) : state.startTime + state.duration}
-            {unit}
-          </span>
-        </span>
-      ) : null}
-    </div>
-  );
-});
 
 export { GanttChartBody };
