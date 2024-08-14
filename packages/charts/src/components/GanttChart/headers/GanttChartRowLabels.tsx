@@ -1,18 +1,16 @@
 import type { CSSProperties } from 'react';
 import React from 'react';
-import type { IGanttChartRow } from '../types/GanttChartTypes.js';
 import { useStyles } from '../util/styles.js';
 
 interface GanttChartRowLabelsProps {
   width: number;
   height: number;
   rowHeight: number;
-  dataset: IGanttChartRow[];
+  rowLabels: string[];
 }
 
-export const GanttChartRowLabels = ({ width, height, rowHeight, dataset }: GanttChartRowLabelsProps) => {
+export const GanttChartRowLabels = ({ width, height, rowHeight, rowLabels }: GanttChartRowLabelsProps) => {
   const classes = useStyles();
-  const rowLabels = dataset.map((data) => data.label);
   const style: CSSProperties = {
     width: width,
     height: `${rowLabels.length * rowHeight}px`

@@ -16,7 +16,8 @@ import {
   MOUSE_CURSOR_AUTO,
   MOUSE_CURSOR_GRAB,
   MOUSE_CURSOR_GRABBING,
-  ROW_TITLE_WIDTH
+  ROW_TITLE_WIDTH,
+  ROW_STATUS_WIDTH
 } from './util/constants.js';
 import { InvalidDiscreteLabelError } from './util/error.js';
 import { useStyles } from './util/styles.js';
@@ -66,6 +67,12 @@ interface GanttChartProps extends CommonProps {
    * items in the chart.
    */
   showConnection?: boolean;
+
+  /**
+   * Toggles the visibility of the status column in the chart.
+   */
+
+  showStatus?: boolean;
 
   /**
    * Toggles the visibility of the tooltip.
@@ -137,11 +144,12 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
       showAnnotation,
       hideTooltip,
       unit,
-      rowTitle = 'Activities',
-      columnTitle = 'Duration',
+      rowTitle = 'Component',
+      columnTitle = '',
       discreteLabels,
       start = 0,
       valueFormat = (x: number) => x.toFixed(1),
+      showStatus = true,
       ...rest
     },
     fRef
@@ -152,7 +160,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
     const style: CSSProperties = {
       height: `${height}px`,
       width: width,
-      gridTemplateColumns: `${ROW_TITLE_WIDTH}px auto`
+      gridTemplateColumns: showStatus ? `${ROW_TITLE_WIDTH}px ${ROW_STATUS_WIDTH}px auto` : `${ROW_TITLE_WIDTH}px auto`
     };
 
     const ref = useRef(null);
@@ -227,7 +235,9 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
       return MOUSE_CURSOR_AUTO;
     };
 
-    const unscaledBodyWidth = dimensions.width - ROW_TITLE_WIDTH;
+    const unscaledBodyWidth = showStatus
+      ? dimensions.width - ROW_TITLE_WIDTH - ROW_STATUS_WIDTH
+      : dimensions.width - ROW_TITLE_WIDTH;
     const bodyWidth = unscaledBodyWidth * chartBodyScale;
 
     if (!dataset || dataset?.length === 0) {
@@ -243,9 +253,20 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
               width={ROW_TITLE_WIDTH}
               height={height - COLUMN_HEADER_HEIGHT}
               rowHeight={rowHeight}
-              dataset={dataset}
+              rowLabels={dataset.map((data) => data.label)}
             />
           </div>
+          {showStatus ? (
+            <div style={{ width: ROW_STATUS_WIDTH, height: height, textAlign: 'center' }}>
+              <GanttChartRowTitle width={ROW_STATUS_WIDTH} height={COLUMN_HEADER_HEIGHT} rowTitle={'Status'} />
+              <GanttChartRowLabels
+                width={ROW_STATUS_WIDTH}
+                height={height - COLUMN_HEADER_HEIGHT}
+                rowHeight={rowHeight}
+                rowLabels={dataset.map((data) => data.status)}
+              />
+            </div>
+          ) : null}
           <div
             data-component-name="GanttChartBodyContainer"
             className={classes.bodyContainer}

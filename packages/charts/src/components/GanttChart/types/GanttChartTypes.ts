@@ -31,6 +31,11 @@ export interface IGanttChartRow {
    * valid CSS color will do. If not specified, a random color is used.
    */
   color?: CSSProperties['color'];
+
+  /**
+   * The status for the row.
+   */
+  status?: string;
 }
 
 /**
