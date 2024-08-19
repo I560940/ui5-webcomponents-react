@@ -3,76 +3,80 @@ import type { CSSProperties, ReactNode } from 'react';
 import React from 'react';
 import type { IGanttChartRow } from './types/GanttChartTypes.js';
 interface GanttChartProps extends CommonProps {
-    /**
-     * The data is an array of objects that is displayed on the chart.
-     */
-    dataset?: IGanttChartRow[];
-    /**
-     * The total duration of the Gantt.
-     */
-    totalDuration?: number;
-    /**
-     * The total width of the chart. If not supplied, the chart's
-     * width expands to fill its conatainer.
-     */
-    width?: CSSProperties['width'];
-    /**
-     * The height the row of the Gantt.
-     */
-    rowHeight?: number;
-    /**
-     * Whether the Gantt is a continuous Gantt or broken
-     * into discrete sections.
-     */
-    isDiscrete?: boolean;
-    /**
-     * Defines the annonations to be applied on top on the chart.
-     *
-     * **Note:** Use the `GanttChartAnnotation` component here.
-     */
-    annotations?: ReactNode | ReactNode[];
-    /**
-     * Toggles the visibility of the annotations applied to the chart.
-     */
-    showAnnotation?: boolean;
-    /**
-     * Toggles the visibility of the connections of the task and milestone
-     * items in the chart.
-     */
-    showConnection?: boolean;
-    /**
-     * Toggles the visibility of the tooltip.
-     */
-    hideTooltip?: boolean;
-    /**
-     * The unit of the duration of the Gantt.
-     */
-    unit?: string;
-    /**
-     * The label for the activity axis.
-     */
-    rowTitle?: string;
-    /**
-     * The label for the title of the duration axis.
-     */
-    columnTitle?: string;
-    /**
-     * The label for the columns if the chart is separated into discrete columns
-     * based on if `isDiscrete` is true. If set, the length of this array
-     * __must__ be equal to the `totalDuration`. If not set, an
-     * array of numbers with size equal to the `totalDuration` and with values
-     * starting from the value __start__ prop of the `GanttChart` will be used.
-     */
-    discreteLabels?: string[];
-    /**
-     * The starting value of the Gantt duration.
-     */
-    start?: number;
-    /**
-     * A callback function that is applied to each value in the tick and tootltip
-     * to format how it is displayed.
-     */
-    valueFormat?: (value: number) => string;
+  /**
+   * The data is an array of objects that is displayed on the chart.
+   */
+  dataset?: IGanttChartRow[];
+  /**
+   * The total duration of the Gantt.
+   */
+  totalDuration?: number;
+  /**
+   * The total width of the chart. If not supplied, the chart's
+   * width expands to fill its conatainer.
+   */
+  width?: CSSProperties['width'];
+  /**
+   * The height the row of the Gantt.
+   */
+  rowHeight?: number;
+  /**
+   * Whether the Gantt is a continuous Gantt or broken
+   * into discrete sections.
+   */
+  isDiscrete?: boolean;
+  /**
+   * Defines the annonations to be applied on top on the chart.
+   *
+   * **Note:** Use the `GanttChartAnnotation` component here.
+   */
+  annotations?: ReactNode | ReactNode[];
+  /**
+   * Toggles the visibility of the annotations applied to the chart.
+   */
+  showAnnotation?: boolean;
+  /**
+   * Toggles the visibility of the connections of the task and milestone
+   * items in the chart.
+   */
+  showConnection?: boolean;
+  /**
+   * Toggles the visibility of the status column in the chart.
+   */
+  showStatus?: boolean;
+  /**
+   * Toggles the visibility of the tooltip.
+   */
+  hideTooltip?: boolean;
+  /**
+   * The unit of the duration of the Gantt.
+   */
+  unit?: string;
+  /**
+   * The label for the activity axis.
+   */
+  rowTitle?: string;
+  /**
+   * The label for the title of the duration axis.
+   */
+  columnTitle?: string;
+  /**
+   * The label for the columns if the chart is separated into discrete columns
+   * based on if `isDiscrete` is true. If set, the length of this array
+   * __must__ be equal to the `totalDuration`. If not set, an
+   * array of numbers with size equal to the `totalDuration` and with values
+   * starting from the value __start__ prop of the `GanttChart` will be used.
+   */
+  discreteLabels?: string[];
+  /**
+   * The starting value of the Gantt duration.
+   */
+  start?: number;
+  /**
+   * A callback function that is applied to each value in the tick and tootltip
+   * to format how it is displayed.
+   */
+  valueFormat?: (value: number) => string;
 }
 /**
  * > __Experimental Component!__ <br />
