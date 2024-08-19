@@ -105,6 +105,7 @@ export const dummyDiscreteDataSet: IGanttChartRow[] = [
   {
     label: 'Discovery',
     color: 'blue',
+    status: 'Live',
     tasks: [
       {
         id: 'TR-00X',
@@ -120,7 +121,8 @@ export const dummyDiscreteDataSet: IGanttChartRow[] = [
   },
   {
     label: 'Branding Exploration',
-    // color: 'red',
+    color: 'red',
+    status: 'Live',
     tasks: [
       {
         id: 'TR-10X',
@@ -136,6 +138,7 @@ export const dummyDiscreteDataSet: IGanttChartRow[] = [
   },
   {
     label: 'Content Review',
+    status: 'Live',
     tasks: [
       {
         id: 'TR-20X',
@@ -151,6 +154,7 @@ export const dummyDiscreteDataSet: IGanttChartRow[] = [
   },
   {
     label: '',
+    status: 'Deleted',
     milestones: [
       {
         id: 'MS-30X',
@@ -169,6 +173,7 @@ export const dummyDiscreteDataSet: IGanttChartRow[] = [
   },
   {
     label: 'Website Design',
+    status: 'Planned',
     tasks: [
       {
         id: 'TR-40X',
@@ -184,6 +189,7 @@ export const dummyDiscreteDataSet: IGanttChartRow[] = [
   },
   {
     label: 'Database Setup',
+    status: 'Live',
     tasks: [
       {
         id: 'TR-50X',

@@ -1,3 +1,4 @@
+import { ThemingParameters } from '@ui5/webcomponents-react-base';
 import type { CSSProperties } from 'react';
 import React from 'react';
 import { useStyles } from '../util/styles.js';
@@ -13,7 +14,7 @@ export const GanttChartRowTitle = ({ width, height, rowTitle }: GanttChartRowTit
   const style: CSSProperties = {
     width: width,
     height: height,
-    color: 'red'
+    color: ThemingParameters.sapTitleColor
   };
   return (
     <div className={classes.onlyOutline} style={style}>

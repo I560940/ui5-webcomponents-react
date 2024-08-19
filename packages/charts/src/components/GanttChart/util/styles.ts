@@ -35,7 +35,6 @@ const styles = {
     width: '100%',
     outline: solidOutline,
     fontSize: '10px',
-    textAlign: 'center',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis'
@@ -62,7 +61,7 @@ const styles = {
 
   rowTitleBottom: {
     height: '50%',
-    textAlign: 'center',
+    paddingInline: '10px',
     fontSize: '13px'
   },
 

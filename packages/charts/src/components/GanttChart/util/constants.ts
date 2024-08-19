@@ -1,6 +1,7 @@
 // GanttChart
 export const DEFAULT_WIDTH = 'auto';
-export const ROW_TITLE_WIDTH = 150;
+export const ROW_TITLE_WIDTH = 190;
+export const ROW_STATUS_WIDTH = 60;
 export const COLUMN_HEADER_HEIGHT = 50;
 export const DEFAULT_ROW_HEIGHT = 25;
 export const DEFAULT_CHART_VERTICAL_COLS = 5;
