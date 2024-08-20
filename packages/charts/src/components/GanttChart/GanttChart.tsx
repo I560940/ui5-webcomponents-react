@@ -75,6 +75,22 @@ interface GanttChartProps extends CommonProps {
   showStatus?: boolean;
 
   /**
+   * Toggles the visibility of the line that appears when hovering over
+   * the chart.
+   */
+  showVerticalLineOnHover?: boolean;
+
+  /**
+   * Toggles the visibility of the static vertical line in the chart.
+   */
+  showStaticVerticalLine?: boolean;
+
+  /**
+   * The position of the static vertical line in the
+   */
+  staticVerticalLinePosition?: number;
+
+  /**
    * Toggles the visibility of the tooltip.
    */
   hideTooltip?: boolean;
@@ -142,6 +158,9 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
       isDiscrete,
       annotations,
       showAnnotation,
+      showVerticalLineOnHover,
+      showStaticVerticalLine,
+      staticVerticalLinePosition,
       hideTooltip,
       unit,
       rowTitle = 'Component',
@@ -312,6 +331,9 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
               annotations={annotations}
               showAnnotation={showAnnotation}
               showTooltip={!hideTooltip}
+              showVerticalLineOnHover={showVerticalLineOnHover}
+              showStaticVerticalLine={showStaticVerticalLine}
+              staticVerticalLinePosition={staticVerticalLinePosition}
               unit={unit}
               // onScale={scaleChartBody}
               start={start}
