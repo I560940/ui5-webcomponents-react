@@ -24,10 +24,10 @@ const GanttChartStaticVerticalLine: React.FC<GanttChartStaticVerticalLine> = ({ 
       <div
         style={{
           position: 'absolute',
-          top: '-5px',
-          left: '-4px',
-          width: `8px`,
-          height: `8px`,
+          top: '-1px',
+          left: '-2.3px',
+          width: `4px`,
+          height: `4px`,
           backgroundColor: ThemingParameters.sapLegendColor2,
           transform: 'rotate(45deg)',
           pointerEvents: 'none'
