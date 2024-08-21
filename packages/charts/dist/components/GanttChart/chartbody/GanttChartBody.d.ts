@@ -12,11 +12,14 @@ interface GanttChartBodyProps {
     annotations?: ReactNode | ReactNode[];
     showAnnotation?: boolean;
     showConnection?: boolean;
+    showVerticalLineOnHover?: boolean;
+    showStaticVerticalLine?: boolean;
+    staticVerticalLinePosition?: number;
     showTooltip?: boolean;
     unit: string;
     start: number;
     unscaledWidth?: number;
     valueFormat?: (value: number) => string;
 }
-declare const GanttChartBody: ({ dataset, width, rowHeight, numOfItems, totalDuration, isDiscrete, annotations, showAnnotation, showTooltip, unit, start, unscaledWidth, valueFormat }: GanttChartBodyProps) => React.JSX.Element;
+declare const GanttChartBody: ({ dataset, width, rowHeight, numOfItems, totalDuration, isDiscrete, annotations, showAnnotation, showTooltip, showVerticalLineOnHover, showStaticVerticalLine, staticVerticalLinePosition, unit, start, unscaledWidth, valueFormat }: GanttChartBodyProps) => React.JSX.Element;
 export { GanttChartBody };
