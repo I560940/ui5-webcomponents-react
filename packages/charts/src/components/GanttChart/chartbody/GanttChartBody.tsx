@@ -4,8 +4,10 @@ import type { IGanttChartRow } from '../types/GanttChartTypes.js';
 import { GanttChartBodyCtx } from '../util/context.js';
 import { useStyles } from '../util/styles.js';
 import { GanttChartGrid } from './GanttChartGrid.js';
+import { GanttChartHoverVerticalLine } from './GanttChartHoverVerticalLine.js';
 import { GanttChartLayer } from './GanttChartLayer.js';
 import { GanttChartRowGroup } from './GanttChartRow.js';
+import { GanttChartStaticVerticalLine } from './GanttChartStaticVerticalLine.js';
 import type { GanttTooltipHandle } from './GanttChartTooltip.js';
 import { GanttChartTooltip } from './GanttChartTooltip.js';
 
@@ -20,6 +22,9 @@ interface GanttChartBodyProps {
   annotations?: ReactNode | ReactNode[];
   showAnnotation?: boolean;
   showConnection?: boolean;
+  showVerticalLineOnHover?: boolean;
+  showStaticVerticalLine?: boolean;
+  staticVerticalLinePosition?: number;
   showTooltip?: boolean;
   unit: string;
   start: number;
@@ -39,6 +44,9 @@ const GanttChartBody = ({
   annotations,
   showAnnotation,
   showTooltip,
+  showVerticalLineOnHover,
+  showStaticVerticalLine,
+  staticVerticalLinePosition,
   unit,
   start,
   unscaledWidth,
@@ -50,6 +58,7 @@ const GanttChartBody = ({
   const tooltipRef = useRef<GanttTooltipHandle>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   // const scaleExpRef = useRef(0);
+  const [verticalLinePosition, setVerticalLinePosition] = React.useState<number | null>(null);
 
   const style: CSSProperties = {
     width: `${width}px`,
@@ -88,8 +97,26 @@ const GanttChartBody = ({
   //   onScale(Math.pow(SCALE_FACTOR, scaleExpRef.current));
   // };
 
+  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = bodyRef.current.getBoundingClientRect();
+    if (rect) {
+      setVerticalLinePosition(e.clientX - rect.left);
+    }
+  };
+
+  const onMouseLeave = () => {
+    setVerticalLinePosition(null);
+  };
+
   return (
-    <div data-component-name="GanttChartBody" ref={bodyRef} className={classes.chartBody} style={style}>
+    <div
+      data-component-name="GanttChartBody"
+      ref={bodyRef}
+      className={classes.chartBody}
+      style={style}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+    >
       <GanttChartLayer name="GanttChartGridLayer" ignoreClick>
         <GanttChartGrid
           isDiscrete={isDiscrete}
@@ -118,6 +145,10 @@ const GanttChartBody = ({
       ) : null}
 
       {showTooltip ? <GanttChartTooltip ref={tooltipRef} unit={unit} valueFormat={valueFormat} /> : null}
+      {verticalLinePosition && showVerticalLineOnHover && (
+        <GanttChartHoverVerticalLine verticalLinePosition={verticalLinePosition} />
+      )}
+      {showStaticVerticalLine && <GanttChartStaticVerticalLine verticalLinePosition={staticVerticalLinePosition} />}
     </div>
   );
 };
