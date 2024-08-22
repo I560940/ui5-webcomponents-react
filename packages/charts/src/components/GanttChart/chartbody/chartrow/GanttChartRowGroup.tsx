@@ -9,6 +9,7 @@ interface GanttChartRowGroupProps {
   GanttStart: number;
   showTooltip: (...x: unknown[]) => void;
   hideTooltip: () => void;
+  handleTaskClick: (task: Record<string, any>) => void;
 }
 export const GanttChartRowGroup = ({
   dataset,
@@ -16,7 +17,8 @@ export const GanttChartRowGroup = ({
   totalDuration,
   GanttStart,
   showTooltip,
-  hideTooltip
+  hideTooltip,
+  handleTaskClick
 }: GanttChartRowGroupProps) => {
   return (
     <svg width="100%" height="100%">
@@ -31,6 +33,7 @@ export const GanttChartRowGroup = ({
             GanttStart={GanttStart}
             showTooltip={showTooltip}
             hideTooltip={hideTooltip}
+            handleTaskClick={handleTaskClick}
           />
         );
       })}

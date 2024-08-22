@@ -50,6 +50,11 @@ interface GanttTaskProps {
   ) => void;
 
   hideTooltip: () => void;
+
+  /**
+   * Callback function to handle the click event on the task.
+   */
+  handleTaskClick: (task: Record<string, any>) => void;
 }
 
 export const GanttTask = ({
@@ -61,7 +66,8 @@ export const GanttTask = ({
   color,
   GanttStart,
   showTooltip,
-  hideTooltip
+  hideTooltip,
+  handleTaskClick
 }: GanttTaskProps) => {
   const [opacity, setOpacity] = useState(NORMAL_OPACITY);
   const onMouseLeave = (evt: React.MouseEvent<SVGRectElement, MouseEvent>) => {
@@ -77,6 +83,10 @@ export const GanttTask = ({
   };
 
   const onMouseMove = throttle(mouseMoveHandler, THROTTLE_INTERVAL, { trailing: false });
+
+  const handleClick = () => {
+    handleTaskClick({ id, label, startTime, duration, color });
+  };
 
   // The 10% y value is to create a little gap between the top grid line and the
   // rendered GanttTask itself. The height is set to 80% to allow for an
@@ -94,6 +104,7 @@ export const GanttTask = ({
       style={{ fill: color, pointerEvents: 'auto', cursor: 'pointer', opacity: opacity }}
       onMouseLeave={onMouseLeave}
       onMouseMove={onMouseMove}
+      onClick={handleClick}
     />
   );
 };

@@ -11,6 +11,7 @@ interface GanttChartRowProps {
   GanttStart: number;
   showTooltip: (...x: unknown[]) => void;
   hideTooltip: () => void;
+  handleTaskClick: (task: Record<string, any>) => void;
 }
 
 /**
@@ -24,7 +25,8 @@ export const GanttChartRow = ({
   totalDuration,
   GanttStart,
   showTooltip,
-  hideTooltip
+  hideTooltip,
+  handleTaskClick
 }: GanttChartRowProps) => {
   rowData.color = rowData.color ?? `var(--sapChart_OrderedColor_${(rowIndex % 11) + 1})`;
 
@@ -50,6 +52,7 @@ export const GanttChartRow = ({
             GanttStart={GanttStart}
             showTooltip={showTooltip}
             hideTooltip={hideTooltip}
+            handleTaskClick={handleTaskClick}
           />
         );
       })}
