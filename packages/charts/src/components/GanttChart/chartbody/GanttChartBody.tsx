@@ -27,8 +27,6 @@ interface GanttChartBodyProps {
   showStaticVerticalLine?: boolean;
   staticVerticalLinePosition?: number;
   showTooltip?: boolean;
-  showTaskTooltip?: boolean;
-  renderTaskTooltip?: (task: Record<string, any>, onClose: () => void) => ReactNode;
   unit: string;
   start: number;
   unscaledWidth?: number;
@@ -51,8 +49,6 @@ const GanttChartBody = ({
   showVerticalLineOnHover,
   showStaticVerticalLine,
   staticVerticalLinePosition,
-  showTaskTooltip,
-  renderTaskTooltip,
   unit,
   start,
   unscaledWidth,
@@ -65,7 +61,6 @@ const GanttChartBody = ({
   const bodyRef = useRef<HTMLDivElement>(null);
   // const scaleExpRef = useRef(0);
   const [verticalLinePosition, setVerticalLinePosition] = React.useState<number | null>(null);
-  const [selectedTask, setSelectedTask] = React.useState(null);
 
   const style: CSSProperties = {
     width: `${width}px`,
@@ -117,13 +112,6 @@ const GanttChartBody = ({
 
   const handleTaskClick = (task: Record<string, any>) => {
     onTaskClick?.(task);
-    if (showTaskTooltip) {
-      setSelectedTask(task);
-    }
-  };
-
-  const handleCloseTaskPopup = () => {
-    setSelectedTask(null);
   };
 
   return (
@@ -168,7 +156,6 @@ const GanttChartBody = ({
         <GanttChartHoverVerticalLine verticalLinePosition={verticalLinePosition} />
       )}
       {showStaticVerticalLine && <GanttChartStaticVerticalLine verticalLinePosition={staticVerticalLinePosition} />}
-      {selectedTask && renderTaskTooltip && renderTaskTooltip(selectedTask, handleCloseTaskPopup)}
     </div>
   );
 };

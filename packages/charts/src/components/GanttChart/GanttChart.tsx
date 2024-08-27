@@ -96,17 +96,6 @@ interface GanttChartProps extends CommonProps {
   staticVerticalLinePosition?: number;
 
   /**
-   * Toggles the visibility of the tooltip that appears when clicking on a task.
-   */
-  showTaskTooltip?: boolean;
-
-  /**
-   * A callback function that is applied to render custom popup
-   * when a task is clicked. It will only appear if `showTaskTooltip` is true.
-   */
-  renderTaskTooltip?: (task: Record<string, any>, onClose: () => void) => ReactNode;
-
-  /**
    * Toggles the visibility of the tooltip.
    */
   hideTooltip?: boolean;
@@ -178,8 +167,6 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
       showVerticalLineOnHover,
       showStaticVerticalLine,
       staticVerticalLinePosition,
-      showTaskTooltip,
-      renderTaskTooltip,
       hideTooltip,
       unit,
       rowTitle = 'Component',
@@ -359,8 +346,6 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
               valueFormat={valueFormat}
               // resetScroll={resetScroll}
               unscaledWidth={unscaledBodyWidth}
-              showTaskTooltip={showTaskTooltip}
-              renderTaskTooltip={renderTaskTooltip}
               onTaskClick={onTaskClick}
             />
           </div>
