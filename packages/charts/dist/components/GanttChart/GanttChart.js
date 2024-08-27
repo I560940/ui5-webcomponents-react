@@ -25,7 +25,7 @@ import { useStyles } from './util/styles.js';
  * * Show relationships between different items on the Gantt using different
  * connections.
  */
-const GanttChart = forwardRef(({ dataset, totalDuration = 10, width = DEFAULT_WIDTH, rowHeight = DEFAULT_ROW_HEIGHT, isDiscrete, annotations, showAnnotation, showVerticalLineOnHover, showStaticVerticalLine, staticVerticalLinePosition, showTaskTooltip, renderTaskTooltip, hideTooltip, unit, rowTitle = 'Component', columnTitle = '', discreteLabels, start = 0, valueFormat = (x) => x.toFixed(1), showStatus = true, ...rest }, fRef) => {
+const GanttChart = forwardRef(({ dataset, totalDuration = 10, width = DEFAULT_WIDTH, rowHeight = DEFAULT_ROW_HEIGHT, isDiscrete, onTaskClick, annotations, showAnnotation, showVerticalLineOnHover, showStaticVerticalLine, staticVerticalLinePosition, showTaskTooltip, renderTaskTooltip, hideTooltip, unit, rowTitle = 'Component', columnTitle = '', discreteLabels, start = 0, valueFormat = (x) => x.toFixed(1), showStatus = true, ...rest }, fRef) => {
     const numOfRows = dataset?.length ?? 0;
     const height = rowHeight * numOfRows + COLUMN_HEADER_HEIGHT;
     const style = {
@@ -133,7 +133,7 @@ const GanttChart = forwardRef(({ dataset, totalDuration = 10, width = DEFAULT_WI
                     // onScale={scaleChartBody}
                     start: start, valueFormat: valueFormat, 
                     // resetScroll={resetScroll}
-                    unscaledWidth: unscaledBodyWidth, showTaskTooltip: showTaskTooltip, renderTaskTooltip: renderTaskTooltip })))));
+                    unscaledWidth: unscaledBodyWidth, showTaskTooltip: showTaskTooltip, renderTaskTooltip: renderTaskTooltip, onTaskClick: onTaskClick })))));
 });
 GanttChart.displayName = 'GanttChart';
 export { GanttChart };

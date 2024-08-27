@@ -9,6 +9,7 @@ interface GanttChartBodyProps {
     numOfItems: number;
     totalDuration: number;
     isDiscrete: boolean;
+    onTaskClick?: (task: Record<string, any>) => void;
     annotations?: ReactNode | ReactNode[];
     showAnnotation?: boolean;
     showConnection?: boolean;
@@ -23,5 +24,5 @@ interface GanttChartBodyProps {
     unscaledWidth?: number;
     valueFormat?: (value: number) => string;
 }
-declare const GanttChartBody: ({ dataset, width, rowHeight, numOfItems, totalDuration, isDiscrete, annotations, showAnnotation, showTooltip, showVerticalLineOnHover, showStaticVerticalLine, staticVerticalLinePosition, showTaskTooltip, renderTaskTooltip, unit, start, unscaledWidth, valueFormat }: GanttChartBodyProps) => React.JSX.Element;
+declare const GanttChartBody: ({ dataset, width, rowHeight, numOfItems, totalDuration, isDiscrete, onTaskClick, annotations, showAnnotation, showTooltip, showVerticalLineOnHover, showStaticVerticalLine, staticVerticalLinePosition, showTaskTooltip, renderTaskTooltip, unit, start, unscaledWidth, valueFormat }: GanttChartBodyProps) => React.JSX.Element;
 export { GanttChartBody };

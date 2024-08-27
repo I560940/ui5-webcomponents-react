@@ -7,7 +7,7 @@ import { GanttChartHoverVerticalLine } from './GanttChartHoverVerticalLine.js';
 import { GanttChartLayer } from './GanttChartLayer.js';
 import { GanttChartStaticVerticalLine } from './GanttChartStaticVerticalLine.js';
 import { GanttChartTooltip } from './GanttChartTooltip.js';
-const GanttChartBody = ({ dataset, width, rowHeight, numOfItems, totalDuration, isDiscrete, annotations, showAnnotation, showTooltip, showVerticalLineOnHover, showStaticVerticalLine, staticVerticalLinePosition, showTaskTooltip, renderTaskTooltip, unit, start, unscaledWidth, 
+const GanttChartBody = ({ dataset, width, rowHeight, numOfItems, totalDuration, isDiscrete, onTaskClick, annotations, showAnnotation, showTooltip, showVerticalLineOnHover, showStaticVerticalLine, staticVerticalLinePosition, showTaskTooltip, renderTaskTooltip, unit, start, unscaledWidth, 
 // onScale,
 valueFormat
 // resetScroll
@@ -54,6 +54,7 @@ valueFormat
         setVerticalLinePosition(null);
     };
     const handleTaskClick = (task) => {
+        onTaskClick?.(task);
         if (showTaskTooltip) {
             setSelectedTask(task);
         }
