@@ -14,8 +14,8 @@ export const GanttTask = ({ id, label, startTime, duration, totalDuration, color
         showTooltip(evt.clientX, evt.clientY, label, startTime, duration, color, false);
     };
     const onMouseMove = throttle(mouseMoveHandler, THROTTLE_INTERVAL, { trailing: false });
-    const handleClick = () => {
-        handleTaskClick({ id, label, startTime, duration, color });
+    const handleClick = (event) => {
+        handleTaskClick({ id, label, startTime, duration, color }, event);
     };
     // The 10% y value is to create a little gap between the top grid line and the
     // rendered GanttTask itself. The height is set to 80% to allow for an

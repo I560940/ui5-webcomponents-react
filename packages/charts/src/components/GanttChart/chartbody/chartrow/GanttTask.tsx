@@ -49,12 +49,12 @@ interface GanttTaskProps {
     isMilestone: boolean
   ) => void;
 
-  hideTooltip: () => void;
-
   /**
    * Callback function to handle the click event on the task.
    */
   handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
+
+  hideTooltip: () => void;
 }
 
 export const GanttTask = ({

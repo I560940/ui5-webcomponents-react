@@ -19,8 +19,8 @@ interface GanttChartBodyProps {
   numOfItems: number;
   totalDuration: number;
   isDiscrete: boolean;
-  onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
   annotations?: ReactNode | ReactNode[];
+  onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
   showAnnotation?: boolean;
   showConnection?: boolean;
   showVerticalLineOnHover?: boolean;

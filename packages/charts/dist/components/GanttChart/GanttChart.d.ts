@@ -26,15 +26,15 @@ interface GanttChartProps extends CommonProps {
      */
     isDiscrete?: boolean;
     /**
-     * A callback function that is applied when a task is clicked.
-     */
-    onTaskClick?: (task: Record<string, any>) => void;
-    /**
      * Defines the annonations to be applied on top on the chart.
      *
      * **Note:** Use the `GanttChartAnnotation` component here.
      */
     annotations?: ReactNode | ReactNode[];
+    /**
+     * A callback function that is applied when a task is clicked.
+     */
+    onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
     /**
      * Toggles the visibility of the annotations applied to the chart.
      */
@@ -61,15 +61,6 @@ interface GanttChartProps extends CommonProps {
      * The position of the static vertical line in the
      */
     staticVerticalLinePosition?: number;
-    /**
-     * Toggles the visibility of the tooltip that appears when clicking on a task.
-     */
-    showTaskTooltip?: boolean;
-    /**
-     * A callback function that is applied to render custom popup
-     * when a task is clicked. It will only appear if `showTaskTooltip` is true.
-     */
-    renderTaskTooltip?: (task: Record<string, any>, onClose: () => void) => ReactNode;
     /**
      * Toggles the visibility of the tooltip.
      */

@@ -6,8 +6,8 @@ interface GanttChartRowGroupProps {
     totalDuration: number;
     GanttStart: number;
     showTooltip: (...x: unknown[]) => void;
+    handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
     hideTooltip: () => void;
-    handleTaskClick: (task: Record<string, any>) => void;
 }
 export declare const GanttChartRowGroup: {
     ({ dataset, rowHeight, totalDuration, GanttStart, showTooltip, hideTooltip, handleTaskClick }: GanttChartRowGroupProps): React.JSX.Element;

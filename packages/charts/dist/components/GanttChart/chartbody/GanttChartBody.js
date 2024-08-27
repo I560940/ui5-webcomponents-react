@@ -7,7 +7,7 @@ import { GanttChartHoverVerticalLine } from './GanttChartHoverVerticalLine.js';
 import { GanttChartLayer } from './GanttChartLayer.js';
 import { GanttChartStaticVerticalLine } from './GanttChartStaticVerticalLine.js';
 import { GanttChartTooltip } from './GanttChartTooltip.js';
-const GanttChartBody = ({ dataset, width, rowHeight, numOfItems, totalDuration, isDiscrete, onTaskClick, annotations, showAnnotation, showTooltip, showVerticalLineOnHover, showStaticVerticalLine, staticVerticalLinePosition, showTaskTooltip, renderTaskTooltip, unit, start, unscaledWidth, 
+const GanttChartBody = ({ dataset, width, rowHeight, numOfItems, totalDuration, isDiscrete, onTaskClick, annotations, showAnnotation, showTooltip, showVerticalLineOnHover, showStaticVerticalLine, staticVerticalLinePosition, unit, start, unscaledWidth, 
 // onScale,
 valueFormat
 // resetScroll
@@ -17,7 +17,6 @@ valueFormat
     const bodyRef = useRef(null);
     // const scaleExpRef = useRef(0);
     const [verticalLinePosition, setVerticalLinePosition] = React.useState(null);
-    const [selectedTask, setSelectedTask] = React.useState(null);
     const style = {
         width: `${width}px`,
         height: `${numOfItems * rowHeight}px`
@@ -53,14 +52,8 @@ valueFormat
     const onMouseLeave = () => {
         setVerticalLinePosition(null);
     };
-    const handleTaskClick = (task) => {
-        onTaskClick?.(task);
-        if (showTaskTooltip) {
-            setSelectedTask(task);
-        }
-    };
-    const handleCloseTaskPopup = () => {
-        setSelectedTask(null);
+    const handleTaskClick = (task, event) => {
+        onTaskClick?.(task, event);
     };
     return (React.createElement("div", { "data-component-name": "GanttChartBody", ref: bodyRef, className: classes.chartBody, style: style, onMouseMove: onMouseMove, onMouseLeave: onMouseLeave },
         React.createElement(GanttChartLayer, { name: "GanttChartGridLayer", ignoreClick: true },
@@ -71,7 +64,6 @@ valueFormat
             React.createElement(GanttChartBodyCtx.Provider, { value: { chartBodyWidth: width } }, annotations))) : null,
         showTooltip ? React.createElement(GanttChartTooltip, { ref: tooltipRef, unit: unit, valueFormat: valueFormat }) : null,
         verticalLinePosition && showVerticalLineOnHover && (React.createElement(GanttChartHoverVerticalLine, { verticalLinePosition: verticalLinePosition })),
-        showStaticVerticalLine && React.createElement(GanttChartStaticVerticalLine, { verticalLinePosition: staticVerticalLinePosition }),
-        selectedTask && renderTaskTooltip && renderTaskTooltip(selectedTask, handleCloseTaskPopup)));
+        showStaticVerticalLine && React.createElement(GanttChartStaticVerticalLine, { verticalLinePosition: staticVerticalLinePosition })));
 };
 export { GanttChartBody };

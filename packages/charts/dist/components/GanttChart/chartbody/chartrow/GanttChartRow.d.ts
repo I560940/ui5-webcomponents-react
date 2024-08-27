@@ -7,8 +7,8 @@ interface GanttChartRowProps {
     totalDuration: number;
     GanttStart: number;
     showTooltip: (...x: unknown[]) => void;
+    handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
     hideTooltip: () => void;
-    handleTaskClick: (task: Record<string, any>) => void;
 }
 /**
  * This represents each row of the GanttChart. It is used to display

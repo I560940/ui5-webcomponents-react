@@ -30,11 +30,11 @@ interface GanttTaskProps {
     color: CSSProperties['color'];
     GanttStart: number;
     showTooltip: (mouseX: number, mouseY: number, name: string, startTime: number, duration: number, color: string, isMilestone: boolean) => void;
-    hideTooltip: () => void;
     /**
      * Callback function to handle the click event on the task.
      */
-    handleTaskClick: (task: Record<string, any>) => void;
+    handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
+    hideTooltip: () => void;
 }
 export declare const GanttTask: {
     ({ id, label, startTime, duration, totalDuration, color, GanttStart, showTooltip, hideTooltip, handleTaskClick }: GanttTaskProps): React.JSX.Element;

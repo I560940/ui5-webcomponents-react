@@ -10,8 +10,8 @@ interface GanttChartRowProps {
   totalDuration: number;
   GanttStart: number;
   showTooltip: (...x: unknown[]) => void;
-  hideTooltip: () => void;
   handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
+  hideTooltip: () => void;
 }
 
 /**
