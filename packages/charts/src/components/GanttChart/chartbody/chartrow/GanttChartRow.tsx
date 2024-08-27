@@ -11,7 +11,7 @@ interface GanttChartRowProps {
   GanttStart: number;
   showTooltip: (...x: unknown[]) => void;
   hideTooltip: () => void;
-  handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
+  handleTaskClick: (task: Record<string, any>) => void;
 }
 
 /**

@@ -19,7 +19,7 @@ interface GanttChartBodyProps {
   numOfItems: number;
   totalDuration: number;
   isDiscrete: boolean;
-  onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
+  onTaskClick?: (task: Record<string, any>) => void;
   annotations?: ReactNode | ReactNode[];
   showAnnotation?: boolean;
   showConnection?: boolean;
@@ -110,8 +110,8 @@ const GanttChartBody = ({
     setVerticalLinePosition(null);
   };
 
-  const handleTaskClick = (task: Record<string, any>, event: React.MouseEvent) => {
-    onTaskClick?.(task, event);
+  const handleTaskClick = (task: Record<string, any>) => {
+    onTaskClick?.(task);
   };
 
   return (

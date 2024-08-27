@@ -53,7 +53,7 @@ interface GanttChartProps extends CommonProps {
   /**
    * A callback function that is applied when a task is clicked.
    */
-  onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
+  onTaskClick?: (task: Record<string, any>) => void;
 
   /**
    * Defines the annonations to be applied on top on the chart.

@@ -9,7 +9,7 @@ interface GanttChartRowGroupProps {
   GanttStart: number;
   showTooltip: (...x: unknown[]) => void;
   hideTooltip: () => void;
-  handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
+  handleTaskClick: (task: Record<string, any>) => void;
 }
 export const GanttChartRowGroup = ({
   dataset,

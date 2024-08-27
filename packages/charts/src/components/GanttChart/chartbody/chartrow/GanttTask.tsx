@@ -54,7 +54,7 @@ interface GanttTaskProps {
   /**
    * Callback function to handle the click event on the task.
    */
-  handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
+  handleTaskClick: (task: Record<string, any>) => void;
 }
 
 export const GanttTask = ({
@@ -84,8 +84,8 @@ export const GanttTask = ({
 
   const onMouseMove = throttle(mouseMoveHandler, THROTTLE_INTERVAL, { trailing: false });
 
-  const handleClick = (event: React.MouseEvent) => {
-    handleTaskClick({ id, label, startTime, duration, color }, event);
+  const handleClick = () => {
+    handleTaskClick({ id, label, startTime, duration, color });
   };
 
   // The 10% y value is to create a little gap between the top grid line and the
