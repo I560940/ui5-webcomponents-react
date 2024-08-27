@@ -19,6 +19,7 @@ interface GanttChartBodyProps {
   numOfItems: number;
   totalDuration: number;
   isDiscrete: boolean;
+  onTaskClick?: (task: Record<string, any>) => void;
   annotations?: ReactNode | ReactNode[];
   showAnnotation?: boolean;
   showConnection?: boolean;
@@ -43,6 +44,7 @@ const GanttChartBody = ({
   numOfItems,
   totalDuration,
   isDiscrete,
+  onTaskClick,
   annotations,
   showAnnotation,
   showTooltip,
@@ -114,6 +116,7 @@ const GanttChartBody = ({
   };
 
   const handleTaskClick = (task: Record<string, any>) => {
+    onTaskClick?.(task);
     if (showTaskTooltip) {
       setSelectedTask(task);
     }
