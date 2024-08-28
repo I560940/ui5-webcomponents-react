@@ -7,7 +7,7 @@ import { GanttChartColumnLabel } from './headers/GanttChartColumnLabel.js';
 import { GanttChartRowLabels } from './headers/GanttChartRowLabels.js';
 import { GanttChartRowTitle } from './headers/GanttChartRowTitle.js';
 import { GanttChartPlaceholder } from './Placeholder.js';
-import type { IGanttChartRow } from './types/GanttChartTypes.js';
+import type { IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from './types/GanttChartTypes.js';
 import {
   DEFAULT_ROW_HEIGHT,
   DEFAULT_WIDTH,
@@ -21,6 +21,7 @@ import {
 } from './util/constants.js';
 import { InvalidDiscreteLabelError } from './util/error.js';
 import { useStyles } from './util/styles.js';
+import { countAllRows } from './util/utils.js';
 
 interface GanttChartProps extends CommonProps {
   /**
@@ -179,7 +180,9 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
     },
     fRef
   ) => {
-    const numOfRows = dataset?.length ?? 0;
+    const [openRowIndex, setOpenRowIndex] = useState<OpenRowIndex>(null);
+    const [openSubRowIndexes, setOpenSubRowIndexes] = useState<OpenSubRowIndexes>({});
+    const [numOfRows, setNumOfRows] = useState<number>(() => countAllRows(dataset, openRowIndex, openSubRowIndexes));
     const height = rowHeight * numOfRows + COLUMN_HEADER_HEIGHT;
 
     const style: CSSProperties = {
@@ -231,6 +234,26 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
     //   bodyConRef.current.scrollTo({ left: 0 });
     // };
 
+    useEffect(() => {
+      setNumOfRows(() => countAllRows(dataset, openRowIndex, openSubRowIndexes));
+    }, [dataset, numOfRows, openRowIndex, openSubRowIndexes]);
+
+    const handleClick = (index: number): void => {
+      if (openRowIndex === index) {
+        setOpenRowIndex(null);
+      } else {
+        setOpenRowIndex(index);
+      }
+      setOpenSubRowIndexes({});
+    };
+
+    const handleSubClick = (parentIndex: number, index: number): void => {
+      setOpenSubRowIndexes((prevState) => ({
+        ...prevState,
+        [`${parentIndex}-${index}`]: !prevState[`${parentIndex}-${index}`]
+      }));
+    };
+
     const onMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       if (chartBodyScale > 1) {
         setIsGrabbed(true);
@@ -278,7 +301,13 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
               width={ROW_TITLE_WIDTH}
               height={height - COLUMN_HEADER_HEIGHT}
               rowHeight={rowHeight}
-              rowLabels={dataset.map((data) => data.label)}
+              dataset={dataset}
+              dataType="label"
+              handleClick={handleClick}
+              handleSubClick={handleSubClick}
+              openRowIndex={openRowIndex}
+              openSubRowIndexes={openSubRowIndexes}
+              numOfRows={numOfRows}
             />
           </div>
           {showStatus ? (
@@ -288,7 +317,11 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
                 width={ROW_STATUS_WIDTH}
                 height={height - COLUMN_HEADER_HEIGHT}
                 rowHeight={rowHeight}
-                rowLabels={dataset.map((data) => data.status)}
+                dataset={dataset}
+                dataType="status"
+                openRowIndex={openRowIndex}
+                openSubRowIndexes={openSubRowIndexes}
+                numOfRows={numOfRows}
               />
             </div>
           ) : null}
@@ -347,6 +380,8 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
               // resetScroll={resetScroll}
               unscaledWidth={unscaledBodyWidth}
               onTaskClick={onTaskClick}
+              openRowIndex={openRowIndex}
+              openSubRowIndexes={openSubRowIndexes}
             />
           </div>
         </div>

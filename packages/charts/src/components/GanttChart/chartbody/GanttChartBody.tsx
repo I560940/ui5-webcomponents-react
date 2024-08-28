@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import React, { useRef } from 'react';
-import type { IGanttChartRow } from '../types/GanttChartTypes.js';
+import type { IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
 import { GanttChartBodyCtx } from '../util/context.js';
 import { useStyles } from '../util/styles.js';
 import { GanttChartRowGroup } from './chartrow/GanttChartRowGroup.js';
@@ -33,29 +33,34 @@ interface GanttChartBodyProps {
   // onScale: (x: number) => void;
   valueFormat?: (value: number) => string;
   // resetScroll: () => void;
+  openRowIndex: OpenRowIndex;
+  openSubRowIndexes: OpenSubRowIndexes;
 }
 
-const GanttChartBody = ({
-  dataset,
-  width,
-  rowHeight,
-  numOfItems,
-  totalDuration,
-  isDiscrete,
-  onTaskClick,
-  annotations,
-  showAnnotation,
-  showTooltip,
-  showVerticalLineOnHover,
-  showStaticVerticalLine,
-  staticVerticalLinePosition,
-  unit,
-  start,
-  unscaledWidth,
-  // onScale,
-  valueFormat
-  // resetScroll
-}: GanttChartBodyProps) => {
+const GanttChartBody = (props: GanttChartBodyProps) => {
+  const {
+    dataset,
+    width,
+    rowHeight,
+    numOfItems,
+    totalDuration,
+    isDiscrete,
+    onTaskClick,
+    annotations,
+    showAnnotation,
+    showTooltip,
+    showVerticalLineOnHover,
+    showStaticVerticalLine,
+    staticVerticalLinePosition,
+    unit,
+    start,
+    unscaledWidth,
+    // onScale,
+    valueFormat,
+    // resetScroll,
+    openRowIndex,
+    openSubRowIndexes
+  } = props;
   const classes = useStyles();
   const tooltipRef = useRef<GanttTooltipHandle>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -142,6 +147,8 @@ const GanttChartBody = ({
           showTooltip={showTooltipOnHover}
           hideTooltip={hideTooltip}
           handleTaskClick={handleTaskClick}
+          openRowIndex={openRowIndex}
+          openSubRowIndexes={openSubRowIndexes}
         />
       </GanttChartLayer>
 
