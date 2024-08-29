@@ -3,10 +3,10 @@ import React, { useRef } from 'react';
 import type { IGanttChartRow } from '../types/GanttChartTypes.js';
 import { GanttChartBodyCtx } from '../util/context.js';
 import { useStyles } from '../util/styles.js';
+import { GanttChartRowGroup } from './chartrow/GanttChartRowGroup.js';
 import { GanttChartGrid } from './GanttChartGrid.js';
 import { GanttChartHoverVerticalLine } from './GanttChartHoverVerticalLine.js';
 import { GanttChartLayer } from './GanttChartLayer.js';
-import { GanttChartRowGroup } from './GanttChartRow.js';
 import { GanttChartStaticVerticalLine } from './GanttChartStaticVerticalLine.js';
 import type { GanttTooltipHandle } from './GanttChartTooltip.js';
 import { GanttChartTooltip } from './GanttChartTooltip.js';
@@ -20,6 +20,7 @@ interface GanttChartBodyProps {
   totalDuration: number;
   isDiscrete: boolean;
   annotations?: ReactNode | ReactNode[];
+  onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
   showAnnotation?: boolean;
   showConnection?: boolean;
   showVerticalLineOnHover?: boolean;
@@ -41,6 +42,7 @@ const GanttChartBody = ({
   numOfItems,
   totalDuration,
   isDiscrete,
+  onTaskClick,
   annotations,
   showAnnotation,
   showTooltip,
@@ -108,6 +110,10 @@ const GanttChartBody = ({
     setVerticalLinePosition(null);
   };
 
+  const handleTaskClick = (task: Record<string, any>, event: React.MouseEvent) => {
+    onTaskClick?.(task, event);
+  };
+
   return (
     <div
       data-component-name="GanttChartBody"
@@ -135,6 +141,7 @@ const GanttChartBody = ({
           GanttStart={start}
           showTooltip={showTooltipOnHover}
           hideTooltip={hideTooltip}
+          handleTaskClick={handleTaskClick}
         />
       </GanttChartLayer>
 

@@ -58,6 +58,11 @@ interface GanttChartProps extends CommonProps {
   annotations?: ReactNode | ReactNode[];
 
   /**
+   * A callback function that is applied when a task is clicked.
+   */
+  onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
+
+  /**
    * Toggles the visibility of the annotations applied to the chart.
    */
   showAnnotation?: boolean;
@@ -156,6 +161,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
       width = DEFAULT_WIDTH,
       rowHeight = DEFAULT_ROW_HEIGHT,
       isDiscrete,
+      onTaskClick,
       annotations,
       showAnnotation,
       showVerticalLineOnHover,
@@ -340,6 +346,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
               valueFormat={valueFormat}
               // resetScroll={resetScroll}
               unscaledWidth={unscaledBodyWidth}
+              onTaskClick={onTaskClick}
             />
           </div>
         </div>
