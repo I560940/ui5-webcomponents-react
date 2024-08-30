@@ -5,3 +5,4 @@ export declare const schedulingEDFData: IGanttChartRow[];
 export declare const inventionDataset: IGanttChartRow[];
 export declare const illegalConnDataset: IGanttChartRow[];
 export declare const illegalConnDataset2: IGanttChartRow[];
+export declare const dummyCollapsableDataSet: IGanttChartRow[];
