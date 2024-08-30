@@ -100,6 +100,21 @@ const styles = {
   layer: {
     width: '100%',
     height: '100%'
+  },
+
+  collapseContent: {
+    display: 'none'
+  },
+
+  collapseContentActive: {
+    display: 'block'
+  },
+
+  collapseIcon: {
+    cursor: 'pointer',
+    fontSize: '14px',
+    marginRight: '10px',
+    userSelect: 'none'
   }
 };
 

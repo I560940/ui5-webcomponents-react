@@ -36,6 +36,9 @@ export interface IGanttChartRow {
    * The status for the row.
    */
   status?: string;
+
+  details?: IGanttChartRow[];
+  subDetails?: IGanttChartRow[];
 }
 
 /**
@@ -108,3 +111,6 @@ export enum GanttChartConnection {
 }
 
 export type IGanttChartMileStone = Omit<IGanttChartTask, 'duration'>;
+
+export type OpenRowIndex = number | null;
+export type OpenSubRowIndexes = { [key: string]: boolean };
