@@ -103,14 +103,15 @@ export const dummyDataSet: IGanttChartRow[] = [
 
 export const dummyDiscreteDataSet: IGanttChartRow[] = [
   {
-    label: 'Discovery',
-    color: 'blue',
-    status: 'Live',
+    label: '',
+    color: 'lightgrey',
+    status: '',
+    type: 'ContractDuration',
     tasks: [
       {
         id: 'TR-00X',
-        start: 2,
-        duration: 5,
+        start: 1,
+        duration: 36,
         connections: [
           {
             itemId: 'TR-20X'

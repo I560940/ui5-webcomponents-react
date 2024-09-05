@@ -20,6 +20,11 @@ export interface IGanttChartRow {
   label: string;
 
   /**
+   * The label for the row type.
+   */
+  type?: string;
+
+  /**
    * The number of the row on the chart. It is a zero-indexed number so
    * the first row is number 0.
    */

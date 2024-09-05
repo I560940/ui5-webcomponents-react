@@ -2,7 +2,12 @@ import { throttle } from '@ui5/webcomponents-react-base';
 import type { CSSProperties } from 'react';
 import React, { useEffect, useRef, useState } from 'react';
 import type { IGanttChartRow } from '../types/GanttChartTypes.js';
-import { HOVER_OPACITY, NORMAL_OPACITY, THROTTLE_INTERVAL } from '../util/constants.js';
+import {
+  HOVER_OPACITY,
+  NORMAL_OPACITY,
+  THROTTLE_INTERVAL,
+  DEFAULT_CONTRACT_DURATION_HEIGHT
+} from '../util/constants.js';
 
 interface GanttChartRowProps {
   rowData: IGanttChartRow;
@@ -32,9 +37,9 @@ const GanttChartRow = ({
   return (
     <svg
       x="0"
-      y={`${rowIndex * rowHeight}`}
+      y={`${rowData.type === 'ContractDuration' ? rowIndex * rowHeight + ((rowHeight - DEFAULT_CONTRACT_DURATION_HEIGHT) / rowHeight) * rowHeight : rowIndex * rowHeight}`}
       width="100%"
-      height={`${rowHeight}`}
+      height={`${rowData.type === 'ContractDuration' ? DEFAULT_CONTRACT_DURATION_HEIGHT : rowHeight}`}
       style={{ pointerEvents: 'none' }}
       data-component-name="GanttChartRow"
     >
@@ -47,6 +52,7 @@ const GanttChartRow = ({
             startTime={task.start}
             duration={task.duration}
             totalDuration={totalDuration}
+            type={rowData.type}
             color={task.color ?? rowData.color}
             GanttStart={GanttStart}
             showTooltip={showTooltip}
@@ -69,6 +75,14 @@ const GanttChartRow = ({
           />
         );
       })}
+      {rowData.type === 'ContractDuration' ? (
+        <text x="5" y="13" font-size="10">
+          Contract Duration: {totalDuration}
+        </text>
+      ) : (
+        ''
+      )}
+      ;
     </svg>
   );
 };
@@ -107,6 +121,8 @@ interface GanttTaskProps {
    */
   totalDuration: number;
 
+  type?: string;
+
   color: CSSProperties['color'];
 
   GanttStart: number;
@@ -130,6 +146,7 @@ const GanttTask = ({
   startTime,
   duration,
   totalDuration,
+  type = '',
   color,
   GanttStart,
   showTooltip,
@@ -161,8 +178,8 @@ const GanttTask = ({
       y="10%"
       width={`${(duration / totalDuration) * 100}%`}
       height="80%"
-      rx="4"
-      ry="4"
+      rx={type === 'ContractDuration' ? '6' : '2'}
+      ry={type === 'ContractDuration' ? '6' : '2'}
       style={{ fill: color, pointerEvents: 'auto', cursor: 'pointer', opacity: opacity }}
       onMouseLeave={onMouseLeave}
       onMouseMove={onMouseMove}

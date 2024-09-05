@@ -4,6 +4,7 @@ export const ROW_TITLE_WIDTH = 190;
 export const ROW_STATUS_WIDTH = 60;
 export const COLUMN_HEADER_HEIGHT = 50;
 export const DEFAULT_ROW_HEIGHT = 25;
+export const DEFAULT_CONTRACT_DURATION_HEIGHT = 18;
 export const DEFAULT_CHART_VERTICAL_COLS = 5;
 export const INVALID_DISCRETE_LABELS_MESSAGE =
   'The "discreteLabels" prop length must be equal to the "totalDuration" prop value if supplied. \
