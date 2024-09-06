@@ -115,6 +115,25 @@ const styles = {
     fontSize: '14px',
     marginRight: '10px',
     userSelect: 'none'
+  },
+
+  legendIcon: {
+    color: 'var(--sapButton_TextColor)'
+  },
+
+  sliderHandle: {
+    '&::part(handle):focus': {
+      outline: 'none',
+      outlineOffset: 'initial',
+      border: 'var(--_ui5-v1-23-1_slider_handle_border)',
+      background: 'var(--_ui5-v1-23-1_slider_handle_background)'
+    },
+    '&::part(handle):focus:hover': {
+      background: 'var(--_ui5-v1-23-1_slider_handle_hover_background)'
+    },
+    '&::part(icon-slider) ': {
+      display: 'var(--_ui5-v1-23-1_slider_handle_icon_display)'
+    }
   }
 };
 

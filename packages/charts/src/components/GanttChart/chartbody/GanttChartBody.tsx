@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { CSSProperties, ReactNode } from 'react';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
 import { GanttChartBodyCtx } from '../util/context.js';
 import { useStyles } from '../util/styles.js';
@@ -30,11 +31,10 @@ interface GanttChartBodyProps {
   unit: string;
   start: number;
   unscaledWidth?: number;
-  // onScale: (x: number) => void;
   valueFormat?: (value: number) => string;
-  // resetScroll: () => void;
   openRowIndex: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
+  updateCurrentChartBodyWidth: (newWidth: number) => void;
 }
 
 const GanttChartBody = (props: GanttChartBodyProps) => {
@@ -55,17 +55,33 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
     unit,
     start,
     unscaledWidth,
-    // onScale,
     valueFormat,
-    // resetScroll,
     openRowIndex,
-    openSubRowIndexes
+    openSubRowIndexes,
+    updateCurrentChartBodyWidth
   } = props;
   const classes = useStyles();
   const tooltipRef = useRef<GanttTooltipHandle>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
-  // const scaleExpRef = useRef(0);
-  const [verticalLinePosition, setVerticalLinePosition] = React.useState<number | null>(null);
+  const [verticalLinePosition, setVerticalLinePosition] = useState<number | null>(null);
+
+  useEffect(() => {
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const newWidth = entry.contentRect.width;
+        updateCurrentChartBodyWidth(newWidth);
+      }
+    });
+    if (bodyRef.current) {
+      ro.observe(bodyRef.current);
+    }
+    return () => {
+      if (bodyRef.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        ro.unobserve(bodyRef.current);
+      }
+    };
+  }, [updateCurrentChartBodyWidth]);
 
   const style: CSSProperties = {
     width: `${width}px`,
@@ -84,25 +100,6 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
     tooltipRef.current?.onHoverItem(mouseX, mouseY, label, startTime, duration, color, isMilestone);
   };
   const hideTooltip = () => tooltipRef.current?.onLeaveItem();
-
-  // const onMouseWheelEvent = (evt: WheelEvent) => {
-  //   evt.preventDefault();
-  //   if (evt.deltaY < 0) {
-  //     // Only scale up if scaled width will not exceed MAX_BODY_WIDTH
-  //     const msrWidth = bodyRef.current.getBoundingClientRect().width;
-  //     if (msrWidth * SCALE_FACTOR < MAX_BODY_WIDTH) {
-  //       scaleExpRef.current++;
-  //     }
-  //   } else {
-  //     // Only scale down if scaled width will not be less than original
-  //     // width
-  //     if (scaleExpRef.current > 0) {
-  //       resetScroll();
-  //       scaleExpRef.current--;
-  //     }
-  //   }
-  //   onScale(Math.pow(SCALE_FACTOR, scaleExpRef.current));
-  // };
 
   const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = bodyRef.current.getBoundingClientRect();

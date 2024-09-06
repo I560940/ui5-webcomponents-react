@@ -38,7 +38,7 @@ export const WithCollapsableRows: Story = {
   args: {
     dataset: dummyCollapsableDataSet,
     totalDuration: 150,
-    rowHeight: 35,
+    rowHeight: 48,
     isDiscrete: false,
     unit: 'ms',
     valueFormat: (x) => x.toFixed(2)

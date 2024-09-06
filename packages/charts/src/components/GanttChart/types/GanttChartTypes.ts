@@ -114,3 +114,11 @@ export type IGanttChartMileStone = Omit<IGanttChartTask, 'duration'>;
 
 export type OpenRowIndex = number | null;
 export type OpenSubRowIndexes = { [key: string]: boolean };
+
+export type DimensionsState = {
+  width: number;
+  height: number;
+  chartWidth: number;
+  chartHeight: number;
+  currentChartWidth: number;
+};

@@ -2,9 +2,10 @@
 export const DEFAULT_WIDTH = 'auto';
 export const ROW_TITLE_WIDTH = 190;
 export const ROW_STATUS_WIDTH = 60;
-export const COLUMN_HEADER_HEIGHT = 50;
-export const DEFAULT_ROW_HEIGHT = 25;
-export const DEFAULT_CHART_VERTICAL_COLS = 5;
+export const COLUMN_HEADER_HEIGHT = 70;
+export const CONTROLS_ROW_HEIGHT = 55;
+export const DEFAULT_ROW_HEIGHT = 48;
+export const DEFAULT_CHART_VERTICAL_COLS = 9;
 export const INVALID_DISCRETE_LABELS_MESSAGE =
   'The "discreteLabels" prop length must be equal to the "totalDuration" prop value if supplied. \
   Please adjust the discreteLabel array or change the totalDuration.';
@@ -17,7 +18,7 @@ export const MOUSE_CURSOR_GRABBING = 'grabbing';
 export const TOLERANCE = 0.01;
 
 // GanttChartBody
-export const SCALE_FACTOR = 1.1;
+export const SCALE_FACTOR = 1.03;
 export const THROTTLE_INTERVAL = 300;
 export const NORMAL_OPACITY = 1.0;
 export const HOVER_OPACITY = 0.7;

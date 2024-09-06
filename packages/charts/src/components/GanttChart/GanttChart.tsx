@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { CommonProps } from '@ui5/webcomponents-react';
-import { throttle } from '@ui5/webcomponents-react-base';
 import type { CSSProperties, ReactNode } from 'react';
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import { GanttChartBody } from './chartbody/GanttChartBody.js';
 import { GanttChartColumnLabel } from './headers/GanttChartColumnLabel.js';
+import { GanttChartRowControls } from './headers/GanttChartRowControls.js';
 import { GanttChartRowLabels } from './headers/GanttChartRowLabels.js';
 import { GanttChartRowTitle } from './headers/GanttChartRowTitle.js';
 import { GanttChartPlaceholder } from './Placeholder.js';
-import type { IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from './types/GanttChartTypes.js';
+import type { DimensionsState, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from './types/GanttChartTypes.js';
 import {
   DEFAULT_ROW_HEIGHT,
   DEFAULT_WIDTH,
@@ -17,7 +18,8 @@ import {
   MOUSE_CURSOR_GRAB,
   MOUSE_CURSOR_GRABBING,
   ROW_TITLE_WIDTH,
-  ROW_STATUS_WIDTH
+  ROW_STATUS_WIDTH,
+  CONTROLS_ROW_HEIGHT
 } from './util/constants.js';
 import { InvalidDiscreteLabelError } from './util/error.js';
 import { useStyles } from './util/styles.js';
@@ -183,7 +185,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
     const [openRowIndex, setOpenRowIndex] = useState<OpenRowIndex>(null);
     const [openSubRowIndexes, setOpenSubRowIndexes] = useState<OpenSubRowIndexes>({});
     const [numOfRows, setNumOfRows] = useState<number>(() => countAllRows(dataset, openRowIndex, openSubRowIndexes));
-    const height = rowHeight * numOfRows + COLUMN_HEADER_HEIGHT;
+    const height = rowHeight * numOfRows + COLUMN_HEADER_HEIGHT + CONTROLS_ROW_HEIGHT;
 
     const style: CSSProperties = {
       height: `${height}px`,
@@ -193,11 +195,13 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
 
     const ref = useRef(null);
     const bodyConRef = useRef<HTMLDivElement>(null);
-    const [dimensions, setDimensions] = useState({
+
+    const [dimensions, setDimensions] = useState<DimensionsState>({
       width: 0,
       height: 0,
       chartWidth: 0,
-      chartHeight: 0
+      chartHeight: 0,
+      currentChartWidth: 0
     });
     const [chartBodyScale, setChartBodyScale] = useState(1);
     const [isGrabbed, setIsGrabbed] = useState(false);
@@ -213,13 +217,15 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
             width: width,
             height: height,
             chartWidth: width - ROW_TITLE_WIDTH,
-            chartHeight: height - COLUMN_HEADER_HEIGHT
+            chartHeight: height - COLUMN_HEADER_HEIGHT - CONTROLS_ROW_HEIGHT,
+            currentChartWidth: bodyWidth
           });
           setChartBodyScale(1);
         });
       });
       if (ref.current != null) ro.observe(ref.current);
       return () => ro.disconnect();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -228,15 +234,19 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
       }
     }, [isDiscrete, discreteLabels, totalDuration]);
 
-    // const scaleChartBody = (value: number) => setChartBodyScale(value);
-    //
-    // const resetScroll = () => {
-    //   bodyConRef.current.scrollTo({ left: 0 });
-    // };
+    const scaleChartBody = (value: number) => setChartBodyScale(value);
+
+    const resetScroll = () => {
+      bodyConRef.current.scrollTo({ left: 0 });
+    };
 
     useEffect(() => {
       setNumOfRows(() => countAllRows(dataset, openRowIndex, openSubRowIndexes));
     }, [dataset, numOfRows, openRowIndex, openSubRowIndexes]);
+
+    const updateCurrentChartBodyWidth = (newWidth: number) => {
+      setDimensions((prevState) => ({ ...prevState, currentChartWidth: newWidth }));
+    };
 
     const handleClick = (index: number): void => {
       if (openRowIndex === index) {
@@ -265,6 +275,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
       if (chartBodyScale > 1) setIsGrabbed(false);
     };
 
+    // TODO: throttle this function!
     const mouseMoveHandler = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       if (isGrabbed) {
         const dx = e.clientX - mPos;
@@ -274,8 +285,6 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
         setMPos(e.clientX);
       }
     };
-
-    const onMouseMove = useRef(throttle(mouseMoveHandler, 200, { trailing: false }));
 
     const getCursor = (): string => {
       if (isGrabbed) return MOUSE_CURSOR_GRABBING;
@@ -294,6 +303,12 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
 
     return (
       <div ref={fRef} {...rest}>
+        <GanttChartRowControls
+          height={CONTROLS_ROW_HEIGHT}
+          onScale={scaleChartBody}
+          dimensions={dimensions}
+          resetScroll={resetScroll}
+        />
         <div className={classes.main} ref={ref} style={style} data-component-name="GanttChart">
           <div style={{ width: ROW_TITLE_WIDTH, height: height }}>
             <GanttChartRowTitle width={ROW_TITLE_WIDTH} height={COLUMN_HEADER_HEIGHT} rowTitle={rowTitle} />
@@ -336,7 +351,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
             }}
             onMouseDown={onMouseDown}
             onMouseUp={onMouseUp}
-            onMouseMove={onMouseMove.current}
+            onMouseMove={mouseMoveHandler}
           >
             <div
               className={classes.columnTitle}
@@ -374,14 +389,13 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>(
               showStaticVerticalLine={showStaticVerticalLine}
               staticVerticalLinePosition={staticVerticalLinePosition}
               unit={unit}
-              // onScale={scaleChartBody}
               start={start}
               valueFormat={valueFormat}
-              // resetScroll={resetScroll}
               unscaledWidth={unscaledBodyWidth}
               onTaskClick={onTaskClick}
               openRowIndex={openRowIndex}
               openSubRowIndexes={openSubRowIndexes}
+              updateCurrentChartBodyWidth={updateCurrentChartBodyWidth}
             />
           </div>
         </div>
