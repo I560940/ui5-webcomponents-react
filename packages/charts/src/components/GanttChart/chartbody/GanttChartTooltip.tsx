@@ -15,12 +15,11 @@ export interface GanttTooltipHandle {
 }
 
 interface GanttTooltipChartProps {
-  unit: string;
   valueFormat?: (value: number) => string;
 }
 
 export const GanttChartTooltip = forwardRef<GanttTooltipHandle, GanttTooltipChartProps>(function GanttChartTooltip(
-  { unit, valueFormat },
+  { valueFormat },
   ref
 ) {
   const [state, setState] = useState({
@@ -81,20 +80,13 @@ export const GanttChartTooltip = forwardRef<GanttTooltipHandle, GanttTooltipChar
             <strong>{state.label}</strong>
           </span>
           <span className={classes.tooltipColorBar} style={{ backgroundColor: state.color }}></span>
-          <span>
-            Start: {valueFormat != null ? valueFormat(state.startTime) : state.startTime}
-            {unit}
-          </span>
+          <span>Start: {valueFormat != null ? valueFormat(state.startTime) : state.startTime}</span>
           {state.isMilestone ? null : (
-            <span>
-              Duration: {valueFormat != null ? valueFormat(state.duration) : state.duration}
-              {unit}
-            </span>
+            <span>Duration: {valueFormat != null ? valueFormat(state.duration) : state.duration}</span>
           )}
           <span>
-            End:{' '}
+            End:
             {valueFormat != null ? valueFormat(state.startTime + state.duration) : state.startTime + state.duration}
-            {unit}
           </span>
         </span>
       ) : null}

@@ -1,6 +1,6 @@
 import React from 'react';
 import type { CSSProperties } from 'react';
-import type { IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
+import type { ColumnDataType, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
 import { useStyles } from '../util/styles.js';
 import { RowLabelItem } from './RowLabelItem.js';
 
@@ -9,7 +9,7 @@ export interface GanttChartRowLabelsProps {
   width: number;
   height: number;
   rowHeight: number;
-  dataType: 'label' | 'status';
+  dataType: ColumnDataType;
   handleClick?: (rowIndex: number) => void;
   handleSubClick?: (parentIndex: number, index: number) => void;
   openRowIndex: OpenRowIndex;

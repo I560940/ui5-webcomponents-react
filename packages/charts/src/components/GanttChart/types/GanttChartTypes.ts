@@ -122,3 +122,5 @@ export type DimensionsState = {
   chartHeight: number;
   currentChartWidth: number;
 };
+
+export type ColumnDataType = 'label' | 'status';

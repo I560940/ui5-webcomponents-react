@@ -5,6 +5,7 @@ export const dummyDataSet: IGanttChartRow[] = [
   {
     label: 'Row 0',
     color: 'blue',
+    status: 'Oh my god',
     tasks: [
       {
         id: 'TR-00',

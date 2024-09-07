@@ -16,7 +16,7 @@ export interface GanttChartRowControlsProps {
 
 export const GanttChartRowControls = (props: GanttChartRowControlsProps) => {
   const { height, onScale } = props;
-  const [sliderValue, setSliderValue] = useState(0);
+  const [sliderValue, setSliderValue] = useState(50);
   // TODO: consts to be exported to constants.ts
   const minValue = 0;
   const maxValue = 100;

@@ -3,13 +3,14 @@ import type { CSSProperties } from 'react';
 import React from 'react';
 import { useStyles } from '../util/styles.js';
 
-interface GanttChartRowTitleProps {
+export interface GanttChartRowTitleProps {
   width: number;
   height: number;
-  rowTitle: string;
+  title: string;
 }
 
-export const GanttChartRowTitle = ({ width, height, rowTitle }: GanttChartRowTitleProps) => {
+export const GanttChartRowTitle = (props: GanttChartRowTitleProps) => {
+  const { width, height, title } = props;
   const classes = useStyles();
   const style: CSSProperties = {
     width: width,
@@ -19,7 +20,7 @@ export const GanttChartRowTitle = ({ width, height, rowTitle }: GanttChartRowTit
   return (
     <div className={classes.onlyOutline} style={style}>
       <div className={classes.rowTitleTop}></div>
-      <div className={classes.rowTitleBottom}>{rowTitle}</div>
+      <div className={classes.rowTitleBottom}>{title}</div>
     </div>
   );
 };

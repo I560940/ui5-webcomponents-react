@@ -4,13 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { DEFAULT_CHART_VERTICAL_COLS, SPACING, TICK_LENGTH, TOLERANCE } from '../util/constants.js';
 import { useStyles } from '../util/styles.js';
 
-interface GanttChartColumnLabelProps {
+export interface GanttChartColumnLabelProps {
   width: number;
   height: number;
   isDiscrete: boolean;
   totalDuration: number;
-  unit: string;
-  columnLabels?: string[];
   start: number;
   unscaledWidth: number;
   valueFormat?: (value: number) => string;
@@ -21,7 +19,6 @@ export const GanttChartColumnLabel = ({
   height,
   isDiscrete,
   totalDuration,
-  columnLabels,
   start,
   unscaledWidth,
   valueFormat
@@ -30,12 +27,10 @@ export const GanttChartColumnLabel = ({
   const [labelArray, setLabelArray] = useState<string[]>([]);
   useEffect(() => {
     if (isDiscrete) {
-      const newLabelArray = columnLabels
-        ? columnLabels
-        : Array.from(Array(totalDuration).keys()).map((num) => `${num + start}`);
+      const newLabelArray = Array.from(Array(totalDuration).keys()).map((num) => `${num + start}`);
       setLabelArray(newLabelArray);
     }
-  }, [isDiscrete, columnLabels, start, totalDuration]);
+  }, [isDiscrete, start, totalDuration]);
 
   const style: CSSProperties = {
     width: width,

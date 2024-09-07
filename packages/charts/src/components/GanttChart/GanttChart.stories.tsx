@@ -26,8 +26,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    dataset: dummyDiscreteDataSet,
-    totalDuration: 36,
+    dataset: dummyDataSet,
+    totalDuration: 10,
     isDiscrete: true,
     start: 1,
     showConnection: true

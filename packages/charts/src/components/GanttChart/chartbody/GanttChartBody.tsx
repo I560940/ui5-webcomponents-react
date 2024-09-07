@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import type { IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
 import { GanttChartBodyCtx } from '../util/context.js';
 import { useStyles } from '../util/styles.js';
-import { GanttChartRowGroup } from './chartrow/GanttChartRowGroup.js';
+import { GanttChartRowGroup } from './chartRow/GanttChartRowGroup.js';
 import { GanttChartGrid } from './GanttChartGrid.js';
 import { GanttChartHoverVerticalLine } from './GanttChartHoverVerticalLine.js';
 import { GanttChartLayer } from './GanttChartLayer.js';
@@ -27,8 +27,6 @@ interface GanttChartBodyProps {
   showVerticalLineOnHover?: boolean;
   showStaticVerticalLine?: boolean;
   staticVerticalLinePosition?: number;
-  showTooltip?: boolean;
-  unit: string;
   start: number;
   unscaledWidth?: number;
   valueFormat?: (value: number) => string;
@@ -48,11 +46,9 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
     onTaskClick,
     annotations,
     showAnnotation,
-    showTooltip,
     showVerticalLineOnHover,
     showStaticVerticalLine,
     staticVerticalLinePosition,
-    unit,
     start,
     unscaledWidth,
     valueFormat,
@@ -155,8 +151,9 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
         </GanttChartLayer>
       ) : null}
 
-      {showTooltip ? <GanttChartTooltip ref={tooltipRef} unit={unit} valueFormat={valueFormat} /> : null}
-      {verticalLinePosition && showVerticalLineOnHover && (
+      {/* TODO: Remove this component */}
+      {false ? <GanttChartTooltip ref={tooltipRef} valueFormat={valueFormat} /> : null}
+      {showVerticalLineOnHover && verticalLinePosition && (
         <GanttChartHoverVerticalLine verticalLinePosition={verticalLinePosition} />
       )}
       {showStaticVerticalLine && <GanttChartStaticVerticalLine verticalLinePosition={staticVerticalLinePosition} />}
