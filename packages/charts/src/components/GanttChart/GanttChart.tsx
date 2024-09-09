@@ -160,6 +160,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
           openRowIndex={openRowIndex}
           openSubRowIndexes={openSubRowIndexes}
           numOfRows={numOfRows}
+          showStatus={showStatus}
         />
         {showStatus ? (
           <GanttChartColumn

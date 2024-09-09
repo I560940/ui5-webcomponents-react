@@ -31,7 +31,7 @@ const GanttChartGrid = ({
   const verticalSegmentWidth = unscaledWidth / DEFAULT_CHART_VERTICAL_COLS;
   return (
     <g style={{ stroke: ThemingParameters.sapList_BorderColor }}>
-      {generateHGridLines(numOfRows, rowHeight)}
+      {generateHGridLine(numOfRows, rowHeight)}
       {isDiscrete
         ? generateDiscreteVGridLines(totalDuration)
         : generateNonDiscreteVGridLines(width, verticalSegmentWidth)}
@@ -39,29 +39,25 @@ const GanttChartGrid = ({
   );
 };
 
-/**
- * This function generates the grid lines using the number of segments provided.
- * Each segment is calculated as a fraction of the overall height.
- * @param numOfSegments The number of rows the grid should have.
- * @param rowHeight The height of each row.
- * @returns An array of horizontal grid lines in SVG.
- */
-const generateHGridLines = (numOfSegments: number, rowHeight: number): ReactElement[] => {
-  const gridLineArray: ReactElement[] = [];
-  for (let i = 1; i < numOfSegments; i++) {
-    const segmentOffset = rowHeight * i;
-    gridLineArray.push(
-      <line
-        x1="0"
-        y1={`${segmentOffset}`}
-        x2="100%"
-        y2={`${segmentOffset}`}
-        key={`${segmentOffset}gridh`}
-        strokeWidth="1px"
-      />
-    );
-  }
-  return gridLineArray;
+// /**
+//  * This function generates the grid lines using the number of segments provided.
+//  * Each segment is calculated as a fraction of the overall height.
+//  * @param numOfSegments The number of rows the grid should have.
+//  * @param rowHeight The height of each row.
+//  * @returns An array of horizontal grid lines in SVG.
+//  */
+const generateHGridLine = (numOfSegments: number, rowHeight: number): ReactElement => {
+  const lastLineOffset = rowHeight * numOfSegments - 1.5;
+  return (
+    <line
+      x1="0"
+      y1={`${lastLineOffset}`}
+      x2="100%"
+      y2={`${lastLineOffset}`}
+      key={`${lastLineOffset}gridh`}
+      strokeWidth="1px"
+    />
+  );
 };
 
 /**

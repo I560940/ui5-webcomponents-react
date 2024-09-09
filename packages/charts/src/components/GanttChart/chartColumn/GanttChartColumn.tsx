@@ -3,6 +3,7 @@ import { GanttChartRowLabels } from '../headers/GanttChartRowLabels.js';
 import { GanttChartRowTitle } from '../headers/GanttChartRowTitle.js';
 import type { ColumnDataType, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
 import { COLUMN_HEADER_HEIGHT } from '../util/constants.js';
+import { solidOutline } from '../util/styles.js';
 
 export interface GanttChartColumnProps {
   height: number;
@@ -16,6 +17,7 @@ export interface GanttChartColumnProps {
   openRowIndex: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
   numOfRows: number;
+  showStatus?: boolean;
 }
 
 export const GanttChartColumn = (props: GanttChartColumnProps) => {
@@ -30,10 +32,18 @@ export const GanttChartColumn = (props: GanttChartColumnProps) => {
     handleSubClick,
     openRowIndex,
     openSubRowIndexes,
-    numOfRows
+    numOfRows,
+    showStatus
   } = props;
   return (
-    <div style={{ width, height, textAlign: dataType === 'status' ? 'center' : 'left' }}>
+    <div
+      style={{
+        width,
+        height,
+        textAlign: dataType === 'status' ? 'center' : 'left',
+        borderRight: dataType === 'status' || !showStatus ? solidOutline : ''
+      }}
+    >
       <GanttChartRowTitle width={width} height={COLUMN_HEADER_HEIGHT} title={columnTitle} />
       <GanttChartRowLabels
         width={width}

@@ -1,3 +1,4 @@
+import { FlexBox } from '@ui5/webcomponents-react';
 import { ThemingParameters } from '@ui5/webcomponents-react-base';
 import type { CSSProperties } from 'react';
 import React from 'react';
@@ -18,9 +19,11 @@ export const GanttChartRowTitle = (props: GanttChartRowTitleProps) => {
     color: ThemingParameters.sapTitleColor
   };
   return (
-    <div className={classes.onlyOutline} style={style}>
+    <div style={style}>
       <div className={classes.rowTitleTop}></div>
-      <div className={classes.rowTitleBottom}>{title}</div>
+      <FlexBox className={classes.rowTitleBottom} alignItems="Center">
+        {title}
+      </FlexBox>
     </div>
   );
 };

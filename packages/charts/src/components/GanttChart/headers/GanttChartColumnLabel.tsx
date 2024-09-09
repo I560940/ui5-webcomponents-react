@@ -60,12 +60,7 @@ export const GanttChartColumnLabel = ({
         >
           {labelArray.map((label, index) => {
             return (
-              <span
-                data-component-name="GanttChartColumnLabel"
-                className={classes.onlyOutline}
-                key={index}
-                title={`${label}`}
-              >
+              <span data-component-name="GanttChartColumnLabel" key={index} title={`${label}`}>
                 {label}
               </span>
             );

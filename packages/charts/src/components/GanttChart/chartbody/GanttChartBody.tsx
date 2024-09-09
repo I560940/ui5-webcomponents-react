@@ -124,11 +124,11 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
       <GanttChartLayer name="GanttChartGridLayer" ignoreClick>
         <GanttChartGrid
           isDiscrete={isDiscrete}
-          numOfRows={numOfItems}
           totalDuration={totalDuration}
-          rowHeight={rowHeight}
           width={width}
           unscaledWidth={unscaledWidth}
+          numOfRows={numOfItems}
+          rowHeight={rowHeight}
         />
       </GanttChartLayer>
       <GanttChartLayer name="GanttChartRowsLayer" ignoreClick>

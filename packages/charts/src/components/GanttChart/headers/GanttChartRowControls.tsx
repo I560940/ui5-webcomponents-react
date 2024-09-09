@@ -46,11 +46,10 @@ export const GanttChartRowControls = (props: GanttChartRowControlsProps) => {
 
   return (
     <FlexBox justifyContent="End" style={{ height: height }}>
-      <FlexBox alignItems="Center" style={{ padding: '0 12px' }}>
+      <FlexBox alignItems="Center" style={{ marginRight: '24px' }}>
         <Icon name="zoom-out" onClick={decreaseValue} style={{ cursor: 'pointer' }} />
         <Slider
-          className={classes.sliderHandle}
-          style={{ width: '150px' }}
+          className={classes.slider}
           value={sliderValue}
           onInput={handleSliderChange}
           onChange={handleSliderChange}
@@ -59,7 +58,7 @@ export const GanttChartRowControls = (props: GanttChartRowControlsProps) => {
         />
         <Icon name="zoom-in" onClick={increaseValue} style={{ cursor: 'pointer' }} />
       </FlexBox>
-      <FlexBox alignItems="Center" style={{ padding: '0 12px' }}>
+      <FlexBox alignItems="Center" style={{ marginRight: '12px' }}>
         <Icon name="legend" design="Information" />
       </FlexBox>
     </FlexBox>
