@@ -1,5 +1,7 @@
 // GanttChart
 export const DEFAULT_WIDTH = 'auto';
+export const DEFAULT_NUMBER_OF_ROWS = 10;
+export const ROW_CONTRACT_DURATION_HEIGHT = 45;
 export const COLUMN_COMPONENT_TITLE = 'Component';
 export const COLUMN_COMPONENT_WIDTH = 190;
 export const COLUMN_STATUS_TITLE = 'Status';

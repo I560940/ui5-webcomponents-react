@@ -9,7 +9,8 @@ import {
   COLUMN_STATUS_WIDTH,
   MOUSE_CURSOR_AUTO,
   MOUSE_CURSOR_GRAB,
-  MOUSE_CURSOR_GRABBING
+  MOUSE_CURSOR_GRABBING,
+  ROW_CONTRACT_DURATION_HEIGHT
 } from '../util/constants.js';
 import { useStyles } from '../util/styles.js';
 
@@ -33,6 +34,7 @@ export interface GanttChartBodyColumnProps {
   openRowIndex: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
   updateCurrentChartBodyWidth: (newWidth: number) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
 }
 
@@ -132,7 +134,7 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
       <GanttChartBody
         dataset={dataset}
         width={bodyWidth}
-        height={height - COLUMN_HEADER_HEIGHT}
+        height={height - COLUMN_HEADER_HEIGHT - ROW_CONTRACT_DURATION_HEIGHT}
         rowHeight={rowHeight}
         numOfItems={numOfRows}
         totalDuration={totalDuration}

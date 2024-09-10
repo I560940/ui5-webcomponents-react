@@ -1,13 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ThemingParameters } from '@ui5/webcomponents-react-base';
 import { Invention, TimingFigure } from './examples/Annotations.js';
-import {
-  dummyDataSet,
-  dummyDiscreteDataSet,
-  inventionDataset,
-  schedulingEDFData,
-  dummyCollapsableDataSet
-} from './examples/Dataset.js';
+import { dummyDataSet, inventionDataset, schedulingEDFData, dummyCollapsableDataSet } from './examples/Dataset.js';
 import { GanttChart } from './GanttChart.js';
 import { GanttChartAnnotation } from './GanttChartAnnotation.js';
 
@@ -27,10 +21,10 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     dataset: dummyDataSet,
-    totalDuration: 10,
-    isDiscrete: true,
-    start: 1,
-    showConnection: true
+    totalDuration: 150,
+    isDiscrete: false,
+    start: 0,
+    showStatus: false
   }
 };
 
@@ -40,7 +34,6 @@ export const WithCollapsableRows: Story = {
     totalDuration: 150,
     rowHeight: 48,
     isDiscrete: false,
-    unit: 'ms',
     valueFormat: (x) => x.toFixed(2)
   },
   render(props) {
@@ -55,7 +48,6 @@ export const WithAnnotations: Story = {
     showConnection: true,
     showAnnotation: true,
     rowHeight: 35,
-    unit: 'ms',
     valueFormat: (x) => x.toFixed(2)
   },
   render(props) {

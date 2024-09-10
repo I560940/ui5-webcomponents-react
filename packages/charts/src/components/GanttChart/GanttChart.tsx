@@ -15,7 +15,8 @@ import {
   CONTROLS_ROW_HEIGHT,
   COLUMN_COMPONENT_TITLE,
   COLUMN_COMPONENT_WIDTH,
-  COLUMN_STATUS_TITLE
+  COLUMN_STATUS_TITLE,
+  ROW_CONTRACT_DURATION_HEIGHT
 } from './util/constants.js';
 import { useStyles } from './util/styles.js';
 import { countAllRows } from './util/utils.js';
@@ -67,7 +68,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
     chartHeight: 0,
     currentChartWidth: 0
   });
-  const height = rowHeight * numOfRows + COLUMN_HEADER_HEIGHT;
+  const height = rowHeight * numOfRows + COLUMN_HEADER_HEIGHT + ROW_CONTRACT_DURATION_HEIGHT;
   const unscaledBodyWidth = showStatus
     ? dimensions.width - COLUMN_COMPONENT_WIDTH - COLUMN_STATUS_WIDTH
     : dimensions.width - COLUMN_COMPONENT_WIDTH;

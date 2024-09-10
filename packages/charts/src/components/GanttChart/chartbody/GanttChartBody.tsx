@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { CSSProperties, ReactNode } from 'react';
 import React, { useEffect, useRef, useState } from 'react';
+import { GanttChartRowGroup } from '../chartRow/GanttChartRowGroup.js';
 import type { IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
+import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 import { GanttChartBodyCtx } from '../util/context.js';
 import { useStyles } from '../util/styles.js';
-import { GanttChartRowGroup } from './chartRow/GanttChartRowGroup.js';
 import { GanttChartGrid } from './GanttChartGrid.js';
 import { GanttChartHoverVerticalLine } from './GanttChartHoverVerticalLine.js';
 import { GanttChartLayer } from './GanttChartLayer.js';
@@ -81,7 +82,7 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
 
   const style: CSSProperties = {
     width: `${width}px`,
-    height: `${numOfItems * rowHeight}px`
+    height: `${numOfItems * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}px`
   };
 
   const showTooltipOnHover = (

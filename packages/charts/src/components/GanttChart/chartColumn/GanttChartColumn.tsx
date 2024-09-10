@@ -39,7 +39,7 @@ export const GanttChartColumn = (props: GanttChartColumnProps) => {
     <div
       style={{
         width,
-        height,
+        height: height,
         textAlign: dataType === 'status' ? 'center' : 'left',
         borderRight: dataType === 'status' || !showStatus ? solidOutline : ''
       }}

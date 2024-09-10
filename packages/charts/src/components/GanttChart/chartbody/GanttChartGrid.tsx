@@ -1,17 +1,15 @@
 import { ThemingParameters } from '@ui5/webcomponents-react-base';
 import type { ReactElement } from 'react';
 import React from 'react';
-import { DEFAULT_CHART_VERTICAL_COLS, TOLERANCE } from '../util/constants.js';
+import { DEFAULT_CHART_VERTICAL_COLS, ROW_CONTRACT_DURATION_HEIGHT, TOLERANCE } from '../util/constants.js';
 
 interface GanttChartGridProps {
   /**
    * Whether to render the vertical grid lines for a GanttChart
    * with discrete segments.
    */
-  isDiscrete: boolean;
   numOfRows: number;
   rowHeight: number;
-  totalDuration: number;
   width: number;
   unscaledWidth: number;
 }
@@ -20,21 +18,12 @@ interface GanttChartGridProps {
  * This component represents the grid lines on the chart. The `isDiscrete` prop is
  * used to decided whether to render the vertical grid lines.
  */
-const GanttChartGrid = ({
-  isDiscrete,
-  numOfRows,
-  rowHeight,
-  totalDuration,
-  width,
-  unscaledWidth
-}: GanttChartGridProps) => {
+const GanttChartGrid = ({ numOfRows, rowHeight, width, unscaledWidth }: GanttChartGridProps) => {
   const verticalSegmentWidth = unscaledWidth / DEFAULT_CHART_VERTICAL_COLS;
   return (
     <g style={{ stroke: ThemingParameters.sapList_BorderColor }}>
       {generateHGridLine(numOfRows, rowHeight)}
-      {isDiscrete
-        ? generateDiscreteVGridLines(totalDuration)
-        : generateNonDiscreteVGridLines(width, verticalSegmentWidth)}
+      {generateNonDiscreteVGridLines(width, verticalSegmentWidth)}
     </g>
   );
 };
@@ -47,7 +36,7 @@ const GanttChartGrid = ({
 //  * @returns An array of horizontal grid lines in SVG.
 //  */
 const generateHGridLine = (numOfSegments: number, rowHeight: number): ReactElement => {
-  const lastLineOffset = rowHeight * numOfSegments - 1.5;
+  const lastLineOffset = rowHeight * numOfSegments + ROW_CONTRACT_DURATION_HEIGHT - 1.5;
   return (
     <line
       x1="0"
@@ -66,24 +55,24 @@ const generateHGridLine = (numOfSegments: number, rowHeight: number): ReactEleme
  * @param numOfSegments The number of columns the grid should have.
  * @returns An array of vertical grid lines in SVG.
  */
-const generateDiscreteVGridLines = (numOfSegments: number): ReactElement[] => {
-  const segmentSizePercent = 100 / numOfSegments;
-  const gridLineArray: ReactElement[] = [];
-  for (let i = 1; i < numOfSegments; i++) {
-    const segmentOffset = segmentSizePercent * i;
-    gridLineArray.push(
-      <line
-        data-component-name="GanttChartGridv"
-        x1={`${segmentOffset}%`}
-        y1="0"
-        x2={`${segmentOffset}%`}
-        y2="100%"
-        key={`${segmentOffset}gridv`}
-      />
-    );
-  }
-  return gridLineArray;
-};
+// const generateDiscreteVGridLines = (numOfSegments: number): ReactElement[] => {
+//   const segmentSizePercent = 100 / numOfSegments;
+//   const gridLineArray: ReactElement[] = [];
+//   for (let i = 1; i < numOfSegments; i++) {
+//     const segmentOffset = segmentSizePercent * i;
+//     gridLineArray.push(
+//       <line
+//         data-component-name="GanttChartGridv"
+//         x1={`${segmentOffset}%`}
+//         y1="0"
+//         x2={`${segmentOffset}%`}
+//         y2="100%"
+//         key={`${segmentOffset}gridv`}
+//       />
+//     );
+//   }
+//   return gridLineArray;
+// };
 
 /**
  * This function generates the grid lines using the verticalSegmentWidth provided.

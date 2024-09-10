@@ -1,6 +1,7 @@
 import React from 'react';
-import type { IGanttChartRow } from '../../types/GanttChartTypes.js';
-import { GanttMilestone } from './GanttMilestone.js';
+import type { IGanttChartRow } from '../types/GanttChartTypes.js';
+// import { GanttMilestone } from './GanttMilestone.js';
+import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 import { GanttTask } from './GanttTask.js';
 
 interface GanttChartRowProps {
@@ -10,6 +11,7 @@ interface GanttChartRowProps {
   totalDuration: number;
   GanttStart: number;
   showTooltip: (...x: unknown[]) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
   hideTooltip: () => void;
 }
@@ -33,7 +35,7 @@ export const GanttChartRow = ({
   return (
     <svg
       x="0"
-      y={`${rowIndex * rowHeight}`}
+      y={`${rowIndex * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}`}
       width="100%"
       height={`${rowHeight}`}
       style={{ pointerEvents: 'none' }}
@@ -42,7 +44,7 @@ export const GanttChartRow = ({
       {rowData.tasks?.map((task, index) => {
         return (
           <GanttTask
-            key={index}
+            key={index + 1}
             id={task.id}
             label={task.label ?? rowData.label}
             startTime={task.start}
@@ -56,7 +58,7 @@ export const GanttChartRow = ({
           />
         );
       })}
-      {rowData.milestones?.map((mStone, index) => {
+      {/* {rowData.milestones?.map((mStone, index) => {
         return (
           <GanttMilestone
             key={index}
@@ -70,7 +72,7 @@ export const GanttChartRow = ({
             hideTooltip={hideTooltip}
           />
         );
-      })}
+      })} */}
     </svg>
   );
 };

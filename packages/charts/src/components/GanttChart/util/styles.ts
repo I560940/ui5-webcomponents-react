@@ -67,8 +67,7 @@ const styles = {
   },
 
   chartBody: {
-    position: 'relative',
-    outline: `1px solid ${ThemingParameters.sapList_BorderColor}`
+    position: 'relative'
   },
 
   tooltipContainer: {

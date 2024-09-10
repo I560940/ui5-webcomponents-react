@@ -1,6 +1,7 @@
 import React from 'react';
 import type { CSSProperties } from 'react';
 import type { ColumnDataType, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
+import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 import { useStyles } from '../util/styles.js';
 import { RowLabelItem } from './RowLabelItem.js';
 
@@ -35,12 +36,13 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
 
   const style: CSSProperties = {
     width: width,
-    height: `${numOfRows * rowHeight}px`
+    height: `${numOfRows * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}px`
   };
 
   return (
-    <div style={{ height: height }}>
+    <div style={{ height }}>
       <div className={classes.rowLabels} style={style}>
+        <div style={{ height: ROW_CONTRACT_DURATION_HEIGHT }} />
         {dataset.map((row, rowIndex) => {
           const showCollapseIcon = row.details?.length > 0 && dataType === 'label';
           return (
