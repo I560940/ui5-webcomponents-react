@@ -1,7 +1,7 @@
 import { throttle } from '@ui5/webcomponents-react-base';
 import type { CSSProperties } from 'react';
 import React, { useEffect, useRef, useState } from 'react';
-import { HOVER_OPACITY, NORMAL_OPACITY, THROTTLE_INTERVAL } from '../../util/constants.js';
+import { HOVER_OPACITY, NORMAL_OPACITY, THROTTLE_INTERVAL } from '../util/constants.js';
 
 interface GanttMilestoneProps {
   /**

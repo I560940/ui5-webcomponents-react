@@ -1,13 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ThemingParameters } from '@ui5/webcomponents-react-base';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import React from 'react';
 import { Invention, TimingFigure } from './examples/Annotations.js';
-import {
-  dummyDataSet,
-  dummyDiscreteDataSet,
-  inventionDataset,
-  schedulingEDFData,
-  dummyCollapsableDataSet
-} from './examples/Dataset.js';
+import { dummyDataSet, inventionDataset, schedulingEDFData, dummyCollapsableDataSet } from './examples/Dataset.js';
 import { GanttChart } from './GanttChart.js';
 import { GanttChartAnnotation } from './GanttChartAnnotation.js';
 
@@ -26,21 +22,18 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    dataset: dummyDiscreteDataSet,
-    totalDuration: 36,
-    isDiscrete: true,
-    start: 1,
-    showConnection: true
+    dataset: dummyDataSet,
+    contractDuration: { dateStart: '2024-01-01T00:00:00.000Z', dateEnd: '2027-12-31T00:00:00.000Z' },
+    start: 0,
+    showStatus: false
   }
 };
 
 export const WithCollapsableRows: Story = {
   args: {
     dataset: dummyCollapsableDataSet,
-    totalDuration: 150,
-    rowHeight: 35,
-    isDiscrete: false,
-    unit: 'ms',
+    contractDuration: { dateStart: '2024-01-01T00:00:00.000Z', dateEnd: '2027-12-31T00:00:00.000Z' },
+    rowHeight: 48,
     valueFormat: (x) => x.toFixed(2)
   },
   render(props) {
@@ -51,11 +44,10 @@ export const WithCollapsableRows: Story = {
 export const WithAnnotations: Story = {
   args: {
     dataset: schedulingEDFData,
-    totalDuration: 15,
+    contractDuration: { dateStart: '2024-01-01T00:00:00.000Z', dateEnd: '2027-12-31T00:00:00.000Z' },
     showConnection: true,
     showAnnotation: true,
     rowHeight: 35,
-    unit: 'ms',
     valueFormat: (x) => x.toFixed(2)
   },
   render(props) {
@@ -89,7 +81,7 @@ export const WithAnnotations: Story = {
 export const WithAnnotationsOnly: Story = {
   args: {
     dataset: inventionDataset,
-    totalDuration: 6000,
+    contractDuration: { dateStart: '2024-01-01T00:00:00.000Z', dateEnd: '2027-12-31T00:00:00.000Z' },
     showAnnotation: true,
     rowHeight: 80,
     valueFormat: (x) => x.toFixed(1)
@@ -180,15 +172,20 @@ export const WithAnnotationsOnly: Story = {
 export const WithMoreCustomization: Story = {
   args: {
     dataset: dummyDataSet,
-    totalDuration: 150,
+    contractDuration: { dateStart: '2024-01-01T00:00:00.000Z', dateEnd: '2027-12-31T00:00:00.000Z' },
     showConnection: true,
-    showAnnotation: true,
-    unit: 'ms'
+    showAnnotation: true
   }
 };
 
 export const LoadingPlaceholder: Story = {
-  render() {
-    return <GanttChart />;
+  args: {
+    dataset: dummyDataSet,
+    contractDuration: { dateStart: '2024-01-01T00:00:00.000Z', dateEnd: '2027-12-31T00:00:00.000Z' },
+    showConnection: true,
+    showAnnotation: true
+  },
+  render(props) {
+    return <GanttChart {...props} />;
   }
 };

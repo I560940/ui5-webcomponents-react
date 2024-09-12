@@ -1,13 +1,11 @@
 import { ThemingParameters } from '@ui5/webcomponents-react-base';
 import { createUseStyles } from 'react-jss';
 
-const solidOutline = `0.5px solid ${ThemingParameters.sapList_BorderColor}`;
+export const solidOutline = `0.5px solid ${ThemingParameters.sapGroup_ContentBorderColor}`;
+export const dottedLine = `0.7px dotted ${ThemingParameters.sapGroup_ContentBorderColor}`;
 
 const styles = {
-  onlyOutline: { outline: solidOutline },
-
   main: {
-    outline: solidOutline,
     backgroundColor: ThemingParameters.sapBaseColor,
     display: 'grid',
     gap: 0
@@ -17,7 +15,7 @@ const styles = {
 
   columnTitle: {
     position: 'absolute',
-    borderBlockEnd: solidOutline,
+    // borderRight: solidOutline,
     marginBlockEnd: '-0.5px',
     textAlign: 'center',
     fontSize: '13px',
@@ -27,13 +25,12 @@ const styles = {
   annotation: { position: 'absolute' },
 
   rowLabels: {
-    outline: solidOutline,
+    borderTop: solidOutline,
     color: ThemingParameters.sapTitleColor
   },
 
   rowLabelsItem: {
     width: '100%',
-    outline: solidOutline,
     fontSize: '10px',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
@@ -41,20 +38,16 @@ const styles = {
   },
 
   columnLabel: {
-    outline: solidOutline,
-    color: ThemingParameters.sapTitleColor
-  },
-
-  columnTitlePlaceHolder: {
-    textAlign: 'center',
-    borderBlockEnd: solidOutline,
-    fontSize: '13px'
+    borderBottom: solidOutline
   },
 
   columnLabelItems: {
     fontSize: '10px',
     display: 'grid',
-    textAlign: 'center'
+    textAlign: 'center',
+    '& span': {
+      borderRight: dottedLine
+    }
   },
 
   rowTitleTop: { height: '50%' },
@@ -62,12 +55,13 @@ const styles = {
   rowTitleBottom: {
     height: '50%',
     paddingInline: '10px',
-    fontSize: '13px'
+    fontSize: '14px',
+    fontWeight: 400,
+    color: ThemingParameters.sapTextColor
   },
 
   chartBody: {
-    position: 'relative',
-    outline: `1px solid ${ThemingParameters.sapList_BorderColor}`
+    position: 'relative'
   },
 
   tooltipContainer: {
@@ -115,6 +109,31 @@ const styles = {
     fontSize: '14px',
     marginRight: '10px',
     userSelect: 'none'
+  },
+
+  legendIcon: {
+    color: 'var(--sapButton_TextColor)'
+  },
+
+  slider: {
+    width: '250px',
+    padding: '0 20px',
+    '&::part(handle):focus': {
+      outline: 'none',
+      outlineOffset: 'initial',
+      border: 'var(--_ui5-v1-23-1_slider_handle_border)',
+      background: 'var(--_ui5-v1-23-1_slider_handle_background)'
+    },
+    '&::part(handle):focus:hover': {
+      background: 'var(--_ui5-v1-23-1_slider_handle_hover_background)'
+    },
+    '&::part(icon-slider) ': {
+      display: 'var(--_ui5-v1-23-1_slider_handle_icon_display)'
+    },
+    '&::part(root-container)': {
+      height: '5px',
+      padding: 0
+    }
   }
 };
 

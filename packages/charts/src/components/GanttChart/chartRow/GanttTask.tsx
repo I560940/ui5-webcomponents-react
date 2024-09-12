@@ -1,7 +1,7 @@
 import { throttle } from '@ui5/webcomponents-react-base';
 import type { CSSProperties } from 'react';
 import React, { useState } from 'react';
-import { HOVER_OPACITY, NORMAL_OPACITY, THROTTLE_INTERVAL } from '../../util/constants.js';
+import { HOVER_OPACITY, NORMAL_OPACITY, THROTTLE_INTERVAL } from '../util/constants.js';
 
 interface GanttTaskProps {
   /**
@@ -52,6 +52,7 @@ interface GanttTaskProps {
   /**
    * Callback function to handle the click event on the task.
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
 
   hideTooltip: () => void;
