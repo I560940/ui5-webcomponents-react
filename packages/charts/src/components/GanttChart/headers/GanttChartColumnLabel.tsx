@@ -3,7 +3,7 @@ import React from 'react';
 import type { DateRange } from '../types/GanttChartTypes.js';
 import { useStyles } from '../util/styles.js';
 import { DayLabels } from './DayLabels.js';
-import { MonthsLabels } from './MonthsLabels.js';
+import { MonthLabels } from './MonthLabels.js';
 import { QuaterLabels } from './QuaterLabels.js';
 
 export interface GanttChartColumnLabelProps {
@@ -28,7 +28,7 @@ export const GanttChartColumnLabel = (props: GanttChartColumnLabelProps) => {
         <DayLabels segmentWidth={segmentWidth} height={height} contractDuration={contractDuration} />
       ) : null}
       {segmentWidth > 1.2 && segmentWidth <= 20 ? (
-        <MonthsLabels segmentWidth={segmentWidth} height={height} contractDuration={contractDuration} />
+        <MonthLabels segmentWidth={segmentWidth} height={height} contractDuration={contractDuration} />
       ) : null}
       {segmentWidth <= 1.2 ? (
         <QuaterLabels segmentWidth={segmentWidth} height={height} contractDuration={contractDuration} />
