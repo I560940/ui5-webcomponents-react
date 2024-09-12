@@ -15,7 +15,7 @@ export const RowLabelItem = (props) => {
     },
     React.createElement(
       'span',
-      { style: { paddingInline: padding } },
+      { style: { paddingInline: padding, fontSize: 14, color: 'var(--sapList_TextColor)' } },
       collapseIcon && React.createElement('span', { className: classes.collapseIcon, onClick: onClick }, collapseIcon),
       children
     )

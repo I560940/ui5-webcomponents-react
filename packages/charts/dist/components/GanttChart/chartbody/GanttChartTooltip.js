@@ -1,6 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { useStyles } from '../util/styles.js';
-export const GanttChartTooltip = forwardRef(function GanttChartTooltip({ unit, valueFormat }, ref) {
+export const GanttChartTooltip = forwardRef(function GanttChartTooltip({ valueFormat }, ref) {
   const [state, setState] = useState({
     x: 0,
     y: 0,
@@ -56,8 +56,7 @@ export const GanttChartTooltip = forwardRef(function GanttChartTooltip({ unit, v
             'span',
             null,
             'Start: ',
-            valueFormat != null ? valueFormat(state.startTime) : state.startTime,
-            unit
+            valueFormat != null ? valueFormat(state.startTime) : state.startTime
           ),
           state.isMilestone
             ? null
@@ -65,16 +64,13 @@ export const GanttChartTooltip = forwardRef(function GanttChartTooltip({ unit, v
                 'span',
                 null,
                 'Duration: ',
-                valueFormat != null ? valueFormat(state.duration) : state.duration,
-                unit
+                valueFormat != null ? valueFormat(state.duration) : state.duration
               ),
           React.createElement(
             'span',
             null,
             'End:',
-            ' ',
-            valueFormat != null ? valueFormat(state.startTime + state.duration) : state.startTime + state.duration,
-            unit
+            valueFormat != null ? valueFormat(state.startTime + state.duration) : state.startTime + state.duration
           )
         )
       : null

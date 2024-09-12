@@ -1,34 +1,10 @@
 import type { CSSProperties } from 'react';
-/**
- * This is the data representing a single row on the Gantt chart.
- */
 export interface IGanttChartRow {
-  /**
-   * An array of tasks to be displayed on the row.
-   */
   tasks?: IGanttChartTask[];
-  /**
-   * An array of milestones to be displayed on the row.
-   */
   milestones?: IGanttChartMileStone[];
-  /**
-   * The label for the row.
-   */
   label: string;
-  /**
-   * The number of the row on the chart. It is a zero-indexed number so
-   * the first row is number 0.
-   */
   rowNumber?: number;
-  /**
-   * The color for the tasks on the row. This can be overridden by the
-   * task or milestone component if a value is specified for them. Any
-   * valid CSS color will do. If not specified, a random color is used.
-   */
   color?: CSSProperties['color'];
-  /**
-   * The status for the row.
-   */
   status?: string;
   details?: IGanttChartRow[];
   subDetails?: IGanttChartRow[];
@@ -87,6 +63,10 @@ export interface IGanttChartConn {
    */
   itemId: string;
 }
+export interface DateRange {
+  dateStart: string;
+  dateEnd: string;
+}
 export declare enum GanttChartConnection {
   Finish_To_Start = 'F2S',
   Start_To_Finish = 'S2F',
@@ -98,3 +78,11 @@ export type OpenRowIndex = number | null;
 export type OpenSubRowIndexes = {
   [key: string]: boolean;
 };
+export type DimensionsState = {
+  width: number;
+  height: number;
+  chartWidth: number;
+  chartHeight: number;
+  currentChartWidth: number;
+};
+export type ColumnDataType = 'label' | 'status';

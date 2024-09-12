@@ -1,8 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { GanttChartRowGroup } from '../chartRow/GanttChartRowGroup.js';
+import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 import { GanttChartBodyCtx } from '../util/context.js';
 import { useStyles } from '../util/styles.js';
-import { GanttChartRowGroup } from './chartrow/GanttChartRowGroup.js';
-import { GanttChartGrid } from './GanttChartGrid.js';
 import { GanttChartHoverVerticalLine } from './GanttChartHoverVerticalLine.js';
 import { GanttChartLayer } from './GanttChartLayer.js';
 import { GanttChartStaticVerticalLine } from './GanttChartStaticVerticalLine.js';
@@ -14,54 +14,48 @@ const GanttChartBody = (props) => {
     rowHeight,
     numOfItems,
     totalDuration,
-    isDiscrete,
+    contractDuration,
     onTaskClick,
     annotations,
     showAnnotation,
-    showTooltip,
     showVerticalLineOnHover,
     showStaticVerticalLine,
     staticVerticalLinePosition,
-    unit,
     start,
-    unscaledWidth,
-    // onScale,
     valueFormat,
-    // resetScroll,
     openRowIndex,
-    openSubRowIndexes
+    openSubRowIndexes,
+    updateCurrentChartBodyWidth
   } = props;
   const classes = useStyles();
   const tooltipRef = useRef(null);
   const bodyRef = useRef(null);
-  // const scaleExpRef = useRef(0);
-  const [verticalLinePosition, setVerticalLinePosition] = React.useState(null);
+  const [verticalLinePosition, setVerticalLinePosition] = useState(null);
+  useEffect(() => {
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const newWidth = entry.contentRect.width;
+        updateCurrentChartBodyWidth(newWidth);
+      }
+    });
+    if (bodyRef.current) {
+      ro.observe(bodyRef.current);
+    }
+    return () => {
+      if (bodyRef.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        ro.unobserve(bodyRef.current);
+      }
+    };
+  }, [updateCurrentChartBodyWidth]);
   const style = {
     width: `${width}px`,
-    height: `${numOfItems * rowHeight}px`
+    height: `${numOfItems * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}px`
   };
   const showTooltipOnHover = (mouseX, mouseY, label, startTime, duration, color, isMilestone) => {
     tooltipRef.current?.onHoverItem(mouseX, mouseY, label, startTime, duration, color, isMilestone);
   };
   const hideTooltip = () => tooltipRef.current?.onLeaveItem();
-  // const onMouseWheelEvent = (evt: WheelEvent) => {
-  //   evt.preventDefault();
-  //   if (evt.deltaY < 0) {
-  //     // Only scale up if scaled width will not exceed MAX_BODY_WIDTH
-  //     const msrWidth = bodyRef.current.getBoundingClientRect().width;
-  //     if (msrWidth * SCALE_FACTOR < MAX_BODY_WIDTH) {
-  //       scaleExpRef.current++;
-  //     }
-  //   } else {
-  //     // Only scale down if scaled width will not be less than original
-  //     // width
-  //     if (scaleExpRef.current > 0) {
-  //       resetScroll();
-  //       scaleExpRef.current--;
-  //     }
-  //   }
-  //   onScale(Math.pow(SCALE_FACTOR, scaleExpRef.current));
-  // };
   const onMouseMove = (e) => {
     const rect = bodyRef.current.getBoundingClientRect();
     if (rect) {
@@ -71,6 +65,7 @@ const GanttChartBody = (props) => {
   const onMouseLeave = () => {
     setVerticalLinePosition(null);
   };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTaskClick = (task, event) => {
     onTaskClick?.(task, event);
   };
@@ -84,18 +79,7 @@ const GanttChartBody = (props) => {
       onMouseMove: onMouseMove,
       onMouseLeave: onMouseLeave
     },
-    React.createElement(
-      GanttChartLayer,
-      { name: 'GanttChartGridLayer', ignoreClick: true },
-      React.createElement(GanttChartGrid, {
-        isDiscrete: isDiscrete,
-        numOfRows: numOfItems,
-        totalDuration: totalDuration,
-        rowHeight: rowHeight,
-        width: width,
-        unscaledWidth: unscaledWidth
-      })
-    ),
+    React.createElement(GanttChartLayer, { name: 'GanttChartGridLayer', ignoreClick: true }),
     React.createElement(
       GanttChartLayer,
       { name: 'GanttChartRowsLayer', ignoreClick: true },
@@ -103,6 +87,7 @@ const GanttChartBody = (props) => {
         dataset: dataset,
         rowHeight: rowHeight,
         totalDuration: totalDuration,
+        contractDuration: contractDuration,
         GanttStart: start,
         showTooltip: showTooltipOnHover,
         hideTooltip: hideTooltip,
@@ -118,11 +103,9 @@ const GanttChartBody = (props) => {
           React.createElement(GanttChartBodyCtx.Provider, { value: { chartBodyWidth: width } }, annotations)
         )
       : null,
-    showTooltip
-      ? React.createElement(GanttChartTooltip, { ref: tooltipRef, unit: unit, valueFormat: valueFormat })
-      : null,
-    verticalLinePosition &&
-      showVerticalLineOnHover &&
+    false ? React.createElement(GanttChartTooltip, { ref: tooltipRef, valueFormat: valueFormat }) : null,
+    showVerticalLineOnHover &&
+      verticalLinePosition &&
       React.createElement(GanttChartHoverVerticalLine, { verticalLinePosition: verticalLinePosition }),
     showStaticVerticalLine &&
       React.createElement(GanttChartStaticVerticalLine, { verticalLinePosition: staticVerticalLinePosition })

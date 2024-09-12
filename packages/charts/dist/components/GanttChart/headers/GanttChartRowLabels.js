@@ -1,4 +1,5 @@
 import React from 'react';
+import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 import { useStyles } from '../util/styles.js';
 import { RowLabelItem } from './RowLabelItem.js';
 export const GanttChartRowLabels = (props) => {
@@ -17,14 +18,15 @@ export const GanttChartRowLabels = (props) => {
   const classes = useStyles();
   const style = {
     width: width,
-    height: `${numOfRows * rowHeight}px`
+    height: `${numOfRows * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}px`
   };
   return React.createElement(
     'div',
-    { style: { height: height } },
+    { style: { height } },
     React.createElement(
       'div',
       { className: classes.rowLabels, style: style },
+      React.createElement('div', { style: { height: ROW_CONTRACT_DURATION_HEIGHT } }),
       dataset.map((row, rowIndex) => {
         const showCollapseIcon = row.details?.length > 0 && dataType === 'label';
         return React.createElement(
@@ -33,7 +35,7 @@ export const GanttChartRowLabels = (props) => {
           React.createElement(
             RowLabelItem,
             {
-              key: rowIndex,
+              key: `item-${rowIndex}`,
               padding: '10px',
               collapseIcon: showCollapseIcon ? (openRowIndex === rowIndex ? '▼' : '▶') : null,
               onClick: () => handleClick(rowIndex),
@@ -50,7 +52,7 @@ export const GanttChartRowLabels = (props) => {
               React.createElement(
                 RowLabelItem,
                 {
-                  key: detailIndex,
+                  key: `detail-${detailIndex}`,
                   padding: dataType === 'label' ? '20px' : '10px',
                   collapseIcon: showCollapseIcon
                     ? openSubRowIndexes[`${rowIndex}-${detailIndex}`]
@@ -67,7 +69,7 @@ export const GanttChartRowLabels = (props) => {
                 React.createElement(
                   RowLabelItem,
                   {
-                    key: subDetailIndex,
+                    key: `subdetail-${subDetailIndex}`,
                     padding: dataType === 'label' ? '40px' : '10px',
                     isActive: openSubRowIndexes[`${rowIndex}-${detailIndex}`],
                     rowHeight: rowHeight

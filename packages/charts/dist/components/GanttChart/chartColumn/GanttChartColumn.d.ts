@@ -1,15 +1,17 @@
 import React from 'react';
 import type { ColumnDataType, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
-export interface GanttChartRowLabelsProps {
-  dataset: IGanttChartRow[];
-  width: number;
+export interface GanttChartColumnProps {
   height: number;
+  width: number;
+  columnTitle: string;
   rowHeight: number;
+  dataset: IGanttChartRow[];
   dataType: ColumnDataType;
-  handleClick?: (rowIndex: number) => void;
+  handleClick?: (index: number) => void;
   handleSubClick?: (parentIndex: number, index: number) => void;
   openRowIndex: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
   numOfRows: number;
+  showStatus?: boolean;
 }
-export declare const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps>;
+export declare const GanttChartColumn: (props: GanttChartColumnProps) => React.JSX.Element;

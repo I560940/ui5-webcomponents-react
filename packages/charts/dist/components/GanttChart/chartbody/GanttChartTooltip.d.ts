@@ -1,11 +1,20 @@
 import React from 'react';
 export interface GanttTooltipHandle {
-    onHoverItem: (mouseX: number, mouseY: number, label: string, startTime: number, duration: number, color: string, isMilestone: boolean) => void;
-    onLeaveItem: () => void;
+  onHoverItem: (
+    mouseX: number,
+    mouseY: number,
+    label: string,
+    startTime: number,
+    duration: number,
+    color: string,
+    isMilestone: boolean
+  ) => void;
+  onLeaveItem: () => void;
 }
 interface GanttTooltipChartProps {
-    unit: string;
-    valueFormat?: (value: number) => string;
+  valueFormat?: (value: number) => string;
 }
-export declare const GanttChartTooltip: React.ForwardRefExoticComponent<GanttTooltipChartProps & React.RefAttributes<GanttTooltipHandle>>;
+export declare const GanttChartTooltip: React.ForwardRefExoticComponent<
+  GanttTooltipChartProps & React.RefAttributes<GanttTooltipHandle>
+>;
 export {};
