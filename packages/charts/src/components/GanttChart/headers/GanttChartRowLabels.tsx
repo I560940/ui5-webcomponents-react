@@ -48,7 +48,7 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
           return (
             <>
               <RowLabelItem
-                key={rowIndex}
+                key={`item-${rowIndex}`}
                 padding="10px"
                 collapseIcon={showCollapseIcon ? (openRowIndex === rowIndex ? '▼' : '▶') : null}
                 onClick={() => handleClick(rowIndex)}
@@ -62,7 +62,7 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
                 return (
                   <>
                     <RowLabelItem
-                      key={detailIndex}
+                      key={`detail-${detailIndex}`}
                       padding={dataType === 'label' ? '20px' : '10px'}
                       collapseIcon={
                         showCollapseIcon ? (openSubRowIndexes[`${rowIndex}-${detailIndex}`] ? '▼' : '▶') : null
@@ -75,7 +75,7 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
                     </RowLabelItem>
                     {detail.subDetails?.map((subDetail, subDetailIndex) => (
                       <RowLabelItem
-                        key={subDetailIndex}
+                        key={`subdetail-${subDetailIndex}`}
                         padding={dataType === 'label' ? '40px' : '10px'}
                         isActive={openSubRowIndexes[`${rowIndex}-${detailIndex}`]}
                         rowHeight={rowHeight}

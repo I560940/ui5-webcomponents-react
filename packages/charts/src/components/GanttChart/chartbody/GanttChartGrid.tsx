@@ -1,7 +1,7 @@
 import { ThemingParameters } from '@ui5/webcomponents-react-base';
 import type { ReactElement } from 'react';
 import React from 'react';
-import { DEFAULT_CHART_VERTICAL_COLS, ROW_CONTRACT_DURATION_HEIGHT, TOLERANCE } from '../util/constants.js';
+import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 
 interface GanttChartGridProps {
   /**
@@ -19,6 +19,7 @@ interface GanttChartGridProps {
  * used to decided whether to render the vertical grid lines.
  */
 const GanttChartGrid = ({ numOfRows, rowHeight, width, unscaledWidth }: GanttChartGridProps) => {
+  const DEFAULT_CHART_VERTICAL_COLS = 9;
   const verticalSegmentWidth = unscaledWidth / DEFAULT_CHART_VERTICAL_COLS;
   return (
     <g style={{ stroke: ThemingParameters.sapList_BorderColor }}>
@@ -82,6 +83,7 @@ const generateHGridLine = (numOfSegments: number, rowHeight: number): ReactEleme
  * @returns An array of vertical grid lines in SVG.
  */
 const generateNonDiscreteVGridLines = (width: number, verticalSegmentWidth: number): ReactElement[] => {
+  const TOLERANCE = 0.01;
   const gridLineArray: ReactElement[] = [];
   let covered = verticalSegmentWidth;
   let remaining = width;

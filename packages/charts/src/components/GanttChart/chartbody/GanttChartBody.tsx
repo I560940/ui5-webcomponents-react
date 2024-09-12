@@ -1,12 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { CSSProperties, ReactNode } from 'react';
 import React, { useEffect, useRef, useState } from 'react';
 import { GanttChartRowGroup } from '../chartRow/GanttChartRowGroup.js';
-import type { IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
+import type { DateRange, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
 import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 import { GanttChartBodyCtx } from '../util/context.js';
 import { useStyles } from '../util/styles.js';
-import { GanttChartGrid } from './GanttChartGrid.js';
 import { GanttChartHoverVerticalLine } from './GanttChartHoverVerticalLine.js';
 import { GanttChartLayer } from './GanttChartLayer.js';
 import { GanttChartStaticVerticalLine } from './GanttChartStaticVerticalLine.js';
@@ -20,8 +18,9 @@ interface GanttChartBodyProps {
   rowHeight: number;
   numOfItems: number;
   totalDuration: number;
-  isDiscrete: boolean;
+  contractDuration: DateRange;
   annotations?: ReactNode | ReactNode[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
   showAnnotation?: boolean;
   showConnection?: boolean;
@@ -43,7 +42,7 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
     rowHeight,
     numOfItems,
     totalDuration,
-    isDiscrete,
+    contractDuration,
     onTaskClick,
     annotations,
     showAnnotation,
@@ -51,7 +50,6 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
     showStaticVerticalLine,
     staticVerticalLinePosition,
     start,
-    unscaledWidth,
     valueFormat,
     openRowIndex,
     openSubRowIndexes,
@@ -109,6 +107,7 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
     setVerticalLinePosition(null);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleTaskClick = (task: Record<string, any>, event: React.MouseEvent) => {
     onTaskClick?.(task, event);
   };
@@ -123,20 +122,14 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
       onMouseLeave={onMouseLeave}
     >
       <GanttChartLayer name="GanttChartGridLayer" ignoreClick>
-        <GanttChartGrid
-          isDiscrete={isDiscrete}
-          totalDuration={totalDuration}
-          width={width}
-          unscaledWidth={unscaledWidth}
-          numOfRows={numOfItems}
-          rowHeight={rowHeight}
-        />
+        {/* <GanttChartGrid width={width} unscaledWidth={unscaledWidth} numOfRows={numOfItems} rowHeight={rowHeight} /> */}
       </GanttChartLayer>
       <GanttChartLayer name="GanttChartRowsLayer" ignoreClick>
         <GanttChartRowGroup
           dataset={dataset}
           rowHeight={rowHeight}
           totalDuration={totalDuration}
+          contractDuration={contractDuration}
           GanttStart={start}
           showTooltip={showTooltipOnHover}
           hideTooltip={hideTooltip}

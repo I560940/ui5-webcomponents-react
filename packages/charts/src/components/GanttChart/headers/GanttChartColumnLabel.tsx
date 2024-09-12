@@ -1,150 +1,38 @@
-import { ThemingParameters } from '@ui5/webcomponents-react-base';
-import type { CSSProperties, ReactElement } from 'react';
-import React, { useEffect, useState } from 'react';
-import { DEFAULT_CHART_VERTICAL_COLS, SPACING, TICK_LENGTH, TOLERANCE } from '../util/constants.js';
+import type { CSSProperties } from 'react';
+import React from 'react';
+import type { DateRange } from '../types/GanttChartTypes.js';
 import { useStyles } from '../util/styles.js';
+import { DayLabels } from './DayLabels.js';
+import { MonthsLabels } from './MonthsLabels.js';
+import { QuaterLabels } from './QuaterLabels.js';
 
 export interface GanttChartColumnLabelProps {
   width: number;
   height: number;
-  isDiscrete: boolean;
   totalDuration: number;
-  start: number;
-  unscaledWidth: number;
-  valueFormat?: (value: number) => string;
+  contractDuration: DateRange;
 }
 
-export const GanttChartColumnLabel = ({
-  width,
-  height,
-  isDiscrete,
-  totalDuration,
-  start,
-  unscaledWidth,
-  valueFormat
-}: GanttChartColumnLabelProps) => {
+export const GanttChartColumnLabel = (props: GanttChartColumnLabelProps) => {
+  const { width, height, totalDuration, contractDuration } = props;
   const classes = useStyles();
-  const [labelArray, setLabelArray] = useState<string[]>([]);
-  useEffect(() => {
-    if (isDiscrete) {
-      const newLabelArray = Array.from(Array(totalDuration).keys()).map((num) => `${num + start}`);
-      setLabelArray(newLabelArray);
-    }
-  }, [isDiscrete, start, totalDuration]);
-
+  const segmentWidth = width / totalDuration;
   const style: CSSProperties = {
     width: width,
     height: height
   };
 
-  const halfHeaderHeight = 0.5 * height;
-  const verticalSegmentWidth = unscaledWidth / DEFAULT_CHART_VERTICAL_COLS;
-
   return (
     <div className={classes.columnLabel} style={style} data-component-name="GanttChartColumnLabel">
-      <div
-        className={classes.columnTitlePlaceHolder}
-        style={{
-          height: `${halfHeaderHeight}px`,
-          lineHeight: `${halfHeaderHeight}px`
-        }}
-      ></div>
-      {isDiscrete ? (
-        <div
-          className={classes.columnLabelItems}
-          style={{
-            height: `${halfHeaderHeight}px`,
-            gridTemplateColumns: `repeat(${totalDuration}, 1fr)`,
-            lineHeight: `${halfHeaderHeight}px`
-          }}
-        >
-          {labelArray.map((label, index) => {
-            return (
-              <span data-component-name="GanttChartColumnLabel" key={index} title={`${label}`}>
-                {label}
-              </span>
-            );
-          })}
-        </div>
-      ) : (
-        <svg height={halfHeaderHeight} width="100%" fontFamily="Helvetica" fontSize="9">
-          <>
-            <g stroke={ThemingParameters.sapList_BorderColor} strokeWidth="4">
-              <line x1={0} x2={0} y1="100%" y2={halfHeaderHeight - TICK_LENGTH} />
-              <line x1="100%" x2="100%" y1="100%" y2={halfHeaderHeight - TICK_LENGTH} />
-            </g>
-            <g fill={ThemingParameters.sapTextColor}>
-              <text x={0} dx={SPACING} y={halfHeaderHeight - TICK_LENGTH} dy={-SPACING}>
-                {valueFormat != null ? valueFormat(start) : start}
-              </text>
-              <text x="100%" dx={-SPACING} y={halfHeaderHeight - TICK_LENGTH} dy={-SPACING} textAnchor="end">
-                {valueFormat != null ? valueFormat(start + totalDuration) : start + totalDuration}
-              </text>
-            </g>
-            {generateIntermediateTicks(
-              start,
-              totalDuration,
-              width,
-              halfHeaderHeight,
-              TICK_LENGTH,
-              verticalSegmentWidth,
-              SPACING,
-              valueFormat
-            )}
-          </>
-        </svg>
-      )}
+      {segmentWidth > 20 ? (
+        <DayLabels segmentWidth={segmentWidth} height={height} contractDuration={contractDuration} />
+      ) : null}
+      {segmentWidth > 1.2 && segmentWidth <= 20 ? (
+        <MonthsLabels segmentWidth={segmentWidth} height={height} contractDuration={contractDuration} />
+      ) : null}
+      {segmentWidth <= 1.2 ? (
+        <QuaterLabels segmentWidth={segmentWidth} height={height} contractDuration={contractDuration} />
+      ) : null}
     </div>
-  );
-};
-
-const generateIntermediateTicks = (
-  start: number,
-  totalDuration: number,
-  width: number,
-  halfHeaderHeight: number,
-  tickLength: number,
-  verticalSegmentWidth: number,
-  spacing: number,
-  valueFormat?: (value: number) => string
-): ReactElement => {
-  let covered = verticalSegmentWidth;
-  let remaining = width;
-  const lineArray: ReactElement[] = [];
-  const textArray: ReactElement[] = [];
-  if (verticalSegmentWidth <= 0) return null;
-  while (remaining >= 2 * verticalSegmentWidth - TOLERANCE) {
-    lineArray.push(
-      <line
-        x1={covered}
-        x2={covered}
-        y1="100%"
-        y2={halfHeaderHeight - tickLength}
-        stroke={ThemingParameters.sapList_BorderColor}
-        strokeWidth="2"
-        key={`${covered}tickline`}
-      />
-    );
-    const val = (covered / width) * totalDuration;
-    textArray.push(
-      <text
-        x={covered}
-        y={halfHeaderHeight - tickLength}
-        dy={-spacing}
-        fill={ThemingParameters.sapTextColor}
-        textAnchor="middle"
-        key={`${covered}tickval`}
-      >
-        {valueFormat != null ? valueFormat(start + val) : start + val}
-      </text>
-    );
-    covered += verticalSegmentWidth;
-    remaining -= verticalSegmentWidth;
-  }
-  return (
-    <>
-      {lineArray}
-      {textArray}
-    </>
   );
 };

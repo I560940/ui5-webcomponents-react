@@ -38,13 +38,7 @@ const styles = {
   },
 
   columnLabel: {
-    borderBottom: solidOutline,
-    color: ThemingParameters.sapTitleColor
-  },
-
-  columnTitlePlaceHolder: {
-    textAlign: 'center',
-    fontSize: '13px'
+    borderBottom: solidOutline
   },
 
   columnLabelItems: {

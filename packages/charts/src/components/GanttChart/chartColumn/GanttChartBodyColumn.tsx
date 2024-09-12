@@ -2,7 +2,13 @@ import type { ReactNode } from 'react';
 import React, { useRef, useState } from 'react';
 import { GanttChartBody } from '../chartbody/GanttChartBody.js';
 import { GanttChartColumnLabel } from '../headers/GanttChartColumnLabel.js';
-import type { DimensionsState, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
+import type {
+  DateRange,
+  DimensionsState,
+  IGanttChartRow,
+  OpenRowIndex,
+  OpenSubRowIndexes
+} from '../types/GanttChartTypes.js';
 import {
   COLUMN_COMPONENT_WIDTH,
   COLUMN_HEADER_HEIGHT,
@@ -21,8 +27,8 @@ export interface GanttChartBodyColumnProps {
   height: number;
   rowHeight: number;
   numOfRows: number;
-  isDiscrete: boolean;
   totalDuration: number;
+  contractDuration: DateRange;
   start: number;
   showAnnotation?: boolean;
   showVerticalLineOnHover?: boolean;
@@ -46,8 +52,8 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
     height,
     rowHeight,
     numOfRows,
-    isDiscrete,
     totalDuration,
+    contractDuration,
     start,
     valueFormat,
     annotations,
@@ -114,22 +120,11 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
       onMouseUp={onMouseUp}
       onMouseMove={mouseMoveHandler}
     >
-      <div
-        className={classes.columnTitle}
-        style={{
-          width: unscaledBodyWidth,
-          height: COLUMN_HEADER_HEIGHT / 2,
-          lineHeight: `${COLUMN_HEADER_HEIGHT / 2}px`
-        }}
-      ></div>
       <GanttChartColumnLabel
         width={bodyWidth}
         height={COLUMN_HEADER_HEIGHT}
-        isDiscrete={isDiscrete}
         totalDuration={totalDuration}
-        start={start}
-        unscaledWidth={unscaledBodyWidth}
-        valueFormat={valueFormat}
+        contractDuration={contractDuration}
       />
       <GanttChartBody
         dataset={dataset}
@@ -138,7 +133,7 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
         rowHeight={rowHeight}
         numOfItems={numOfRows}
         totalDuration={totalDuration}
-        isDiscrete={isDiscrete}
+        contractDuration={contractDuration}
         annotations={annotations}
         showAnnotation={showAnnotation}
         showVerticalLineOnHover={showVerticalLineOnHover}

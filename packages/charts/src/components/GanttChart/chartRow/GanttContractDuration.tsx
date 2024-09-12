@@ -1,6 +1,16 @@
 import React from 'react';
+import type { DateRange } from '../types/GanttChartTypes.js';
+import { formatContractDuration } from '../util/utils.js';
 
-export const GanttContractDuration = () => {
+export interface GanttContractDurationProps {
+  contractDuration: DateRange;
+}
+
+export const GanttContractDuration = (props: GanttContractDurationProps) => {
+  const { contractDuration } = props;
+
+  const formattedContractDuration = formatContractDuration(contractDuration);
+
   return (
     <svg
       x="0"
@@ -22,7 +32,7 @@ export const GanttContractDuration = () => {
         style={{ fill: 'var(--sapActiveColor)' }}
       />
       <text x={8} dx={0} y={33} dy={0} color={'black'} fill="var(--sapTextColor)">
-        Contract Duration: 5 Years
+        Contract Duration: {formattedContractDuration}
       </text>
     </svg>
   );

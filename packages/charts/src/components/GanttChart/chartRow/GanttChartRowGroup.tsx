@@ -1,5 +1,5 @@
 import React from 'react';
-import type { IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
+import type { DateRange, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
 import { flattenDataset } from '../util/utils.js';
 import { GanttChartRow } from './GanttChartRow.js';
 import { GanttContractDuration } from './GanttContractDuration.js';
@@ -8,6 +8,7 @@ export interface GanttChartRowGroupProps {
   dataset: IGanttChartRow[];
   rowHeight: number;
   totalDuration: number;
+  contractDuration: DateRange;
   GanttStart: number;
   showTooltip: (...x: unknown[]) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,6 +22,7 @@ export const GanttChartRowGroup = (props: GanttChartRowGroupProps) => {
     dataset,
     rowHeight,
     totalDuration,
+    contractDuration,
     GanttStart,
     showTooltip,
     handleTaskClick,
@@ -33,7 +35,7 @@ export const GanttChartRowGroup = (props: GanttChartRowGroupProps) => {
 
   return (
     <svg width="100%" height="100%">
-      <GanttContractDuration />
+      <GanttContractDuration contractDuration={contractDuration} />
       {flattenedDataset.map((data, index) => {
         return (
           <GanttChartRow

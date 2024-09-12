@@ -6,7 +6,13 @@ import { GanttChartBodyColumn } from './chartColumn/GanttChartBodyColumn.js';
 import { GanttChartColumn } from './chartColumn/GanttChartColumn.js';
 import { GanttChartRowControls } from './headers/GanttChartRowControls.js';
 import { GanttChartPlaceholder } from './Placeholder.js';
-import type { DimensionsState, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from './types/GanttChartTypes.js';
+import type {
+  DateRange,
+  DimensionsState,
+  IGanttChartRow,
+  OpenRowIndex,
+  OpenSubRowIndexes
+} from './types/GanttChartTypes.js';
 import {
   DEFAULT_ROW_HEIGHT,
   DEFAULT_WIDTH,
@@ -19,14 +25,13 @@ import {
   ROW_CONTRACT_DURATION_HEIGHT
 } from './util/constants.js';
 import { useStyles } from './util/styles.js';
-import { countAllRows } from './util/utils.js';
+import { calculateTotalDuration, countAllRows } from './util/utils.js';
 
 export interface GanttChartProps extends CommonProps {
   dataset?: IGanttChartRow[];
-  totalDuration?: number;
+  contractDuration: DateRange;
   width?: CSSProperties['width'];
   rowHeight?: number;
-  isDiscrete?: boolean;
   annotations?: ReactNode | ReactNode[];
   onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
   showAnnotation?: boolean;
@@ -42,10 +47,9 @@ export interface GanttChartProps extends CommonProps {
 const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => {
   const {
     dataset,
-    totalDuration = 10,
+    contractDuration,
     width = DEFAULT_WIDTH,
     rowHeight = DEFAULT_ROW_HEIGHT,
-    isDiscrete,
     onTaskClick,
     annotations,
     showAnnotation,
@@ -73,6 +77,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
     ? dimensions.width - COLUMN_COMPONENT_WIDTH - COLUMN_STATUS_WIDTH
     : dimensions.width - COLUMN_COMPONENT_WIDTH;
   const bodyWidth = unscaledBodyWidth * chartBodyScale;
+  const totalDuration = calculateTotalDuration(contractDuration);
 
   const style: CSSProperties = {
     height: `${height}px`,
@@ -116,8 +121,9 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
     bodyConRef.current.scrollTo({ left: 0 });
   };
 
-  const updateCurrentChartBodyWidth = (newWidth: number) => {
-    setDimensions((prevState) => ({ ...prevState, currentChartWidth: newWidth }));
+  // TODO: to be checked if it is needed
+  const updateCurrentChartBodyWidth = () => {
+    // setDimensions((prevState) => ({ ...prevState, currentChartWidth: newWidth }));
   };
 
   const handleClick = (index: number): void => {
@@ -183,8 +189,8 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
           height={height}
           rowHeight={rowHeight}
           numOfRows={numOfRows}
-          isDiscrete={isDiscrete}
           totalDuration={totalDuration}
+          contractDuration={contractDuration}
           start={start}
           annotations={annotations}
           valueFormat={valueFormat}
