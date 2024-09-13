@@ -37,6 +37,7 @@ export const GanttChartRowGroup = (props: GanttChartRowGroupProps) => {
     <svg width="100%" height="100%">
       <GanttContractDuration contractDuration={contractDuration} />
       {flattenedDataset.map((data, index) => {
+        console.log({ GanttChartRowGroup: index });
         return (
           <GanttChartRow
             key={index}

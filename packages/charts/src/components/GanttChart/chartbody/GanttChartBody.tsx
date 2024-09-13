@@ -11,7 +11,7 @@ import { GanttChartStaticVerticalLine } from './GanttChartStaticVerticalLine.js'
 import type { GanttTooltipHandle } from './GanttChartTooltip.js';
 import { GanttChartTooltip } from './GanttChartTooltip.js';
 
-interface GanttChartBodyProps {
+export interface GanttChartBodyProps {
   dataset: IGanttChartRow[];
   width?: number;
   height?: number;
@@ -23,13 +23,10 @@ interface GanttChartBodyProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
   showAnnotation?: boolean;
-  showConnection?: boolean;
   showVerticalLineOnHover?: boolean;
   showStaticVerticalLine?: boolean;
   staticVerticalLinePosition?: number;
-  start: number;
   unscaledWidth?: number;
-  valueFormat?: (value: number) => string;
   openRowIndex: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
   updateCurrentChartBodyWidth: (newWidth: number) => void;
@@ -49,8 +46,6 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
     showVerticalLineOnHover,
     showStaticVerticalLine,
     staticVerticalLinePosition,
-    start,
-    valueFormat,
     openRowIndex,
     openSubRowIndexes,
     updateCurrentChartBodyWidth
@@ -76,7 +71,8 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
         ro.unobserve(bodyRef.current);
       }
     };
-  }, [updateCurrentChartBodyWidth]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const style: CSSProperties = {
     width: `${width}px`,
@@ -130,7 +126,7 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
           rowHeight={rowHeight}
           totalDuration={totalDuration}
           contractDuration={contractDuration}
-          GanttStart={start}
+          GanttStart={0}
           showTooltip={showTooltipOnHover}
           hideTooltip={hideTooltip}
           handleTaskClick={handleTaskClick}
@@ -146,7 +142,7 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
       ) : null}
 
       {/* TODO: Remove this component */}
-      {false ? <GanttChartTooltip ref={tooltipRef} valueFormat={valueFormat} /> : null}
+      {false ? <GanttChartTooltip ref={tooltipRef} /> : null}
       {showVerticalLineOnHover && verticalLinePosition && (
         <GanttChartHoverVerticalLine verticalLinePosition={verticalLinePosition} />
       )}

@@ -8,6 +8,7 @@ const styles = {
   main: {
     backgroundColor: ThemingParameters.sapBaseColor,
     display: 'grid',
+    wodth: 'auto',
     gap: 0
   },
 
@@ -35,6 +36,11 @@ const styles = {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis'
+  },
+
+  rowLabelsImage: {
+    display: 'flex',
+    alignItems: 'center'
   },
 
   columnLabel: {
@@ -108,7 +114,8 @@ const styles = {
     cursor: 'pointer',
     fontSize: '14px',
     marginRight: '10px',
-    userSelect: 'none'
+    userSelect: 'none',
+    display: 'flex'
   },
 
   legendIcon: {

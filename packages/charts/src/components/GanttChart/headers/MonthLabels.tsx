@@ -25,7 +25,7 @@ export const MonthLabels = (props: MonthLabelsProps) => {
               previousTotal: xPosition,
               lines: [
                 ...acc.lines,
-                <>
+                <React.Fragment key={index}>
                   <line
                     key={index}
                     x1={xPosition * segmentWidth}
@@ -45,7 +45,7 @@ export const MonthLabels = (props: MonthLabelsProps) => {
                   >
                     {el.labelYear}
                   </text>
-                </>
+                </React.Fragment>
               ]
             };
           },
@@ -60,7 +60,7 @@ export const MonthLabels = (props: MonthLabelsProps) => {
               previousTotal: xPosition,
               lines: [
                 ...acc.lines,
-                <>
+                <React.Fragment key={index}>
                   <line
                     key={index}
                     x1={xPosition * segmentWidth}
@@ -80,7 +80,7 @@ export const MonthLabels = (props: MonthLabelsProps) => {
                   >
                     {el.labelMonth} <span style={{ fill: 'red' }}>{el.labelYear}</span>
                   </text>
-                </>
+                </React.Fragment>
               ]
             };
           },

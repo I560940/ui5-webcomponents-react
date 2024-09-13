@@ -1,3 +1,4 @@
+import { Icon } from '@ui5/webcomponents-react';
 import React from 'react';
 import type { CSSProperties } from 'react';
 import type { ColumnDataType, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
@@ -46,26 +47,41 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
         {dataset.map((row, rowIndex) => {
           const showCollapseIcon = row.details?.length > 0 && dataType === 'label';
           return (
-            <>
+            <React.Fragment key={`row-${rowIndex}`}>
               <RowLabelItem
                 key={`item-${rowIndex}`}
                 padding="10px"
-                collapseIcon={showCollapseIcon ? (openRowIndex === rowIndex ? '▼' : '▶') : null}
+                collapseIcon={
+                  showCollapseIcon ? (
+                    openRowIndex === rowIndex ? (
+                      <Icon name="navigation-down-arrow" />
+                    ) : (
+                      <Icon name="navigation-right-arrow" />
+                    )
+                  ) : null
+                }
                 onClick={() => handleClick(rowIndex)}
                 isActive={true}
                 rowHeight={rowHeight}
+                style={{ display: dataType === 'status' ? 'flex' : 'initial' }}
               >
                 {row[dataType]}
               </RowLabelItem>
               {row.details?.map((detail, detailIndex) => {
                 const showCollapseIcon = detail.subDetails?.length > 0 && dataType === 'label';
                 return (
-                  <>
+                  <React.Fragment key={`row-detail-${detailIndex}`}>
                     <RowLabelItem
                       key={`detail-${detailIndex}`}
                       padding={dataType === 'label' ? '20px' : '10px'}
                       collapseIcon={
-                        showCollapseIcon ? (openSubRowIndexes[`${rowIndex}-${detailIndex}`] ? '▼' : '▶') : null
+                        showCollapseIcon ? (
+                          openSubRowIndexes[`${rowIndex}-${detailIndex}`] ? (
+                            <Icon name="navigation-down-arrow" />
+                          ) : (
+                            <Icon name="navigation-right-arrow" />
+                          )
+                        ) : null
                       }
                       onClick={() => handleSubClick(rowIndex, detailIndex)}
                       isActive={openRowIndex === rowIndex}
@@ -83,10 +99,10 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
                         {subDetail[dataType]}
                       </RowLabelItem>
                     ))}
-                  </>
+                  </React.Fragment>
                 );
               })}
-            </>
+            </React.Fragment>
           );
         })}
       </div>

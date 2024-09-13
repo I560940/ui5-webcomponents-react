@@ -26,16 +26,14 @@ export interface GanttChartBodyColumnProps {
   chartBodyScale: number;
   height: number;
   rowHeight: number;
-  numOfRows: number;
+  numberOfRows: number;
   totalDuration: number;
   contractDuration: DateRange;
-  start: number;
   showAnnotation?: boolean;
   showVerticalLineOnHover?: boolean;
   showStaticVerticalLine?: boolean;
   showStatus?: boolean;
   staticVerticalLinePosition?: number;
-  valueFormat?: (value: number) => string;
   annotations?: ReactNode | ReactNode[];
   openRowIndex: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
@@ -51,11 +49,9 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
     chartBodyScale,
     height,
     rowHeight,
-    numOfRows,
+    numberOfRows,
     totalDuration,
     contractDuration,
-    start,
-    valueFormat,
     annotations,
     showAnnotation,
     showVerticalLineOnHover,
@@ -131,7 +127,7 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
         width={bodyWidth}
         height={height - COLUMN_HEADER_HEIGHT - ROW_CONTRACT_DURATION_HEIGHT}
         rowHeight={rowHeight}
-        numOfItems={numOfRows}
+        numOfItems={numberOfRows}
         totalDuration={totalDuration}
         contractDuration={contractDuration}
         annotations={annotations}
@@ -139,8 +135,6 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
         showVerticalLineOnHover={showVerticalLineOnHover}
         showStaticVerticalLine={showStaticVerticalLine}
         staticVerticalLinePosition={staticVerticalLinePosition}
-        start={start}
-        valueFormat={valueFormat}
         unscaledWidth={unscaledBodyWidth}
         onTaskClick={onTaskClick}
         openRowIndex={openRowIndex}

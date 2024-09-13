@@ -14,14 +14,7 @@ export interface GanttTooltipHandle {
   onLeaveItem: () => void;
 }
 
-interface GanttTooltipChartProps {
-  valueFormat?: (value: number) => string;
-}
-
-export const GanttChartTooltip = forwardRef<GanttTooltipHandle, GanttTooltipChartProps>(function GanttChartTooltip(
-  { valueFormat },
-  ref
-) {
+export const GanttChartTooltip = forwardRef<GanttTooltipHandle>(function GanttChartTooltip(_, ref) {
   const [state, setState] = useState({
     x: 0,
     y: 0,
@@ -80,13 +73,11 @@ export const GanttChartTooltip = forwardRef<GanttTooltipHandle, GanttTooltipChar
             <strong>{state.label}</strong>
           </span>
           <span className={classes.tooltipColorBar} style={{ backgroundColor: state.color }}></span>
-          <span>Start: {valueFormat != null ? valueFormat(state.startTime) : state.startTime}</span>
-          {state.isMilestone ? null : (
-            <span>Duration: {valueFormat != null ? valueFormat(state.duration) : state.duration}</span>
-          )}
+          <span>Start: {state.startTime}</span>
+          {state.isMilestone ? null : <span>Duration: {state.duration}</span>}
           <span>
             End:
-            {valueFormat != null ? valueFormat(state.startTime + state.duration) : state.startTime + state.duration}
+            {state.startTime + state.duration}
           </span>
         </span>
       ) : null}

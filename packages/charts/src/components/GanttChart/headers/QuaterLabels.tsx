@@ -24,9 +24,9 @@ export const QuaterLabels = (props: QuaterLabelsProps) => {
               previousTotal: xPosition,
               lines: [
                 ...acc.lines,
-                <>
+                <React.Fragment key={index}>
                   <line
-                    key={index}
+                    key={`years-${index}`}
                     x1={xPosition * segmentWidth}
                     x2={xPosition * segmentWidth}
                     y1={'0%'}
@@ -40,11 +40,11 @@ export const QuaterLabels = (props: QuaterLabelsProps) => {
                     dy={-Math.ceil((height / 2 - FONT_SIZE) / 2)}
                     fill={ThemingParameters.sapHighlightColor}
                     textAnchor="middle"
-                    key={`label-${index}`}
+                    key={`years-label-${index}`}
                   >
                     {el.labelYear}
                   </text>
-                </>
+                </React.Fragment>
               ]
             };
           },
@@ -59,9 +59,9 @@ export const QuaterLabels = (props: QuaterLabelsProps) => {
               previousTotal: xPosition,
               lines: [
                 ...acc.lines,
-                <>
+                <React.Fragment key={index}>
                   <line
-                    key={index}
+                    key={`quaters-${index}`}
                     x1={xPosition * segmentWidth}
                     x2={xPosition * segmentWidth}
                     y1={'50%'}
@@ -75,11 +75,11 @@ export const QuaterLabels = (props: QuaterLabelsProps) => {
                     dy={-Math.ceil((height / 2 - FONT_SIZE) / 2)}
                     fill={ThemingParameters.sapTextColor}
                     textAnchor="middle"
-                    key={`label-${index}`}
+                    key={`quaters-label-${index}`}
                   >
                     {el.quarterLabel}
                   </text>
-                </>
+                </React.Fragment>
               ]
             };
           },

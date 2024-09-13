@@ -24,7 +24,7 @@ export const DayLabels = (props: DayLabelsProps) => {
               previousTotal: xPosition,
               lines: [
                 ...acc.lines,
-                <>
+                <React.Fragment key={index}>
                   <line
                     key={index}
                     x1={xPosition * segmentWidth}
@@ -44,7 +44,7 @@ export const DayLabels = (props: DayLabelsProps) => {
                   >
                     {el.labelMonth} {el.labelYear}
                   </text>
-                </>
+                </React.Fragment>
               ]
             };
           },
@@ -53,7 +53,7 @@ export const DayLabels = (props: DayLabelsProps) => {
       }
       {prepareDaysArray(monthsArray).map((day, dayIndex) => {
         return (
-          <>
+          <React.Fragment key={dayIndex}>
             <line
               key={dayIndex}
               x1={dayIndex * segmentWidth}
@@ -73,7 +73,7 @@ export const DayLabels = (props: DayLabelsProps) => {
             >
               {day}
             </text>
-          </>
+          </React.Fragment>
         );
       })}
     </svg>
