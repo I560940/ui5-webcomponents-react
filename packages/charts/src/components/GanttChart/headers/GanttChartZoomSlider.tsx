@@ -14,7 +14,7 @@ export interface GanttChartZoomSliderProps {
 }
 
 export const GanttChartZoomSlider = (props: GanttChartZoomSliderProps) => {
-  const { onScale, dimensions } = props;
+  const { onScale } = props;
   const [sliderValue, setSliderValue] = useState(50);
   // TODO: consts to be exported to constants.ts
   const minValue = 0;
@@ -38,7 +38,6 @@ export const GanttChartZoomSlider = (props: GanttChartZoomSliderProps) => {
       setSliderValue(sliderValue + step);
     }
   };
-  console.log({ ...dimensions });
   useEffect(() => {
     onScale(Math.pow(SCALE_FACTOR, sliderValue));
   }, [onScale, sliderValue]);

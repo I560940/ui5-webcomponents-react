@@ -32,3 +32,11 @@ export const MAX_BODY_WIDTH = 65500;
 // GanttChartColumnLabels
 export const FONT_SIZE = 12;
 export const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+export const LABEL_Y_TOP_HALF = '0%';
+export const LABEL_Y_MID_HALF = '50%';
+export const LABEL_Y_BOTTOM_HALF = '100%';
+
+// Constants for segment width thresholds
+export const SEGMENT_WIDTH_FULL_LABEL = 20;
+export const SEGMENT_WIDTH_THRESHOLD = 1.2;

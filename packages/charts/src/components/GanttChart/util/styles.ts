@@ -39,8 +39,8 @@ const styles = {
   },
 
   rowLabelsImage: {
-    display: 'flex',
-    alignItems: 'center'
+    // display: 'flex',
+    // alignItems: 'center'
   },
 
   columnLabel: {
@@ -114,8 +114,8 @@ const styles = {
     cursor: 'pointer',
     fontSize: '14px',
     marginRight: '10px',
-    userSelect: 'none',
-    display: 'flex'
+    userSelect: 'none'
+    // display: 'flex'
   },
 
   legendIcon: {

@@ -29,7 +29,7 @@ export const RowLabelItem: React.FC<RowLabelItemProps> = (props) => {
     >
       <span
         className={classes.rowLabelsImage}
-        style={{ paddingInline: padding, fontSize: 14, color: 'var(--sapList_TextColor)' }}
+        style={{ paddingInlineStart: padding, fontSize: 14, color: 'var(--sapList_TextColor)' }}
       >
         {collapseIcon && (
           <span className={classes.collapseIcon} onClick={onClick}>

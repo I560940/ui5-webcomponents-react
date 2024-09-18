@@ -32,7 +32,6 @@ export const GanttChartRow = ({
   ...rest
 }: GanttChartRowProps) => {
   rowData.color = rowData.color ?? `var(--sapChart_OrderedColor_${(rowIndex % 11) + 1})`;
-  console.log({ ...rest });
   return (
     <svg
       x="0"

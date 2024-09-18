@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import React, { useRef, useState } from 'react';
 import { GanttChartBody } from '../chartbody/GanttChartBody.js';
-import { GanttChartColumnLabel } from '../headers/GanttChartColumnLabel.js';
+import { GanttChartTimeline } from '../headers/GanttChartTimeline/GanttChartTimeline.js';
 import type {
   DateRange,
   DimensionsState,
@@ -116,7 +116,7 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
       onMouseUp={onMouseUp}
       onMouseMove={mouseMoveHandler}
     >
-      <GanttChartColumnLabel
+      <GanttChartTimeline
         width={bodyWidth}
         height={COLUMN_HEADER_HEIGHT}
         totalDuration={totalDuration}
