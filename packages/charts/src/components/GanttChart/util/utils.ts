@@ -101,10 +101,10 @@ export const flattenDataset = (
  */
 
 export const formatContractDuration = (contractDuration: DateRange): string | null => {
-  if (!contractDuration) {
+  if (!contractDuration || !contractDuration.dateStart || !contractDuration.dateEnd) {
     return null;
   }
-  return formatDistanceStrict(contractDuration.dateStart, contractDuration.dateEnd);
+  return formatDistanceStrict(new Date(contractDuration.dateStart), new Date(contractDuration.dateEnd));
 };
 
 /**

@@ -11,6 +11,10 @@ export const GanttContractDuration = (props: GanttContractDurationProps) => {
 
   const formattedContractDuration = formatContractDuration(contractDuration);
 
+  if (!formattedContractDuration) {
+    return null;
+  }
+
   return (
     <svg
       x="0"
