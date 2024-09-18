@@ -37,7 +37,6 @@ export interface GanttChartBodyColumnProps {
   annotations?: ReactNode | ReactNode[];
   openRowIndex: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
-  updateCurrentChartBodyWidth: (newWidth: number) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
 }
@@ -60,7 +59,6 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
     staticVerticalLinePosition,
     openRowIndex,
     openSubRowIndexes,
-    updateCurrentChartBodyWidth,
     onTaskClick
   } = props;
   const [isGrabbed, setIsGrabbed] = useState(false);
@@ -139,7 +137,6 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
         onTaskClick={onTaskClick}
         openRowIndex={openRowIndex}
         openSubRowIndexes={openSubRowIndexes}
-        updateCurrentChartBodyWidth={updateCurrentChartBodyWidth}
       />
     </div>
   );

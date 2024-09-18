@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { GanttChartRowGroup } from '../chartRow/GanttChartRowGroup.js';
 import type { DateRange, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
 import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
@@ -29,7 +29,6 @@ export interface GanttChartBodyProps {
   unscaledWidth?: number;
   openRowIndex: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
-  updateCurrentChartBodyWidth: (newWidth: number) => void;
 }
 
 const GanttChartBody = (props: GanttChartBodyProps) => {
@@ -47,32 +46,12 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
     showStaticVerticalLine,
     staticVerticalLinePosition,
     openRowIndex,
-    openSubRowIndexes,
-    updateCurrentChartBodyWidth
+    openSubRowIndexes
   } = props;
   const classes = useStyles();
   const tooltipRef = useRef<GanttTooltipHandle>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const [verticalLinePosition, setVerticalLinePosition] = useState<number | null>(null);
-
-  useEffect(() => {
-    const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const newWidth = entry.contentRect.width;
-        updateCurrentChartBodyWidth(newWidth);
-      }
-    });
-    if (bodyRef.current) {
-      ro.observe(bodyRef.current);
-    }
-    return () => {
-      if (bodyRef.current) {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        ro.unobserve(bodyRef.current);
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const style: CSSProperties = {
     width: `${width}px`,

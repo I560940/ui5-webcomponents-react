@@ -85,12 +85,6 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
     bodyConRef.current.scrollTo({ left: 0 });
   };
 
-  // TODO: to be checked if it is needed
-  const updateCurrentChartBodyWidth = () => {
-    // setDimensions((prevState) => ({ ...prevState, currentChartWidth: newWidth }));
-    // console.log({ newWidth });
-  };
-
   if (!dataset || dataset?.length === 0 || !contractDuration) {
     return <GanttChartPlaceholder />;
   }
@@ -148,7 +142,6 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
           onTaskClick={onTaskClick}
           openRowIndex={openRowIndex}
           openSubRowIndexes={openSubRowIndexes}
-          updateCurrentChartBodyWidth={updateCurrentChartBodyWidth}
         />
       </div>
     </div>

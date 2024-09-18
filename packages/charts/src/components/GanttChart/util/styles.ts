@@ -38,11 +38,6 @@ const styles = {
     textOverflow: 'ellipsis'
   },
 
-  rowLabelsImage: {
-    // display: 'flex',
-    // alignItems: 'center'
-  },
-
   columnLabel: {
     borderBottom: solidOutline
   },
@@ -115,7 +110,6 @@ const styles = {
     fontSize: '14px',
     marginRight: '10px',
     userSelect: 'none'
-    // display: 'flex'
   },
 
   legendIcon: {

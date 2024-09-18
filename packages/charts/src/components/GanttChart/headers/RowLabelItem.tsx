@@ -1,3 +1,4 @@
+import { ThemingParameters } from '@ui5/webcomponents-react-base';
 import React from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { useStyles } from '../util/styles.js';
@@ -27,10 +28,7 @@ export const RowLabelItem: React.FC<RowLabelItemProps> = (props) => {
       className={`${classes.rowLabelsItem} ${isActive ? classes.collapseContentActive : classes.collapseContent}`}
       style={itemStyle}
     >
-      <span
-        className={classes.rowLabelsImage}
-        style={{ paddingInlineStart: padding, fontSize: 14, color: 'var(--sapList_TextColor)' }}
-      >
+      <span style={{ paddingInlineStart: padding, fontSize: 14, color: ThemingParameters.sapList_TextColor }}>
         {collapseIcon && (
           <span className={classes.collapseIcon} onClick={onClick}>
             {collapseIcon}
