@@ -1,54 +1,43 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { CommonProps } from '@ui5/webcomponents-react';
 import type { CSSProperties, ReactNode } from 'react';
-import React, { forwardRef, useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useRef } from 'react';
 import { GanttChartBodyColumn } from './chartColumn/GanttChartBodyColumn.js';
 import { GanttChartColumn } from './chartColumn/GanttChartColumn.js';
-import { GanttChartRowControls } from './headers/GanttChartRowControls.js';
+import { GanttChartZoomSlider } from './headers/GanttChartZoomSlider.js';
+import { useCollapsableRows } from './hooks/useCollapsableRows.js';
+import { useDimensions } from './hooks/useDimensions.js';
 import { GanttChartPlaceholder } from './Placeholder.js';
-import type {
-  DateRange,
-  DimensionsState,
-  IGanttChartRow,
-  OpenRowIndex,
-  OpenSubRowIndexes
-} from './types/GanttChartTypes.js';
+import type { DateRange, IGanttChartRow } from './types/GanttChartTypes.js';
 import {
   DEFAULT_ROW_HEIGHT,
-  DEFAULT_WIDTH,
   COLUMN_HEADER_HEIGHT,
   COLUMN_STATUS_WIDTH,
   CONTROLS_ROW_HEIGHT,
   COLUMN_COMPONENT_TITLE,
   COLUMN_COMPONENT_WIDTH,
-  COLUMN_STATUS_TITLE,
-  ROW_CONTRACT_DURATION_HEIGHT
+  COLUMN_STATUS_TITLE
 } from './util/constants.js';
 import { useStyles } from './util/styles.js';
-import { calculateTotalDuration, countAllRows } from './util/utils.js';
+import { calculateTotalDuration } from './util/utils.js';
 
 export interface GanttChartProps extends CommonProps {
   dataset?: IGanttChartRow[];
   contractDuration: DateRange;
-  width?: CSSProperties['width'];
   rowHeight?: number;
   annotations?: ReactNode | ReactNode[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
   showAnnotation?: boolean;
-  showConnection?: boolean;
   showStatus?: boolean;
   showVerticalLineOnHover?: boolean;
   showStaticVerticalLine?: boolean;
   staticVerticalLinePosition?: number;
-  start?: number;
-  valueFormat?: (value: number) => string;
 }
 
 const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => {
   const {
     dataset,
     contractDuration,
-    width = DEFAULT_WIDTH,
     rowHeight = DEFAULT_ROW_HEIGHT,
     onTaskClick,
     annotations,
@@ -56,37 +45,18 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
     showVerticalLineOnHover,
     showStaticVerticalLine,
     staticVerticalLinePosition,
-    start = 0,
-    valueFormat = (x: number) => x.toFixed(1),
     showStatus = true,
     ...rest
   } = props;
-  const [openRowIndex, setOpenRowIndex] = useState<OpenRowIndex>(null);
-  const [openSubRowIndexes, setOpenSubRowIndexes] = useState<OpenSubRowIndexes>({});
-  const [numOfRows, setNumOfRows] = useState<number>(() => countAllRows(dataset, openRowIndex, openSubRowIndexes));
-  const [chartBodyScale, setChartBodyScale] = useState(1);
-  const [dimensions, setDimensions] = useState<DimensionsState>({
-    width: 0,
-    height: 0,
-    chartWidth: 0,
-    chartHeight: 0,
-    currentChartWidth: 0
-  });
-  const height = rowHeight * numOfRows + COLUMN_HEADER_HEIGHT + ROW_CONTRACT_DURATION_HEIGHT;
-  const unscaledBodyWidth = showStatus
-    ? dimensions.width - COLUMN_COMPONENT_WIDTH - COLUMN_STATUS_WIDTH
-    : dimensions.width - COLUMN_COMPONENT_WIDTH;
-  const bodyWidth = unscaledBodyWidth * chartBodyScale;
+  const { openRowIndex, openSubRowIndexes, numberOfRows, handleClick, handleSubClick } = useCollapsableRows(dataset);
+  const { dimensions, height, bodyWidth, gridTemplateColumns, setDimensions, chartBodyScale, setChartBodyScale } =
+    useDimensions(showStatus, rowHeight, numberOfRows);
   const totalDuration = calculateTotalDuration(contractDuration);
 
   const style: CSSProperties = {
     height: `${height}px`,
-    width: width,
-    gridTemplateColumns: showStatus
-      ? `${COLUMN_COMPONENT_WIDTH}px ${COLUMN_STATUS_WIDTH}px auto`
-      : `${COLUMN_COMPONENT_WIDTH}px auto`
+    gridTemplateColumns
   };
-
   const ref = useRef(null);
   const bodyConRef = useRef<HTMLDivElement>(null);
   const classes = useStyles();
@@ -111,46 +81,18 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    setNumOfRows(() => countAllRows(dataset, openRowIndex, openSubRowIndexes));
-  }, [dataset, numOfRows, openRowIndex, openSubRowIndexes]);
-
-  const scaleChartBody = (value: number) => setChartBodyScale(value);
-
   const resetScroll = () => {
     bodyConRef.current.scrollTo({ left: 0 });
   };
 
-  // TODO: to be checked if it is needed
-  const updateCurrentChartBodyWidth = () => {
-    // setDimensions((prevState) => ({ ...prevState, currentChartWidth: newWidth }));
-  };
-
-  const handleClick = (index: number): void => {
-    if (openRowIndex === index) {
-      setOpenRowIndex(null);
-    } else {
-      setOpenRowIndex(index);
-    }
-    setOpenSubRowIndexes({});
-  };
-
-  const handleSubClick = (parentIndex: number, index: number): void => {
-    setOpenSubRowIndexes((prevState) => ({
-      ...prevState,
-      [`${parentIndex}-${index}`]: !prevState[`${parentIndex}-${index}`]
-    }));
-  };
-
-  if (!dataset || dataset?.length === 0) {
+  if (!dataset || dataset?.length === 0 || !contractDuration) {
     return <GanttChartPlaceholder />;
   }
 
   return (
     <div ref={fRef} {...rest}>
-      <GanttChartRowControls
-        height={CONTROLS_ROW_HEIGHT}
-        onScale={scaleChartBody}
+      <GanttChartZoomSlider
+        onScale={(value: number) => setChartBodyScale(value)}
         dimensions={dimensions}
         resetScroll={resetScroll}
       />
@@ -166,7 +108,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
           handleSubClick={handleSubClick}
           openRowIndex={openRowIndex}
           openSubRowIndexes={openSubRowIndexes}
-          numOfRows={numOfRows}
+          numberOfRows={numberOfRows}
           showStatus={showStatus}
         />
         {showStatus ? (
@@ -179,7 +121,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
             dataType="status"
             openRowIndex={openRowIndex}
             openSubRowIndexes={openSubRowIndexes}
-            numOfRows={numOfRows}
+            numberOfRows={numberOfRows}
           />
         ) : null}
         <GanttChartBodyColumn
@@ -188,12 +130,10 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
           chartBodyScale={chartBodyScale}
           height={height}
           rowHeight={rowHeight}
-          numOfRows={numOfRows}
+          numberOfRows={numberOfRows}
           totalDuration={totalDuration}
           contractDuration={contractDuration}
-          start={start}
           annotations={annotations}
-          valueFormat={valueFormat}
           showAnnotation={showAnnotation}
           showVerticalLineOnHover={showVerticalLineOnHover}
           showStaticVerticalLine={showStaticVerticalLine}
@@ -202,7 +142,6 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
           onTaskClick={onTaskClick}
           openRowIndex={openRowIndex}
           openSubRowIndexes={openSubRowIndexes}
-          updateCurrentChartBodyWidth={updateCurrentChartBodyWidth}
         />
       </div>
     </div>

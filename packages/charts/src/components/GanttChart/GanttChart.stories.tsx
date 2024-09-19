@@ -8,7 +8,7 @@ import { GanttChart } from './GanttChart.js';
 import { GanttChartAnnotation } from './GanttChartAnnotation.js';
 
 const meta = {
-  title: 'GanttChart (experimental)',
+  title: 'GanttChart',
   component: GanttChart,
   argTypes: {
     dataset: {
@@ -24,7 +24,6 @@ export const Default: Story = {
   args: {
     dataset: dummyDataSet,
     contractDuration: { dateStart: '2024-01-01T00:00:00.000Z', dateEnd: '2027-12-31T00:00:00.000Z' },
-    start: 0,
     showStatus: false
   }
 };
@@ -33,8 +32,7 @@ export const WithCollapsableRows: Story = {
   args: {
     dataset: dummyCollapsableDataSet,
     contractDuration: { dateStart: '2024-01-01T00:00:00.000Z', dateEnd: '2027-12-31T00:00:00.000Z' },
-    rowHeight: 48,
-    valueFormat: (x) => x.toFixed(2)
+    rowHeight: 48
   },
   render(props) {
     return <GanttChart {...props} />;
@@ -45,10 +43,8 @@ export const WithAnnotations: Story = {
   args: {
     dataset: schedulingEDFData,
     contractDuration: { dateStart: '2024-01-01T00:00:00.000Z', dateEnd: '2027-12-31T00:00:00.000Z' },
-    showConnection: true,
     showAnnotation: true,
-    rowHeight: 35,
-    valueFormat: (x) => x.toFixed(2)
+    rowHeight: 35
   },
   render(props) {
     return (
@@ -83,8 +79,7 @@ export const WithAnnotationsOnly: Story = {
     dataset: inventionDataset,
     contractDuration: { dateStart: '2024-01-01T00:00:00.000Z', dateEnd: '2027-12-31T00:00:00.000Z' },
     showAnnotation: true,
-    rowHeight: 80,
-    valueFormat: (x) => x.toFixed(1)
+    rowHeight: 80
   },
   render(props) {
     return (
@@ -173,7 +168,6 @@ export const WithMoreCustomization: Story = {
   args: {
     dataset: dummyDataSet,
     contractDuration: { dateStart: '2024-01-01T00:00:00.000Z', dateEnd: '2027-12-31T00:00:00.000Z' },
-    showConnection: true,
     showAnnotation: true
   }
 };
@@ -181,8 +175,7 @@ export const WithMoreCustomization: Story = {
 export const LoadingPlaceholder: Story = {
   args: {
     dataset: dummyDataSet,
-    contractDuration: { dateStart: '2024-01-01T00:00:00.000Z', dateEnd: '2027-12-31T00:00:00.000Z' },
-    showConnection: true,
+    contractDuration: { dateStart: '', dateEnd: '' },
     showAnnotation: true
   },
   render(props) {

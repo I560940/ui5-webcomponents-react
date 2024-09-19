@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { GanttChartRowGroup } from '../chartRow/GanttChartRowGroup.js';
 import type { DateRange, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
 import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
@@ -11,7 +11,7 @@ import { GanttChartStaticVerticalLine } from './GanttChartStaticVerticalLine.js'
 import type { GanttTooltipHandle } from './GanttChartTooltip.js';
 import { GanttChartTooltip } from './GanttChartTooltip.js';
 
-interface GanttChartBodyProps {
+export interface GanttChartBodyProps {
   dataset: IGanttChartRow[];
   width?: number;
   height?: number;
@@ -23,16 +23,12 @@ interface GanttChartBodyProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
   showAnnotation?: boolean;
-  showConnection?: boolean;
   showVerticalLineOnHover?: boolean;
   showStaticVerticalLine?: boolean;
   staticVerticalLinePosition?: number;
-  start: number;
   unscaledWidth?: number;
-  valueFormat?: (value: number) => string;
   openRowIndex: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
-  updateCurrentChartBodyWidth: (newWidth: number) => void;
 }
 
 const GanttChartBody = (props: GanttChartBodyProps) => {
@@ -49,34 +45,13 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
     showVerticalLineOnHover,
     showStaticVerticalLine,
     staticVerticalLinePosition,
-    start,
-    valueFormat,
     openRowIndex,
-    openSubRowIndexes,
-    updateCurrentChartBodyWidth
+    openSubRowIndexes
   } = props;
   const classes = useStyles();
   const tooltipRef = useRef<GanttTooltipHandle>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const [verticalLinePosition, setVerticalLinePosition] = useState<number | null>(null);
-
-  useEffect(() => {
-    const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const newWidth = entry.contentRect.width;
-        updateCurrentChartBodyWidth(newWidth);
-      }
-    });
-    if (bodyRef.current) {
-      ro.observe(bodyRef.current);
-    }
-    return () => {
-      if (bodyRef.current) {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        ro.unobserve(bodyRef.current);
-      }
-    };
-  }, [updateCurrentChartBodyWidth]);
 
   const style: CSSProperties = {
     width: `${width}px`,
@@ -130,7 +105,7 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
           rowHeight={rowHeight}
           totalDuration={totalDuration}
           contractDuration={contractDuration}
-          GanttStart={start}
+          GanttStart={0}
           showTooltip={showTooltipOnHover}
           hideTooltip={hideTooltip}
           handleTaskClick={handleTaskClick}
@@ -146,7 +121,7 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
       ) : null}
 
       {/* TODO: Remove this component */}
-      {false ? <GanttChartTooltip ref={tooltipRef} valueFormat={valueFormat} /> : null}
+      {false ? <GanttChartTooltip ref={tooltipRef} /> : null}
       {showVerticalLineOnHover && verticalLinePosition && (
         <GanttChartHoverVerticalLine verticalLinePosition={verticalLinePosition} />
       )}

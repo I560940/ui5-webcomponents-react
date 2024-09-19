@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import React, { useRef, useState } from 'react';
 import { GanttChartBody } from '../chartbody/GanttChartBody.js';
-import { GanttChartColumnLabel } from '../headers/GanttChartColumnLabel.js';
+import { GanttChartTimeline } from '../headers/GanttChartTimeline/GanttChartTimeline.js';
 import type {
   DateRange,
   DimensionsState,
@@ -26,20 +26,17 @@ export interface GanttChartBodyColumnProps {
   chartBodyScale: number;
   height: number;
   rowHeight: number;
-  numOfRows: number;
+  numberOfRows: number;
   totalDuration: number;
   contractDuration: DateRange;
-  start: number;
   showAnnotation?: boolean;
   showVerticalLineOnHover?: boolean;
   showStaticVerticalLine?: boolean;
   showStatus?: boolean;
   staticVerticalLinePosition?: number;
-  valueFormat?: (value: number) => string;
   annotations?: ReactNode | ReactNode[];
   openRowIndex: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
-  updateCurrentChartBodyWidth: (newWidth: number) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
 }
@@ -51,11 +48,9 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
     chartBodyScale,
     height,
     rowHeight,
-    numOfRows,
+    numberOfRows,
     totalDuration,
     contractDuration,
-    start,
-    valueFormat,
     annotations,
     showAnnotation,
     showVerticalLineOnHover,
@@ -64,7 +59,6 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
     staticVerticalLinePosition,
     openRowIndex,
     openSubRowIndexes,
-    updateCurrentChartBodyWidth,
     onTaskClick
   } = props;
   const [isGrabbed, setIsGrabbed] = useState(false);
@@ -120,7 +114,7 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
       onMouseUp={onMouseUp}
       onMouseMove={mouseMoveHandler}
     >
-      <GanttChartColumnLabel
+      <GanttChartTimeline
         width={bodyWidth}
         height={COLUMN_HEADER_HEIGHT}
         totalDuration={totalDuration}
@@ -131,7 +125,7 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
         width={bodyWidth}
         height={height - COLUMN_HEADER_HEIGHT - ROW_CONTRACT_DURATION_HEIGHT}
         rowHeight={rowHeight}
-        numOfItems={numOfRows}
+        numOfItems={numberOfRows}
         totalDuration={totalDuration}
         contractDuration={contractDuration}
         annotations={annotations}
@@ -139,13 +133,10 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
         showVerticalLineOnHover={showVerticalLineOnHover}
         showStaticVerticalLine={showStaticVerticalLine}
         staticVerticalLinePosition={staticVerticalLinePosition}
-        start={start}
-        valueFormat={valueFormat}
         unscaledWidth={unscaledBodyWidth}
         onTaskClick={onTaskClick}
         openRowIndex={openRowIndex}
         openSubRowIndexes={openSubRowIndexes}
-        updateCurrentChartBodyWidth={updateCurrentChartBodyWidth}
       />
     </div>
   );

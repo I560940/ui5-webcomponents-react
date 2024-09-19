@@ -28,10 +28,10 @@ export const GanttChartRow = ({
   GanttStart,
   showTooltip,
   hideTooltip,
-  handleTaskClick
+  handleTaskClick,
+  ...rest
 }: GanttChartRowProps) => {
   rowData.color = rowData.color ?? `var(--sapChart_OrderedColor_${(rowIndex % 11) + 1})`;
-
   return (
     <svg
       x="0"
@@ -40,6 +40,7 @@ export const GanttChartRow = ({
       height={`${rowHeight}`}
       style={{ pointerEvents: 'none' }}
       data-component-name="GanttChartRow"
+      {...rest}
     >
       {rowData.tasks?.map((task, index) => {
         return (

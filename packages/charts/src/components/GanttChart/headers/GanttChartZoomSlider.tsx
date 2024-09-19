@@ -1,21 +1,20 @@
 import { FlexBox, Icon, Slider } from '@ui5/webcomponents-react';
 import React, { useEffect, useState } from 'react';
 import type { DimensionsState } from '../types/GanttChartTypes.js';
-import { SCALE_FACTOR } from '../util/constants.js';
+import { CONTROLS_ROW_HEIGHT, SCALE_FACTOR } from '../util/constants.js';
 import { useStyles } from '../util/styles.js';
 import '@ui5/webcomponents-icons/dist/zoom-out.js';
 import '@ui5/webcomponents-icons/dist/zoom-in.js';
 import '@ui5/webcomponents-icons/dist/legend.js';
 
-export interface GanttChartRowControlsProps {
+export interface GanttChartZoomSliderProps {
   dimensions: DimensionsState;
   resetScroll: () => void;
-  height: number;
   onScale: (x: number) => void;
 }
 
-export const GanttChartRowControls = (props: GanttChartRowControlsProps) => {
-  const { height, onScale } = props;
+export const GanttChartZoomSlider = (props: GanttChartZoomSliderProps) => {
+  const { onScale } = props;
   const [sliderValue, setSliderValue] = useState(50);
   // TODO: consts to be exported to constants.ts
   const minValue = 0;
@@ -39,13 +38,12 @@ export const GanttChartRowControls = (props: GanttChartRowControlsProps) => {
       setSliderValue(sliderValue + step);
     }
   };
-
   useEffect(() => {
     onScale(Math.pow(SCALE_FACTOR, sliderValue));
   }, [onScale, sliderValue]);
 
   return (
-    <FlexBox justifyContent="End" style={{ height: height }}>
+    <FlexBox justifyContent="End" style={{ height: CONTROLS_ROW_HEIGHT }}>
       <FlexBox alignItems="Center" style={{ marginRight: '24px' }}>
         <Icon name="zoom-out" onClick={decreaseValue} style={{ cursor: 'pointer' }} />
         <Slider
