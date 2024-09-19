@@ -1,6 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { useStyles } from '../util/styles.js';
-export const GanttChartTooltip = forwardRef(function GanttChartTooltip({ valueFormat }, ref) {
+export const GanttChartTooltip = forwardRef(function GanttChartTooltip(_, ref) {
   const [state, setState] = useState({
     x: 0,
     y: 0,
@@ -52,26 +52,9 @@ export const GanttChartTooltip = forwardRef(function GanttChartTooltip({ valueFo
             React.createElement('strong', null, state.label)
           ),
           React.createElement('span', { className: classes.tooltipColorBar, style: { backgroundColor: state.color } }),
-          React.createElement(
-            'span',
-            null,
-            'Start: ',
-            valueFormat != null ? valueFormat(state.startTime) : state.startTime
-          ),
-          state.isMilestone
-            ? null
-            : React.createElement(
-                'span',
-                null,
-                'Duration: ',
-                valueFormat != null ? valueFormat(state.duration) : state.duration
-              ),
-          React.createElement(
-            'span',
-            null,
-            'End:',
-            valueFormat != null ? valueFormat(state.startTime + state.duration) : state.startTime + state.duration
-          )
+          React.createElement('span', null, 'Start: ', state.startTime),
+          state.isMilestone ? null : React.createElement('span', null, 'Duration: ', state.duration),
+          React.createElement('span', null, 'End:', state.startTime + state.duration)
         )
       : null
   );

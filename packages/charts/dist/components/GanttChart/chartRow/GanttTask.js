@@ -31,6 +31,9 @@ export const GanttTask = ({
   // The 10% y value is to create a little gap between the top grid line and the
   // rendered GanttTask itself. The height is set to 80% to allow for an
   // equal gap at the bottom with the bottom grid line.
+  if (!totalDuration) {
+    return null;
+  }
   return React.createElement('rect', {
     'data-component-name': 'GanttChartTask',
     id: id,

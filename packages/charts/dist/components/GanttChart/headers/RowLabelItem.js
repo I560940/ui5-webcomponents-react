@@ -1,3 +1,4 @@
+import { ThemingParameters } from '@ui5/webcomponents-react-base';
 import React from 'react';
 import { useStyles } from '../util/styles.js';
 export const RowLabelItem = (props) => {
@@ -15,7 +16,7 @@ export const RowLabelItem = (props) => {
     },
     React.createElement(
       'span',
-      { style: { paddingInline: padding, fontSize: 14, color: 'var(--sapList_TextColor)' } },
+      { style: { paddingInlineStart: padding, fontSize: 14, color: ThemingParameters.sapList_TextColor } },
       collapseIcon && React.createElement('span', { className: classes.collapseIcon, onClick: onClick }, collapseIcon),
       children
     )

@@ -11,10 +11,4 @@ export interface GanttTooltipHandle {
   ) => void;
   onLeaveItem: () => void;
 }
-interface GanttTooltipChartProps {
-  valueFormat?: (value: number) => string;
-}
-export declare const GanttChartTooltip: React.ForwardRefExoticComponent<
-  GanttTooltipChartProps & React.RefAttributes<GanttTooltipHandle>
->;
-export {};
+export declare const GanttChartTooltip: React.ForwardRefExoticComponent<React.RefAttributes<GanttTooltipHandle>>;

@@ -15,7 +15,7 @@ export const GanttChartColumn = (props) => {
     handleSubClick,
     openRowIndex,
     openSubRowIndexes,
-    numOfRows,
+    numberOfRows,
     showStatus
   } = props;
   return React.createElement(
@@ -39,7 +39,7 @@ export const GanttChartColumn = (props) => {
       handleSubClick: handleSubClick ?? null,
       openRowIndex: openRowIndex,
       openSubRowIndexes: openSubRowIndexes,
-      numOfRows: numOfRows
+      numOfRows: numberOfRows
     })
   );
 };

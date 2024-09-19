@@ -14,7 +14,8 @@ export const GanttChartRow = ({
   GanttStart,
   showTooltip,
   hideTooltip,
-  handleTaskClick
+  handleTaskClick,
+  ...rest
 }) => {
   rowData.color = rowData.color ?? `var(--sapChart_OrderedColor_${(rowIndex % 11) + 1})`;
   return React.createElement(
@@ -25,7 +26,8 @@ export const GanttChartRow = ({
       width: '100%',
       height: `${rowHeight}`,
       style: { pointerEvents: 'none' },
-      'data-component-name': 'GanttChartRow'
+      'data-component-name': 'GanttChartRow',
+      ...rest
     },
     rowData.tasks?.map((task, index) => {
       return React.createElement(GanttTask, {

@@ -67,6 +67,11 @@ export interface DateRange {
   dateStart: string;
   dateEnd: string;
 }
+export interface TimeUnit {
+  name: string;
+  days: number;
+  year?: string;
+}
 export declare enum GanttChartConnection {
   Finish_To_Start = 'F2S',
   Start_To_Finish = 'S2F',

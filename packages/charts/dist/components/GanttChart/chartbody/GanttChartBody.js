@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { GanttChartRowGroup } from '../chartRow/GanttChartRowGroup.js';
 import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 import { GanttChartBodyCtx } from '../util/context.js';
@@ -21,33 +21,13 @@ const GanttChartBody = (props) => {
     showVerticalLineOnHover,
     showStaticVerticalLine,
     staticVerticalLinePosition,
-    start,
-    valueFormat,
     openRowIndex,
-    openSubRowIndexes,
-    updateCurrentChartBodyWidth
+    openSubRowIndexes
   } = props;
   const classes = useStyles();
   const tooltipRef = useRef(null);
   const bodyRef = useRef(null);
   const [verticalLinePosition, setVerticalLinePosition] = useState(null);
-  useEffect(() => {
-    const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const newWidth = entry.contentRect.width;
-        updateCurrentChartBodyWidth(newWidth);
-      }
-    });
-    if (bodyRef.current) {
-      ro.observe(bodyRef.current);
-    }
-    return () => {
-      if (bodyRef.current) {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        ro.unobserve(bodyRef.current);
-      }
-    };
-  }, [updateCurrentChartBodyWidth]);
   const style = {
     width: `${width}px`,
     height: `${numOfItems * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}px`
@@ -88,7 +68,7 @@ const GanttChartBody = (props) => {
         rowHeight: rowHeight,
         totalDuration: totalDuration,
         contractDuration: contractDuration,
-        GanttStart: start,
+        GanttStart: 0,
         showTooltip: showTooltipOnHover,
         hideTooltip: hideTooltip,
         handleTaskClick: handleTaskClick,
@@ -103,7 +83,7 @@ const GanttChartBody = (props) => {
           React.createElement(GanttChartBodyCtx.Provider, { value: { chartBodyWidth: width } }, annotations)
         )
       : null,
-    false ? React.createElement(GanttChartTooltip, { ref: tooltipRef, valueFormat: valueFormat }) : null,
+    false ? React.createElement(GanttChartTooltip, { ref: tooltipRef }) : null,
     showVerticalLineOnHover &&
       verticalLinePosition &&
       React.createElement(GanttChartHoverVerticalLine, { verticalLinePosition: verticalLinePosition }),

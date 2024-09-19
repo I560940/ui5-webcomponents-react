@@ -10,7 +10,7 @@ export interface RowLabelItemProps {
   isActive?: boolean;
   children: React.ReactNode;
   rowHeight: number;
-  style: CSSProperties['display'];
+  style?: CSSProperties;
 }
 
 export const RowLabelItem: React.FC<RowLabelItemProps> = (props) => {

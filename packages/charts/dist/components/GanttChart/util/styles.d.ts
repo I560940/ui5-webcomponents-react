@@ -3,6 +3,7 @@ export declare const dottedLine: string;
 export declare const useStyles: (data?: {
   theme?: Jss.Theme;
 }) => import('jss').Classes<
+  | 'collapseIcon'
   | 'main'
   | 'bodyContainer'
   | 'columnTitle'
@@ -21,7 +22,6 @@ export declare const useStyles: (data?: {
   | 'layer'
   | 'collapseContent'
   | 'collapseContentActive'
-  | 'collapseIcon'
   | 'legendIcon'
   | 'slider'
 >;

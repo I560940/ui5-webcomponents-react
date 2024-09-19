@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { GanttChartBody } from '../chartbody/GanttChartBody.js';
-import { GanttChartColumnLabel } from '../headers/GanttChartColumnLabel.js';
+import { GanttChartTimeline } from '../headers/GanttChartTimeline/GanttChartTimeline.js';
 import {
   COLUMN_COMPONENT_WIDTH,
   COLUMN_HEADER_HEIGHT,
@@ -18,11 +18,9 @@ export const GanttChartBodyColumn = (props) => {
     chartBodyScale,
     height,
     rowHeight,
-    numOfRows,
+    numberOfRows,
     totalDuration,
     contractDuration,
-    start,
-    valueFormat,
     annotations,
     showAnnotation,
     showVerticalLineOnHover,
@@ -31,7 +29,6 @@ export const GanttChartBodyColumn = (props) => {
     staticVerticalLinePosition,
     openRowIndex,
     openSubRowIndexes,
-    updateCurrentChartBodyWidth,
     onTaskClick
   } = props;
   const [isGrabbed, setIsGrabbed] = useState(false);
@@ -81,7 +78,7 @@ export const GanttChartBodyColumn = (props) => {
       onMouseUp: onMouseUp,
       onMouseMove: mouseMoveHandler
     },
-    React.createElement(GanttChartColumnLabel, {
+    React.createElement(GanttChartTimeline, {
       width: bodyWidth,
       height: COLUMN_HEADER_HEIGHT,
       totalDuration: totalDuration,
@@ -92,7 +89,7 @@ export const GanttChartBodyColumn = (props) => {
       width: bodyWidth,
       height: height - COLUMN_HEADER_HEIGHT - ROW_CONTRACT_DURATION_HEIGHT,
       rowHeight: rowHeight,
-      numOfItems: numOfRows,
+      numOfItems: numberOfRows,
       totalDuration: totalDuration,
       contractDuration: contractDuration,
       annotations: annotations,
@@ -100,13 +97,10 @@ export const GanttChartBodyColumn = (props) => {
       showVerticalLineOnHover: showVerticalLineOnHover,
       showStaticVerticalLine: showStaticVerticalLine,
       staticVerticalLinePosition: staticVerticalLinePosition,
-      start: start,
-      valueFormat: valueFormat,
       unscaledWidth: unscaledBodyWidth,
       onTaskClick: onTaskClick,
       openRowIndex: openRowIndex,
-      openSubRowIndexes: openSubRowIndexes,
-      updateCurrentChartBodyWidth: updateCurrentChartBodyWidth
+      openSubRowIndexes: openSubRowIndexes
     })
   );
 };

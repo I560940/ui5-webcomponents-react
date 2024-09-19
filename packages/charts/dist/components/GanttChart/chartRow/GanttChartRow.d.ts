@@ -23,7 +23,8 @@ export declare const GanttChartRow: {
     GanttStart,
     showTooltip,
     hideTooltip,
-    handleTaskClick
+    handleTaskClick,
+    ...rest
   }: GanttChartRowProps): React.JSX.Element;
   displayName: string;
 };

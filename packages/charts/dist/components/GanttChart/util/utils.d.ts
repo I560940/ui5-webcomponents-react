@@ -46,74 +46,48 @@ export declare const formatContractDuration: (contractDuration: DateRange) => st
  */
 export declare const calculateTotalDuration: (contractDuration: DateRange) => number | null;
 /**
- * Calculates the number of days in each month between two given dates.
- * It returns an array of objects, where each object contains the number of days in the month, the month label, and the corresponding year.
+ * Prepares timeline data based on the contract duration, broken down into months, quarters, and years.
  *
- * @param {string} startDate - The start date of the interval in string format.
- * @param {string} endDate - The end date of the interval in string format.
- * @returns {Array<{ days: number, labelMonth: string, labelYear: string }>} - An array of objects where each object contains:
- *   - `days`: The number of days in the month.
- *   - `labelMonth`: The month name in abbreviated form (e.g., "Jan", "Feb").
- *   - `labelYear`: The year of the month.
- */
-export declare const monthsAsNumberOfDays: (
-  startDate: string,
-  endDate: string
-) => {
-  days: number;
-  labelMonth: string;
-  labelYear: string;
-}[];
-/**
- * Calculates the number of days in each year between two given dates.
- * It returns an array of objects, where each object contains the number of days in the year and the corresponding year label.
+ * This function calculates the total number of days for each month, quarter, and year within the contract's
+ * duration, and organizes the data in a structured format for timeline visualization.
  *
- * @param {string} startDate - The start date of the interval in string format.
- * @param {string} endDate - The end date of the interval in string format.
- * @returns {Array<{ days: number, labelYear: string }>} - An array of objects where each object contains:
- *   - `days`: The number of days in the year.
- *   - `labelYear`: The year in string format.
- */
-export declare const yearsAsNumberOfDays: (
-  startDate: string,
-  endDate: string
-) => {
-  days: number;
-  labelYear: string;
-}[];
-/**
- * Calculates the number of days in each quarter between two given dates.
- * It returns an array of objects, where each object contains the number of days in the quarter and the corresponding quarter label.
- * The last quarter's duration is calculated up to the end date provided.
+ * @param {DateRange} contractDuration - An object containing `dateStart` and `dateEnd` properties representing the contract's duration.
+ * @returns {Object} - An object containing three arrays: `months`, `quarters`, and `years`.
  *
- * @param {string} startDate - The start date of the interval in string format.
- * @param {string} endDate - The end date of the interval in string format.
- * @returns {Array<{ days: number, quarterLabel: string }>} - An array of objects where each object contains:
- *   - `days`: The number of days in the quarter.
- *   - `quarterLabel`: The label of the quarter in the format "Q1", "Q2", "Q3", "Q4".
- */
-export declare const quatersAsNumberOfDays: (
-  startDate: string,
-  endDate: string
-) => {
-  days: number;
-  quarterLabel: string;
-}[];
-/**
- * Generates an array of day numbers for each month provided in the input.
- * It creates a flat array where each element represents a day, with the total number of days
- * accumulated across all months in the provided `monthsArray`.
+ * @property {Array} months - An array of objects representing each month within the contract duration.
+ * @property {string} months[].name - The name of the month (e.g., "January").
+ * @property {string} months[].year - The year the month belongs to.
+ * @property {number} months[].days - The total number of days in the month.
  *
- * @param {Array<{ days: number, labelMonth: string, labelYear: string }>} monthsArray - An array of objects where each object represents a month with:
- *   - `days`: The number of days in the month.
- *   - `labelMonth`: The name or label of the month.
- *   - `labelYear`: The year corresponding to the month.
- * @returns {number[]} - An array of numbers where each number represents a day, starting from 1 up to the total number of days across all months.
+ * @property {Array} quarters - An array of objects representing each quarter within the contract duration.
+ * @property {string} quarters[].name - The name of the quarter (e.g., "Q1").
+ * @property {number} quarters[].days - The total number of days in the quarter.
+ *
+ * @property {Array} years - An array of objects representing each year within the contract duration.
+ * @property {string} years[].name - The year as a string.
+ * @property {number} years[].days - The total number of days in the year.
+ *
+ * Example usage:
+ *
+ * const contractDuration = { dateStart: new Date('2022-01-01'), dateEnd: new Date('2023-12-31') };
+ * const timelineData = prepareTimelineData(contractDuration);
+ *
+ * console.log(timelineData.months); // [{ name: 'January', year: '2022', days: 31 }, ... ]
+ * console.log(timelineData.quarters); // [{ name: 'Q1', days: 90 }, ... ]
+ * console.log(timelineData.years); // [{ name: '2022', days: 365 }, ... ]
  */
-export declare const prepareDaysArray: (
-  monthsArray: {
+export declare const prepareTimelineData: (contractDuration: DateRange) => {
+  months: {
+    name: string;
+    year: string;
     days: number;
-    labelMonth: string;
-    labelYear: string;
-  }[]
-) => number[];
+  }[];
+  quarters: {
+    name: string;
+    days: number;
+  }[];
+  years: {
+    name: string;
+    days: number;
+  }[];
+};

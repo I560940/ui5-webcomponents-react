@@ -3,7 +3,7 @@ export const DEFAULT_WIDTH = 'auto';
 export const DEFAULT_NUMBER_OF_ROWS = 10;
 export const ROW_CONTRACT_DURATION_HEIGHT = 45;
 export const COLUMN_COMPONENT_TITLE = 'Component';
-export const COLUMN_COMPONENT_WIDTH = 190;
+export const COLUMN_COMPONENT_WIDTH = 280;
 export const COLUMN_STATUS_TITLE = 'Status';
 export const COLUMN_STATUS_WIDTH = 60;
 export const COLUMN_HEADER_HEIGHT = 70;
@@ -30,3 +30,9 @@ export const MAX_BODY_WIDTH = 65500;
 // GanttChartColumnLabels
 export const FONT_SIZE = 12;
 export const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+export const LABEL_Y_TOP_HALF = '0%';
+export const LABEL_Y_MID_HALF = '50%';
+export const LABEL_Y_BOTTOM_HALF = '100%';
+// Constants for segment width thresholds
+export const SEGMENT_WIDTH_FULL_LABEL = 20;
+export const SEGMENT_WIDTH_THRESHOLD = 1.2;

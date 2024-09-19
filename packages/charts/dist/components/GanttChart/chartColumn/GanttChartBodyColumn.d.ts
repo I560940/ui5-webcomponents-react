@@ -13,20 +13,17 @@ export interface GanttChartBodyColumnProps {
   chartBodyScale: number;
   height: number;
   rowHeight: number;
-  numOfRows: number;
+  numberOfRows: number;
   totalDuration: number;
   contractDuration: DateRange;
-  start: number;
   showAnnotation?: boolean;
   showVerticalLineOnHover?: boolean;
   showStaticVerticalLine?: boolean;
   showStatus?: boolean;
   staticVerticalLinePosition?: number;
-  valueFormat?: (value: number) => string;
   annotations?: ReactNode | ReactNode[];
   openRowIndex: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
-  updateCurrentChartBodyWidth: (newWidth: number) => void;
   onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
 }
 export declare const GanttChartBodyColumn: (props: GanttChartBodyColumnProps) => React.JSX.Element;

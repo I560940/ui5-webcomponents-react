@@ -6,6 +6,7 @@ const styles = {
   main: {
     backgroundColor: ThemingParameters.sapBaseColor,
     display: 'grid',
+    wodth: 'auto',
     gap: 0
   },
   bodyContainer: { overflow: 'hidden' },

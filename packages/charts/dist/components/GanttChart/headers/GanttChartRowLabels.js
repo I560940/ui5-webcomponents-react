@@ -1,3 +1,4 @@
+import { Icon } from '@ui5/webcomponents-react';
 import React from 'react';
 import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 import { useStyles } from '../util/styles.js';
@@ -31,16 +32,21 @@ export const GanttChartRowLabels = (props) => {
         const showCollapseIcon = row.details?.length > 0 && dataType === 'label';
         return React.createElement(
           React.Fragment,
-          null,
+          { key: `row-${rowIndex}` },
           React.createElement(
             RowLabelItem,
             {
               key: `item-${rowIndex}`,
               padding: '10px',
-              collapseIcon: showCollapseIcon ? (openRowIndex === rowIndex ? '▼' : '▶') : null,
+              collapseIcon: showCollapseIcon
+                ? openRowIndex === rowIndex
+                  ? React.createElement(Icon, { name: 'navigation-down-arrow' })
+                  : React.createElement(Icon, { name: 'navigation-right-arrow' })
+                : null,
               onClick: () => handleClick(rowIndex),
               isActive: true,
-              rowHeight: rowHeight
+              rowHeight: rowHeight,
+              style: { display: dataType === 'status' ? 'flex' : 'initial' }
             },
             row[dataType]
           ),
@@ -48,7 +54,7 @@ export const GanttChartRowLabels = (props) => {
             const showCollapseIcon = detail.subDetails?.length > 0 && dataType === 'label';
             return React.createElement(
               React.Fragment,
-              null,
+              { key: `row-detail-${detailIndex}` },
               React.createElement(
                 RowLabelItem,
                 {
@@ -56,8 +62,8 @@ export const GanttChartRowLabels = (props) => {
                   padding: dataType === 'label' ? '20px' : '10px',
                   collapseIcon: showCollapseIcon
                     ? openSubRowIndexes[`${rowIndex}-${detailIndex}`]
-                      ? '▼'
-                      : '▶'
+                      ? React.createElement(Icon, { name: 'navigation-down-arrow' })
+                      : React.createElement(Icon, { name: 'navigation-right-arrow' })
                     : null,
                   onClick: () => handleSubClick(rowIndex, detailIndex),
                   isActive: openRowIndex === rowIndex,

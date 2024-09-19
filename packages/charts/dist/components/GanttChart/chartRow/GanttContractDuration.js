@@ -3,6 +3,9 @@ import { formatContractDuration } from '../util/utils.js';
 export const GanttContractDuration = (props) => {
   const { contractDuration } = props;
   const formattedContractDuration = formatContractDuration(contractDuration);
+  if (!formattedContractDuration) {
+    return null;
+  }
   return React.createElement(
     'svg',
     {
