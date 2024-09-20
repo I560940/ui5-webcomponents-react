@@ -36,6 +36,7 @@ export const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Au
 export const LABEL_Y_TOP_HALF = '0%';
 export const LABEL_Y_MID_HALF = '50%';
 export const LABEL_Y_BOTTOM_HALF = '100%';
+export const LABEL_Y_OFFSET = -12;
 
 // Constants for segment width thresholds
 export const SEGMENT_WIDTH_FULL_LABEL = 20;
