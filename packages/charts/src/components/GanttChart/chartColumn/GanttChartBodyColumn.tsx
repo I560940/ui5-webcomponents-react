@@ -99,7 +99,7 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
       setMPos(e.clientX);
     }
   };
-
+  console.log({ dimensions });
   return (
     <div
       data-component-name="GanttChartBodyContainer"

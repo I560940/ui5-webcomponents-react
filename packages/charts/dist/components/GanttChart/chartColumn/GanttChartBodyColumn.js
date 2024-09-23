@@ -63,6 +63,7 @@ export const GanttChartBodyColumn = (props) => {
       setMPos(e.clientX);
     }
   };
+  console.log({ dimensions });
   return React.createElement(
     'div',
     {

@@ -83,7 +83,6 @@ export type DimensionsState = {
   height: number;
   chartWidth: number;
   chartHeight: number;
-  currentChartWidth: number;
 };
 export type ColumnDataType = 'label' | 'status';
 export type YearQuarters = {

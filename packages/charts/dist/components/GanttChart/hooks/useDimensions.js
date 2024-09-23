@@ -10,8 +10,7 @@ export const useDimensions = (showStatus, rowHeight, numberOfRows) => {
     width: 0,
     height: 0,
     chartWidth: 0,
-    chartHeight: 0,
-    currentChartWidth: 0
+    chartHeight: 0
   });
   const [chartBodyScale, setChartBodyScale] = useState(1);
   const unscaledBodyWidth = showStatus

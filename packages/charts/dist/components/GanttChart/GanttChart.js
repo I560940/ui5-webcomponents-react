@@ -51,8 +51,7 @@ const GanttChart = forwardRef((props, fRef) => {
           width: width,
           height: height,
           chartWidth: width - COLUMN_COMPONENT_WIDTH,
-          chartHeight: height - COLUMN_HEADER_HEIGHT - CONTROLS_ROW_HEIGHT,
-          currentChartWidth: bodyWidth
+          chartHeight: height - COLUMN_HEADER_HEIGHT - CONTROLS_ROW_HEIGHT
         });
         setChartBodyScale(1);
       });

@@ -12,8 +12,7 @@ export const useDimensions = (showStatus: boolean, rowHeight: number, numberOfRo
     width: 0,
     height: 0,
     chartWidth: 0,
-    chartHeight: 0,
-    currentChartWidth: 0
+    chartHeight: 0
   });
 
   const [chartBodyScale, setChartBodyScale] = useState(1);

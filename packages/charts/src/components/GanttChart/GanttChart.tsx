@@ -49,8 +49,11 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
     ...rest
   } = props;
   const { openRowIndex, openSubRowIndexes, numberOfRows, handleClick, handleSubClick } = useCollapsableRows(dataset);
-  const { dimensions, height, bodyWidth, gridTemplateColumns, setDimensions, chartBodyScale, setChartBodyScale } =
-    useDimensions(showStatus, rowHeight, numberOfRows);
+  const { dimensions, height, gridTemplateColumns, setDimensions, chartBodyScale, setChartBodyScale } = useDimensions(
+    showStatus,
+    rowHeight,
+    numberOfRows
+  );
   const { dateStart, dateEnd } = contractDuration;
   const totalDuration = calculateTotalDuration(contractDuration);
 
@@ -71,8 +74,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
           width: width,
           height: height,
           chartWidth: width - COLUMN_COMPONENT_WIDTH,
-          chartHeight: height - COLUMN_HEADER_HEIGHT - CONTROLS_ROW_HEIGHT,
-          currentChartWidth: bodyWidth
+          chartHeight: height - COLUMN_HEADER_HEIGHT - CONTROLS_ROW_HEIGHT
         });
         setChartBodyScale(1);
       });
