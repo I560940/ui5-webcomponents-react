@@ -66,22 +66,26 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
   const classes = useStyles();
 
   useEffect(() => {
-    const ro = new ResizeObserver((entries) => {
-      entries.forEach((entry) => {
-        const width = entry.contentBoxSize[0].inlineSize;
-        const height = entry.contentBoxSize[0].blockSize;
-        setDimensions({
-          width: width,
-          height: height,
-          chartWidth: width - COLUMN_COMPONENT_WIDTH,
-          chartHeight: height - COLUMN_HEADER_HEIGHT - CONTROLS_ROW_HEIGHT
+    if (!ref.current) return;
+    const timeoutId = setTimeout(() => {
+      const ro = new ResizeObserver((entries) => {
+        entries.forEach((entry) => {
+          const width = entry.contentBoxSize[0].inlineSize;
+          const height = entry.contentBoxSize[0].blockSize;
+          setDimensions({
+            width: width,
+            height: height,
+            chartWidth: width - COLUMN_COMPONENT_WIDTH,
+            chartHeight: height - COLUMN_HEADER_HEIGHT - CONTROLS_ROW_HEIGHT
+          });
+          setChartBodyScale(1);
         });
-        setChartBodyScale(1);
       });
-    });
-    if (ref.current != null) ro.observe(ref.current);
-    return () => ro.disconnect();
-  }, [setChartBodyScale, setDimensions]);
+      ro.observe(ref.current);
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, [ref, setChartBodyScale, setDimensions]);
 
   const resetScroll = () => {
     bodyConRef.current.scrollTo({ left: 0 });
