@@ -10,21 +10,21 @@ import { differenceInDays, endOfMonth, formatDistanceStrict, startOfMonth } from
  * @returns {number} - The total count of rows, including expanded rows and sub-rows.
  */
 export const countAllRows = (rows, openRowIndex, openSubRowIndexes) => {
-  let count = 0;
-  rows?.forEach((row, rowIndex) => {
-    count++;
-    if (row.details && rowIndex === openRowIndex) {
-      row.details.forEach((detail, detailIndex) => {
+    let count = 0;
+    rows?.forEach((row, rowIndex) => {
         count++;
-        if (detail.subDetails && openSubRowIndexes[`${rowIndex}-${detailIndex}`]) {
-          detail.subDetails.forEach(() => {
-            count++;
-          });
+        if (row.details && rowIndex === openRowIndex) {
+            row.details.forEach((detail, detailIndex) => {
+                count++;
+                if (detail.subDetails && openSubRowIndexes[`${rowIndex}-${detailIndex}`]) {
+                    detail.subDetails.forEach(() => {
+                        count++;
+                    });
+                }
+            });
         }
-      });
-    }
-  });
-  return count;
+    });
+    return count;
 };
 /**
  * Function to flatten a dataset of Gantt chart rows, including nested details and sub-details.
@@ -37,27 +37,27 @@ export const countAllRows = (rows, openRowIndex, openSubRowIndexes) => {
  * @returns {IGanttChartRow[]} - The flattened dataset, including expanded rows and sub-rows.
  */
 export const flattenDataset = (dataset, openRowIndex, openSubRowIndexes) => {
-  const flattenedDataset = [];
-  const flattenSubDetails = (subDetails) => {
-    subDetails.forEach((subDetail) => {
-      flattenedDataset.push(subDetail);
+    const flattenedDataset = [];
+    const flattenSubDetails = (subDetails) => {
+        subDetails.forEach((subDetail) => {
+            flattenedDataset.push(subDetail);
+        });
+    };
+    const flattenDetails = (details, rowIndex) => {
+        details.forEach((detail, detailIndex) => {
+            flattenedDataset.push(detail);
+            if (detail.subDetails && openSubRowIndexes[`${rowIndex}-${detailIndex}`]) {
+                flattenSubDetails(detail.subDetails);
+            }
+        });
+    };
+    dataset?.forEach((row, rowIndex) => {
+        flattenedDataset.push(row);
+        if (row.details && rowIndex === openRowIndex) {
+            flattenDetails(row.details, rowIndex);
+        }
     });
-  };
-  const flattenDetails = (details, rowIndex) => {
-    details.forEach((detail, detailIndex) => {
-      flattenedDataset.push(detail);
-      if (detail.subDetails && openSubRowIndexes[`${rowIndex}-${detailIndex}`]) {
-        flattenSubDetails(detail.subDetails);
-      }
-    });
-  };
-  dataset?.forEach((row, rowIndex) => {
-    flattenedDataset.push(row);
-    if (row.details && rowIndex === openRowIndex) {
-      flattenDetails(row.details, rowIndex);
-    }
-  });
-  return flattenedDataset;
+    return flattenedDataset;
 };
 /**
  * Formats the duration between the start and end dates of a contract.
@@ -67,10 +67,10 @@ export const flattenDataset = (dataset, openRowIndex, openSubRowIndexes) => {
  * @returns {string | null} - A formatted string representing the strict difference between the start and end dates (e.g., "3 months", "1 year"), or `null` if the input is invalid.
  */
 export const formatContractDuration = (contractDuration) => {
-  if (!contractDuration || !contractDuration.dateStart || !contractDuration.dateEnd) {
-    return null;
-  }
-  return formatDistanceStrict(new Date(contractDuration.dateStart), new Date(contractDuration.dateEnd));
+    if (!contractDuration || !contractDuration.dateStart || !contractDuration.dateEnd) {
+        return null;
+    }
+    return formatDistanceStrict(new Date(contractDuration.dateStart), new Date(contractDuration.dateEnd));
 };
 /**
  * Calculates the total duration of a contract in days.
@@ -80,11 +80,11 @@ export const formatContractDuration = (contractDuration) => {
  * @returns {number | null} - The total number of days between the start and end dates, or `null` if the input is invalid.
  */
 export const calculateTotalDuration = (contractDuration) => {
-  const { dateStart, dateEnd } = contractDuration;
-  if (!dateStart || !dateEnd) {
-    return null;
-  }
-  const start = startOfMonth(new Date(dateStart));
-  const end = endOfMonth(new Date(dateEnd));
-  return differenceInDays(start, end);
+    const { dateStart, dateEnd } = contractDuration;
+    if (!dateStart || !dateEnd) {
+        return null;
+    }
+    const start = startOfMonth(new Date(dateStart));
+    const end = endOfMonth(new Date(dateEnd));
+    return differenceInDays(start, end);
 };
