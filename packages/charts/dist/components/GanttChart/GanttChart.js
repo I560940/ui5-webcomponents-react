@@ -33,6 +33,7 @@ const GanttChart = forwardRef((props, fRef) => {
   const { openRowIndex, openSubRowIndexes, numberOfRows, handleClick, handleSubClick } = useCollapsableRows(dataset);
   const { dimensions, height, bodyWidth, gridTemplateColumns, setDimensions, chartBodyScale, setChartBodyScale } =
     useDimensions(showStatus, rowHeight, numberOfRows);
+  const { dateStart, dateEnd } = contractDuration;
   const totalDuration = calculateTotalDuration(contractDuration);
   const style = {
     height: `${height}px`,
@@ -63,7 +64,7 @@ const GanttChart = forwardRef((props, fRef) => {
   const resetScroll = () => {
     bodyConRef.current.scrollTo({ left: 0 });
   };
-  if (!dataset || dataset?.length === 0 || !contractDuration) {
+  if (!dataset || dataset?.length === 0 || !dateStart || !dateEnd) {
     return React.createElement(GanttChartPlaceholder, null);
   }
   return React.createElement(

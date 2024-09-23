@@ -1,18 +1,4 @@
-import {
-  differenceInDays,
-  eachMonthOfInterval,
-  eachQuarterOfInterval,
-  eachYearOfInterval,
-  endOfMonth,
-  endOfQuarter,
-  endOfYear,
-  formatDistanceStrict,
-  getDaysInMonth,
-  getQuarter,
-  max,
-  min
-} from 'date-fns/fp';
-import { MONTH_NAMES } from './constants.js';
+import { differenceInDays, endOfMonth, formatDistanceStrict, startOfMonth } from 'date-fns/fp';
 /**
  * Function to count all rows in a dataset of Gantt chart rows, including nested details and sub-details.
  * It calculates the total number of rows based on the expanded rows and sub-rows determined by the provided open row and sub-row indexes.
@@ -94,79 +80,11 @@ export const formatContractDuration = (contractDuration) => {
  * @returns {number | null} - The total number of days between the start and end dates, or `null` if the input is invalid.
  */
 export const calculateTotalDuration = (contractDuration) => {
-  if (!contractDuration) {
+  const { dateStart, dateEnd } = contractDuration;
+  if (!dateStart || !dateEnd) {
     return null;
   }
-  return differenceInDays(contractDuration.dateStart, contractDuration.dateEnd);
-};
-/**
- * Prepares timeline data based on the contract duration, broken down into months, quarters, and years.
- *
- * This function calculates the total number of days for each month, quarter, and year within the contract's
- * duration, and organizes the data in a structured format for timeline visualization.
- *
- * @param {DateRange} contractDuration - An object containing `dateStart` and `dateEnd` properties representing the contract's duration.
- * @returns {Object} - An object containing three arrays: `months`, `quarters`, and `years`.
- *
- * @property {Array} months - An array of objects representing each month within the contract duration.
- * @property {string} months[].name - The name of the month (e.g., "January").
- * @property {string} months[].year - The year the month belongs to.
- * @property {number} months[].days - The total number of days in the month.
- *
- * @property {Array} quarters - An array of objects representing each quarter within the contract duration.
- * @property {string} quarters[].name - The name of the quarter (e.g., "Q1").
- * @property {number} quarters[].days - The total number of days in the quarter.
- *
- * @property {Array} years - An array of objects representing each year within the contract duration.
- * @property {string} years[].name - The year as a string.
- * @property {number} years[].days - The total number of days in the year.
- *
- * Example usage:
- *
- * const contractDuration = { dateStart: new Date('2022-01-01'), dateEnd: new Date('2023-12-31') };
- * const timelineData = prepareTimelineData(contractDuration);
- *
- * console.log(timelineData.months); // [{ name: 'January', year: '2022', days: 31 }, ... ]
- * console.log(timelineData.quarters); // [{ name: 'Q1', days: 90 }, ... ]
- * console.log(timelineData.years); // [{ name: '2022', days: 365 }, ... ]
- */
-export const prepareTimelineData = (contractDuration) => {
-  const { dateStart, dateEnd } = contractDuration;
-  const start = new Date(dateStart);
-  const end = new Date(dateEnd);
-  const months = eachMonthOfInterval({ start, end }).map((month) => ({
-    name: MONTH_NAMES[month.getMonth()],
-    year: month.getFullYear().toString(),
-    days: getDaysInMonth(month)
-  }));
-  const quarters = eachQuarterOfInterval({ start, end }).map((quarterStart) => {
-    const quarterEnd = endOfQuarter(quarterStart);
-    const actualStart = max([quarterStart, start]);
-    const actualEnd = min([quarterEnd, end]);
-    const months = eachMonthOfInterval({ start: actualStart, end: actualEnd });
-    const daysInQuarter = months.reduce((totalDays, monthStart) => {
-      const monthEnd = endOfMonth(monthStart);
-      const daysInMonth = differenceInDays(monthStart, monthEnd) + 1;
-      return totalDays + daysInMonth;
-    }, 0);
-    return {
-      name: `Q${getQuarter(quarterStart)}`,
-      days: daysInQuarter
-    };
-  });
-  const years = eachYearOfInterval({ start, end }).map((yearStart) => {
-    const actualStart = max([yearStart, start]);
-    const yearEnd = endOfYear(yearStart);
-    const months = eachMonthOfInterval({ start: actualStart, end: yearEnd }).map((monthStart) => {
-      const monthEnd = endOfMonth(monthStart);
-      const daysInMonth = differenceInDays(monthStart, monthEnd) + 1;
-      return daysInMonth;
-    });
-    const totalDaysInYear = months.reduce((sum, days) => sum + days, 0);
-    return {
-      name: yearStart.getFullYear().toString(),
-      days: totalDaysInYear
-    };
-  });
-  return { months, quarters, years };
+  const start = startOfMonth(new Date(dateStart));
+  const end = endOfMonth(new Date(dateEnd));
+  return differenceInDays(start, end);
 };

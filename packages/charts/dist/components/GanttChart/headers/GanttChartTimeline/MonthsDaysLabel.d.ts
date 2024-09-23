@@ -1,8 +1,7 @@
 import React from 'react';
-import type { TimeUnit } from '../../types/GanttChartTypes.js';
+import type { TimelineUnit } from '../../types/GanttChartTypes.js';
 export interface MonthsDaysLabelProps {
   segmentWidth: number;
-  height: number;
-  months: TimeUnit[];
+  months: TimelineUnit[];
 }
 export declare const MonthsDaysLabel: (props: MonthsDaysLabelProps) => React.JSX.Element;

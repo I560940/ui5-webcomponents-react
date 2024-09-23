@@ -28,5 +28,6 @@ export declare const MONTH_NAMES: string[];
 export declare const LABEL_Y_TOP_HALF = '0%';
 export declare const LABEL_Y_MID_HALF = '50%';
 export declare const LABEL_Y_BOTTOM_HALF = '100%';
+export declare const LABEL_Y_OFFSET = -12;
 export declare const SEGMENT_WIDTH_FULL_LABEL = 20;
 export declare const SEGMENT_WIDTH_THRESHOLD = 1.2;
