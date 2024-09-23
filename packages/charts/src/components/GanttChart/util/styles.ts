@@ -8,7 +8,7 @@ const styles = {
   main: {
     backgroundColor: ThemingParameters.sapBaseColor,
     display: 'grid',
-    wodth: 'auto',
+    width: 'auto',
     gap: 0
   },
 
