@@ -82,7 +82,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
         });
       });
       ro.observe(ref.current);
-    }, 0);
+    }, 50);
 
     return () => clearTimeout(timeoutId);
   }, [ref, setChartBodyScale, setDimensions]);
