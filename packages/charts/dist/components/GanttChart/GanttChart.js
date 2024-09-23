@@ -31,8 +31,11 @@ const GanttChart = forwardRef((props, fRef) => {
     ...rest
   } = props;
   const { openRowIndex, openSubRowIndexes, numberOfRows, handleClick, handleSubClick } = useCollapsableRows(dataset);
-  const { dimensions, height, bodyWidth, gridTemplateColumns, setDimensions, chartBodyScale, setChartBodyScale } =
-    useDimensions(showStatus, rowHeight, numberOfRows);
+  const { dimensions, height, gridTemplateColumns, setDimensions, chartBodyScale, setChartBodyScale } = useDimensions(
+    showStatus,
+    rowHeight,
+    numberOfRows
+  );
   const { dateStart, dateEnd } = contractDuration;
   const totalDuration = calculateTotalDuration(contractDuration);
   const style = {
