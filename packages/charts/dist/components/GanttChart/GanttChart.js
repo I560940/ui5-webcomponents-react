@@ -61,8 +61,7 @@ const GanttChart = forwardRef((props, fRef) => {
     });
     if (ref.current != null) ro.observe(ref.current);
     return () => ro.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setChartBodyScale, setDimensions]);
   const resetScroll = () => {
     bodyConRef.current.scrollTo({ left: 0 });
   };
