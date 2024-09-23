@@ -1,23 +1,23 @@
 import React from 'react';
-import type { TimelineUnit, YearQuarters } from '../../types/GanttChartTypes.js';
+import type { QuarterMonths, TimelineUnit } from '../../types/GanttChartTypes.js';
 import { LABEL_Y_BOTTOM_HALF, LABEL_Y_MID_HALF, LABEL_Y_OFFSET, LABEL_Y_TOP_HALF } from '../../util/constants.js';
 import { Label } from './Label.js';
 
-export interface YearsQuartersLabelProps {
+export interface QuartersMonthsLabelProps {
   segmentWidth: number;
-  yearsQuarters: YearQuarters[];
+  quartersMonths: QuarterMonths[];
 }
 
-export const YearsQuartersLabel = (props: YearsQuartersLabelProps) => {
-  const { segmentWidth, yearsQuarters } = props;
+export const QuartersMonthsLabel = (props: QuartersMonthsLabelProps) => {
+  const { segmentWidth, quartersMonths } = props;
 
-  if (!yearsQuarters.length) {
+  if (!quartersMonths.length) {
     return null;
   }
 
-  const renderQuarterLabel = (month: TimelineUnit, monthIndex: number, quarterIndex: number, xPosition: number) => (
+  const renderMonthLabel = (month: TimelineUnit, monthIndex: number, quarterIndex: number, xPosition: number) => (
     <Label
-      key={`quarter-${quarterIndex}-${monthIndex}`}
+      key={`month-${quarterIndex}-${monthIndex}`}
       x1={xPosition * segmentWidth}
       x2={xPosition * segmentWidth}
       y1={LABEL_Y_MID_HALF}
@@ -33,27 +33,27 @@ export const YearsQuartersLabel = (props: YearsQuartersLabelProps) => {
   return (
     <>
       {
-        yearsQuarters.reduce(
-          (acc, year, yearIndex) => {
+        quartersMonths.reduce(
+          (acc, quarter, quarterIndex) => {
             acc.lines.push(
               <Label
-                key={`year-${yearIndex}`}
+                key={`quarter-${quarterIndex}`}
                 x1={acc.previousTotal * segmentWidth}
                 x2={acc.previousTotal * segmentWidth}
                 y1={LABEL_Y_TOP_HALF}
                 y2={LABEL_Y_MID_HALF}
-                x={acc.previousTotal * segmentWidth + (segmentWidth * year.year.days) / 2}
+                x={acc.previousTotal * segmentWidth + (segmentWidth * quarter.quarter.days) / 2}
                 y={LABEL_Y_MID_HALF}
                 dy={LABEL_Y_OFFSET}
               >
-                {year.year.name}
+                {quarter.quarter.name}
               </Label>
             );
-            year.quarters.forEach((quarter, quarterIndex) => {
-              const quarterXPosition = acc.previousTotal + quarter.days;
+            quarter.months.forEach((month, monthIndex) => {
+              const monthXPosition = acc.previousTotal + month.days;
 
-              acc.lines.push(renderQuarterLabel(quarter, quarterIndex, yearIndex, quarterXPosition));
-              acc.previousTotal += quarter.days;
+              acc.lines.push(renderMonthLabel(month, monthIndex, quarterIndex, monthXPosition));
+              acc.previousTotal += month.days;
             });
 
             return acc;
