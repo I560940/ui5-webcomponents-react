@@ -9,11 +9,11 @@ export const GanttChartTimeline = (props) => {
   const { width, height, totalDuration, contractDuration } = props;
   const classes = useStyles();
   const style = {
-    width: width,
+    width: Math.abs(width),
     height: height
   };
   const { monthsDays, quartersMonths, yearsQuarters } = prepareTimelineData(contractDuration);
-  const segmentWidth = width / totalDuration;
+  const segmentWidth = Math.abs(width) / totalDuration;
   return React.createElement(
     'div',
     { className: classes.columnLabel, style: style, 'data-component-name': 'GanttChartTimeline' },
