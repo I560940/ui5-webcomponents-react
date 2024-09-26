@@ -2,10 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { ThemingParameters } from '@ui5/webcomponents-react-base';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React from 'react';
-import { Invention, TimingFigure } from './examples/Annotations.js';
-import { dummyDataSet, inventionDataset, schedulingEDFData, dummyCollapsableDataSet } from './examples/Dataset.js';
+import { dummyDataSet } from './examples/Dataset.js';
 import { GanttChart } from './GanttChart.js';
-import { GanttChartAnnotation } from './GanttChartAnnotation.js';
 
 const meta = {
   title: 'GanttChart',
