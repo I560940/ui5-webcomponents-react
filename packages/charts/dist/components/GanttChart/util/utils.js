@@ -10,54 +10,21 @@ import { differenceInDays, endOfMonth, formatDistanceStrict, startOfMonth } from
  * @returns {number} - The total count of rows, including expanded rows and sub-rows.
  */
 export const countAllRows = (rows, openRowIndex, openSubRowIndexes) => {
-  let count = 0;
-  rows?.forEach((row, rowIndex) => {
-    count++;
-    if (row.details && rowIndex === openRowIndex) {
-      row.details.forEach((detail, detailIndex) => {
+    let count = 0;
+    rows?.forEach((row, rowIndex) => {
         count++;
-        if (detail.subDetails && openSubRowIndexes[`${rowIndex}-${detailIndex}`]) {
-          detail.subDetails.forEach(() => {
-            count++;
-          });
+        if (row.details && rowIndex === openRowIndex) {
+            row.details.forEach((detail, detailIndex) => {
+                count++;
+                if (detail.subDetails && openSubRowIndexes[`${rowIndex}-${detailIndex}`]) {
+                    detail.subDetails.forEach(() => {
+                        count++;
+                    });
+                }
+            });
         }
-      });
-    }
-  });
-  return count;
-};
-/**
- * Function to flatten a dataset of Gantt chart rows, including nested details and sub-details.
- * It processes the dataset to include the expanded rows based on the specified open row and sub-row indexes.
- *
- * @param {IGanttChartRow[]} dataset - The original dataset containing Gantt chart rows.
- * @param {OpenRowIndex} openRowIndex - The index of the row that is currently expanded.
- * @param {OpenSubRowIndexes} openSubRowIndexes - An object mapping the indexes of expanded sub-rows.
- *
- * @returns {IGanttChartRow[]} - The flattened dataset, including expanded rows and sub-rows.
- */
-export const flattenDataset = (dataset, openRowIndex, openSubRowIndexes) => {
-  const flattenedDataset = [];
-  const flattenSubDetails = (subDetails) => {
-    subDetails.forEach((subDetail) => {
-      flattenedDataset.push(subDetail);
     });
-  };
-  const flattenDetails = (details, rowIndex) => {
-    details.forEach((detail, detailIndex) => {
-      flattenedDataset.push(detail);
-      if (detail.subDetails && openSubRowIndexes[`${rowIndex}-${detailIndex}`]) {
-        flattenSubDetails(detail.subDetails);
-      }
-    });
-  };
-  dataset?.forEach((row, rowIndex) => {
-    flattenedDataset.push(row);
-    if (row.details && rowIndex === openRowIndex) {
-      flattenDetails(row.details, rowIndex);
-    }
-  });
-  return flattenedDataset;
+    return count;
 };
 /**
  * Formats the duration between the start and end dates of a contract.
@@ -67,10 +34,10 @@ export const flattenDataset = (dataset, openRowIndex, openSubRowIndexes) => {
  * @returns {string | null} - A formatted string representing the strict difference between the start and end dates (e.g., "3 months", "1 year"), or `null` if the input is invalid.
  */
 export const formatContractDuration = (contractDuration) => {
-  if (!contractDuration || !contractDuration.dateStart || !contractDuration.dateEnd) {
-    return null;
-  }
-  return formatDistanceStrict(new Date(contractDuration.dateStart), new Date(contractDuration.dateEnd));
+    if (!contractDuration || !contractDuration.dateStart || !contractDuration.dateEnd) {
+        return null;
+    }
+    return formatDistanceStrict(new Date(contractDuration.dateStart), new Date(contractDuration.dateEnd));
 };
 /**
  * Calculates the total duration of a contract in days.
@@ -80,11 +47,37 @@ export const formatContractDuration = (contractDuration) => {
  * @returns {number | null} - The total number of days between the start and end dates, or `null` if the input is invalid.
  */
 export const calculateTotalDuration = (contractDuration) => {
-  const { dateStart, dateEnd } = contractDuration;
-  if (!dateStart || !dateEnd) {
-    return null;
-  }
-  const start = startOfMonth(new Date(dateStart));
-  const end = endOfMonth(new Date(dateEnd));
-  return differenceInDays(start, end);
+    const { dateStart, dateEnd } = contractDuration;
+    if (!dateStart || !dateEnd) {
+        return null;
+    }
+    const start = startOfMonth(new Date(dateStart));
+    const end = endOfMonth(new Date(dateEnd));
+    return differenceInDays(start, end);
+};
+/**
+ * Counts the duration of a task in days.
+ *
+ * @param {string} dateStart - The start date of the task in ISO format.
+ * @param {string} dateEnd - The end date of the task in ISO format.
+ *
+ * @returns {number} - The duration of the task in days.
+ */
+export const countTaskDuration = (dateStart, dateEnd) => {
+    const start = new Date(dateStart);
+    const end = new Date(dateEnd);
+    const diffInMilliseconds = Math.abs(end.getTime() - start.getTime());
+    return diffInMilliseconds / (1000 * 60 * 60 * 24);
+};
+export const getTaskStartTime = (contractStartDate, taskStartDate) => {
+    const contractStart = new Date(contractStartDate);
+    const taskStart = new Date(taskStartDate);
+    const diffInMilliseconds = Math.abs(contractStart.getTime() - taskStart.getTime());
+    return diffInMilliseconds / (1000 * 60 * 60 * 24) - 1;
+};
+export const getEventStartTime = (contractStartDate, date) => {
+    const eventDate = new Date(date);
+    const contractStart = new Date(contractStartDate);
+    const diffInMilliseconds = Math.abs(contractStart.getTime() - eventDate.getTime());
+    return diffInMilliseconds / (1000 * 60 * 60 * 24);
 };

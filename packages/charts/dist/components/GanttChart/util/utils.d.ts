@@ -9,26 +9,7 @@ import type { DateRange, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from 
  *
  * @returns {number} - The total count of rows, including expanded rows and sub-rows.
  */
-export declare const countAllRows: (
-  rows: IGanttChartRow[],
-  openRowIndex: OpenRowIndex,
-  openSubRowIndexes: OpenSubRowIndexes
-) => number;
-/**
- * Function to flatten a dataset of Gantt chart rows, including nested details and sub-details.
- * It processes the dataset to include the expanded rows based on the specified open row and sub-row indexes.
- *
- * @param {IGanttChartRow[]} dataset - The original dataset containing Gantt chart rows.
- * @param {OpenRowIndex} openRowIndex - The index of the row that is currently expanded.
- * @param {OpenSubRowIndexes} openSubRowIndexes - An object mapping the indexes of expanded sub-rows.
- *
- * @returns {IGanttChartRow[]} - The flattened dataset, including expanded rows and sub-rows.
- */
-export declare const flattenDataset: (
-  dataset: IGanttChartRow[],
-  openRowIndex: OpenRowIndex,
-  openSubRowIndexes: OpenSubRowIndexes
-) => IGanttChartRow[];
+export declare const countAllRows: (rows: IGanttChartRow[], openRowIndex: OpenRowIndex, openSubRowIndexes: OpenSubRowIndexes) => number;
 /**
  * Formats the duration between the start and end dates of a contract.
  * It calculates the strict time difference between the two dates and returns the result in a human-readable format.
@@ -45,3 +26,14 @@ export declare const formatContractDuration: (contractDuration: DateRange) => st
  * @returns {number | null} - The total number of days between the start and end dates, or `null` if the input is invalid.
  */
 export declare const calculateTotalDuration: (contractDuration: DateRange) => number | null;
+/**
+ * Counts the duration of a task in days.
+ *
+ * @param {string} dateStart - The start date of the task in ISO format.
+ * @param {string} dateEnd - The end date of the task in ISO format.
+ *
+ * @returns {number} - The duration of the task in days.
+ */
+export declare const countTaskDuration: (dateStart: string, dateEnd: string) => number;
+export declare const getTaskStartTime: (contractStartDate: string, taskStartDate: string) => number;
+export declare const getEventStartTime: (contractStartDate: string, date: string) => number;
