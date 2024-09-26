@@ -1,4 +1,4 @@
-import { FlexBox, Icon, Slider } from '@ui5/webcomponents-react';
+import { FlexBox, Icon, Slider, Button } from '@ui5/webcomponents-react';
 import React, { useEffect, useState } from 'react';
 import type { DimensionsState } from '../types/GanttChartTypes.js';
 import { CONTROLS_ROW_HEIGHT, SCALE_FACTOR } from '../util/constants.js';
@@ -11,10 +11,12 @@ export interface GanttChartZoomSliderProps {
   dimensions: DimensionsState;
   resetScroll: () => void;
   onScale: (x: number) => void;
+  onLegendClick: (event: React.MouseEvent) => void;
 }
 
 export const GanttChartZoomSlider = (props: GanttChartZoomSliderProps) => {
   const { onScale } = props;
+  const { onLegendClick } = props;
   const [sliderValue, setSliderValue] = useState(50);
   // TODO: consts to be exported to constants.ts
   const minValue = 0;
@@ -42,6 +44,10 @@ export const GanttChartZoomSlider = (props: GanttChartZoomSliderProps) => {
     onScale(Math.pow(SCALE_FACTOR, sliderValue));
   }, [onScale, sliderValue]);
 
+  const handleClick = (event: React.MouseEvent) => {
+    onLegendClick(event);
+  };
+
   return (
     <FlexBox justifyContent="End" style={{ height: CONTROLS_ROW_HEIGHT }}>
       <FlexBox alignItems="Center" style={{ marginRight: '24px' }}>
@@ -57,7 +63,7 @@ export const GanttChartZoomSlider = (props: GanttChartZoomSliderProps) => {
         <Icon name="zoom-in" onClick={increaseValue} style={{ cursor: 'pointer' }} />
       </FlexBox>
       <FlexBox alignItems="Center" style={{ marginRight: '12px' }}>
-        <Icon name="legend" design="Information" />
+        <Button icon="legend" design="Transparent" onClick={handleClick} />
       </FlexBox>
     </FlexBox>
   );

@@ -9,11 +9,7 @@ import type { DateRange, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from 
  *
  * @returns {number} - The total count of rows, including expanded rows and sub-rows.
  */
-export declare const countAllRows: (
-  rows: IGanttChartRow[],
-  openRowIndex: OpenRowIndex,
-  openSubRowIndexes: OpenSubRowIndexes
-) => number;
+export declare const countAllRows: (rows: IGanttChartRow[], openRowIndex: OpenRowIndex, openSubRowIndexes: OpenSubRowIndexes) => number;
 /**
  * Function to flatten a dataset of Gantt chart rows, including nested details and sub-details.
  * It processes the dataset to include the expanded rows based on the specified open row and sub-row indexes.
@@ -24,11 +20,7 @@ export declare const countAllRows: (
  *
  * @returns {IGanttChartRow[]} - The flattened dataset, including expanded rows and sub-rows.
  */
-export declare const flattenDataset: (
-  dataset: IGanttChartRow[],
-  openRowIndex: OpenRowIndex,
-  openSubRowIndexes: OpenSubRowIndexes
-) => IGanttChartRow[];
+export declare const flattenDataset: (dataset: IGanttChartRow[], openRowIndex: OpenRowIndex, openSubRowIndexes: OpenSubRowIndexes) => IGanttChartRow[];
 /**
  * Formats the duration between the start and end dates of a contract.
  * It calculates the strict time difference between the two dates and returns the result in a human-readable format.
