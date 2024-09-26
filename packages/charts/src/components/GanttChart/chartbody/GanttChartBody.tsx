@@ -9,7 +9,6 @@ import { GanttChartHoverVerticalLine } from './GanttChartHoverVerticalLine.js';
 import { GanttChartLayer } from './GanttChartLayer.js';
 import { GanttChartStaticVerticalLine } from './GanttChartStaticVerticalLine.js';
 import type { GanttTooltipHandle } from './GanttChartTooltip.js';
-import { GanttChartTooltip } from './GanttChartTooltip.js';
 
 export interface GanttChartBodyProps {
   dataset: IGanttChartRow[];
@@ -120,8 +119,6 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
         </GanttChartLayer>
       ) : null}
 
-      {/* TODO: Remove this component */}
-      {false ? <GanttChartTooltip ref={tooltipRef} /> : null}
       {showVerticalLineOnHover && verticalLinePosition && (
         <GanttChartHoverVerticalLine verticalLinePosition={verticalLinePosition} />
       )}

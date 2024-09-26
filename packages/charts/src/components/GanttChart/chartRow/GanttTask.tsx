@@ -1,7 +1,10 @@
 import { throttle } from '@ui5/webcomponents-react-base';
 import type { CSSProperties } from 'react';
 import React, { useState } from 'react';
+import type { IGanttChartEvent } from '../types/GanttChartTypes.js';
 import { HOVER_OPACITY, NORMAL_OPACITY, THROTTLE_INTERVAL } from '../util/constants.js';
+import { getEventStartTime } from '../util/utils.js';
+import { GanttChartEvent } from './GanttChartEvent.js';
 
 interface GanttTaskProps {
   /**
@@ -56,6 +59,10 @@ interface GanttTaskProps {
   handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
 
   hideTooltip: () => void;
+
+  events: IGanttChartEvent[];
+
+  contractStartDate: string;
 }
 
 export const GanttTask = ({
@@ -68,7 +75,9 @@ export const GanttTask = ({
   GanttStart,
   showTooltip,
   hideTooltip,
-  handleTaskClick
+  handleTaskClick,
+  events,
+  contractStartDate
 }: GanttTaskProps) => {
   const [opacity, setOpacity] = useState(NORMAL_OPACITY);
   const onMouseLeave = (evt: React.MouseEvent<SVGRectElement, MouseEvent>) => {
@@ -97,20 +106,38 @@ export const GanttTask = ({
   }
 
   return (
-    <rect
-      data-component-name="GanttChartTask"
-      id={id}
-      x={`${((startTime - GanttStart) / totalDuration) * 100}%`}
-      y="10%"
-      width={`${(duration / totalDuration) * 100}%`}
-      height="80%"
-      rx="4"
-      ry="4"
-      style={{ fill: color, pointerEvents: 'auto', cursor: 'pointer', opacity: opacity }}
-      onMouseLeave={onMouseLeave}
-      onMouseMove={onMouseMove}
-      onClick={handleClick}
-    />
+    <g>
+      <rect
+        data-component-name="GanttChartTaskRect"
+        id={id}
+        x={`${((startTime + 1 - GanttStart) / totalDuration) * 100}%`}
+        y="10%"
+        width={`${(duration / totalDuration) * 100}%`}
+        height="70%"
+        rx="4"
+        ry="4"
+        style={{
+          fill: color,
+          pointerEvents: 'auto',
+          cursor: 'pointer',
+          opacity: opacity,
+          stroke: '#788FA6',
+          strokeWidth: 1.5
+        }}
+        onMouseLeave={onMouseLeave}
+        onMouseMove={onMouseMove}
+        onClick={handleClick}
+      />
+      {events.map((event) => (
+        <GanttChartEvent
+          date={event.date}
+          icon={event.icon}
+          startTime={getEventStartTime(contractStartDate, event.date)}
+          GanttStart={GanttStart}
+          totalDuration={totalDuration}
+        />
+      ))}
+    </g>
   );
 };
 
