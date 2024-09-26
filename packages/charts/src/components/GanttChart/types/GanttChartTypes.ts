@@ -4,7 +4,8 @@ export interface IGanttChartRow {
   id: string;
   label: string;
   status?: string;
-  details?: string;
+  details?: IGanttChartRow[];
+  subDetails?: IGanttChartRow[];
   tasks: IGanttChartTask[];
 }
 
