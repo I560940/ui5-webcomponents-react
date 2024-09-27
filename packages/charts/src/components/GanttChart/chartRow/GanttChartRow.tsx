@@ -1,7 +1,7 @@
 import React from 'react';
-import type { IGanttChartRow } from '../types/GanttChartTypes.js';
-// import { GanttMilestone } from './GanttMilestone.js';
+import type { DateRange, IGanttChartRow } from '../types/GanttChartTypes.js';
 import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
+import { countTaskDuration, getStartTime } from '../util/utils.js';
 import { GanttTask } from './GanttTask.js';
 
 interface GanttChartRowProps {
@@ -14,6 +14,7 @@ interface GanttChartRowProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
   hideTooltip: () => void;
+  contractDuration: DateRange;
 }
 
 /**
@@ -29,9 +30,9 @@ export const GanttChartRow = ({
   showTooltip,
   hideTooltip,
   handleTaskClick,
+  contractDuration,
   ...rest
 }: GanttChartRowProps) => {
-  rowData.color = rowData.color ?? `var(--sapChart_OrderedColor_${(rowIndex % 11) + 1})`;
   return (
     <svg
       x="0"
@@ -45,35 +46,22 @@ export const GanttChartRow = ({
       {rowData.tasks?.map((task, index) => {
         return (
           <GanttTask
-            key={index + 1}
+            key={task.id + index + task.dateStart + task.dateEnd}
             id={task.id}
-            label={task.label ?? rowData.label}
-            startTime={task.start}
-            duration={task.duration}
+            label={task.status ?? 'Elo'}
+            startTime={getStartTime(contractDuration?.dateStart, task.dateStart)}
+            duration={countTaskDuration(task.dateStart, task.dateEnd)}
             totalDuration={totalDuration}
-            color={task.color ?? rowData.color}
+            color={task.color}
             GanttStart={GanttStart}
             showTooltip={showTooltip}
             hideTooltip={hideTooltip}
             handleTaskClick={handleTaskClick}
+            events={task.events}
+            contractStartDate={contractDuration.dateStart}
           />
         );
       })}
-      {/* {rowData.milestones?.map((mStone, index) => {
-        return (
-          <GanttMilestone
-            key={index}
-            id={mStone.id}
-            label={mStone.label}
-            time={mStone.start}
-            color={mStone.color}
-            totalDuration={totalDuration}
-            GanttStart={GanttStart}
-            showTooltip={showTooltip}
-            hideTooltip={hideTooltip}
-          />
-        );
-      })} */}
     </svg>
   );
 };

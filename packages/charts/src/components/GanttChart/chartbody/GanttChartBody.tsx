@@ -5,11 +5,11 @@ import type { DateRange, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from 
 import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 import { GanttChartBodyCtx } from '../util/context.js';
 import { useStyles } from '../util/styles.js';
+import { getStartTime } from '../util/utils.js';
 import { GanttChartHoverVerticalLine } from './GanttChartHoverVerticalLine.js';
 import { GanttChartLayer } from './GanttChartLayer.js';
 import { GanttChartStaticVerticalLine } from './GanttChartStaticVerticalLine.js';
 import type { GanttTooltipHandle } from './GanttChartTooltip.js';
-import { GanttChartTooltip } from './GanttChartTooltip.js';
 
 export interface GanttChartBodyProps {
   dataset: IGanttChartRow[];
@@ -25,7 +25,7 @@ export interface GanttChartBodyProps {
   showAnnotation?: boolean;
   showVerticalLineOnHover?: boolean;
   showStaticVerticalLine?: boolean;
-  staticVerticalLinePosition?: number;
+  staticVerticalLinePosition?: string;
   unscaledWidth?: number;
   openRowIndex: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
@@ -96,9 +96,6 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
     >
-      <GanttChartLayer name="GanttChartGridLayer" ignoreClick>
-        {/* <GanttChartGrid width={width} unscaledWidth={unscaledWidth} numOfRows={numOfItems} rowHeight={rowHeight} /> */}
-      </GanttChartLayer>
       <GanttChartLayer name="GanttChartRowsLayer" ignoreClick>
         <GanttChartRowGroup
           dataset={dataset}
@@ -120,12 +117,16 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
         </GanttChartLayer>
       ) : null}
 
-      {/* TODO: Remove this component */}
-      {false ? <GanttChartTooltip ref={tooltipRef} /> : null}
       {showVerticalLineOnHover && verticalLinePosition && (
         <GanttChartHoverVerticalLine verticalLinePosition={verticalLinePosition} />
       )}
-      {showStaticVerticalLine && <GanttChartStaticVerticalLine verticalLinePosition={staticVerticalLinePosition} />}
+      {showStaticVerticalLine && (
+        <GanttChartStaticVerticalLine
+          time={getStartTime(contractDuration.dateStart, staticVerticalLinePosition) + 0.5}
+          totalDuration={totalDuration}
+          GanttStart={0}
+        />
+      )}
     </div>
   );
 };

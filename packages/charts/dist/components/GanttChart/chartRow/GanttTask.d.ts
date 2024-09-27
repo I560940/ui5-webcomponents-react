@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import React from 'react';
+import type { IGanttChartEvent } from '../types/GanttChartTypes.js';
 interface GanttTaskProps {
     /**
      * The unique id of the task. This is used to get the position
@@ -35,9 +36,11 @@ interface GanttTaskProps {
      */
     handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
     hideTooltip: () => void;
+    events: IGanttChartEvent[];
+    contractStartDate: string;
 }
 export declare const GanttTask: {
-    ({ id, label, startTime, duration, totalDuration, color, GanttStart, showTooltip, hideTooltip, handleTaskClick }: GanttTaskProps): React.JSX.Element;
+    ({ id, label, startTime, duration, totalDuration, color, GanttStart, showTooltip, hideTooltip, handleTaskClick, events, contractStartDate }: GanttTaskProps): React.JSX.Element;
     displayName: string;
 };
 export {};

@@ -8,7 +8,7 @@ import '@ui5/webcomponents-icons/dist/legend.js';
 export const GanttChartZoomSlider = (props) => {
     const { onScale } = props;
     const { onLegendClick } = props;
-    const [sliderValue, setSliderValue] = useState(50);
+    const [sliderValue, setSliderValue] = useState(0);
     // TODO: consts to be exported to constants.ts
     const minValue = 0;
     const maxValue = 100;

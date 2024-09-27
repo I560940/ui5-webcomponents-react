@@ -17,7 +17,7 @@ export interface GanttChartZoomSliderProps {
 export const GanttChartZoomSlider = (props: GanttChartZoomSliderProps) => {
   const { onScale } = props;
   const { onLegendClick } = props;
-  const [sliderValue, setSliderValue] = useState(50);
+  const [sliderValue, setSliderValue] = useState(0);
   // TODO: consts to be exported to constants.ts
   const minValue = 0;
   const maxValue = 100;

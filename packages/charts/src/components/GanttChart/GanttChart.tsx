@@ -32,7 +32,7 @@ export interface GanttChartProps extends CommonProps {
   showStatus?: boolean;
   showVerticalLineOnHover?: boolean;
   showStaticVerticalLine?: boolean;
-  staticVerticalLinePosition?: number;
+  staticVerticalLinePosition?: string;
 }
 
 const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => {
@@ -82,7 +82,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
     if (ref.current != null) ro.observe(ref.current);
     return () => ro.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dataset]);
 
   const resetScroll = () => {
     bodyConRef.current.scrollTo({ left: 0 });
