@@ -27,6 +27,7 @@ export interface GanttChartProps extends CommonProps {
   annotations?: ReactNode | ReactNode[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
+  onLegendClick?: (event: React.MouseEvent) => void;
   showAnnotation?: boolean;
   showStatus?: boolean;
   showVerticalLineOnHover?: boolean;
@@ -40,6 +41,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
     contractDuration,
     rowHeight = DEFAULT_ROW_HEIGHT,
     onTaskClick,
+    onLegendClick,
     annotations,
     showAnnotation,
     showVerticalLineOnHover,
@@ -94,6 +96,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
     <div ref={fRef} {...rest}>
       <GanttChartZoomSlider
         onScale={(value: number) => setChartBodyScale(value)}
+        onLegendClick={onLegendClick}
         dimensions={dimensions}
         resetScroll={resetScroll}
       />
