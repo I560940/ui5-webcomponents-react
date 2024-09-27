@@ -1,7 +1,7 @@
 import { throttle } from '@ui5/webcomponents-react-base';
 import React, { useState } from 'react';
 import { HOVER_OPACITY, NORMAL_OPACITY, THROTTLE_INTERVAL } from '../util/constants.js';
-import { getEventStartTime } from '../util/utils.js';
+import { getStartTime } from '../util/utils.js';
 import { GanttChartEvent } from './GanttChartEvent.js';
 export const GanttTask = ({ id, label, startTime, duration, totalDuration, color, GanttStart, showTooltip, hideTooltip, handleTaskClick, events, contractStartDate }) => {
     const [opacity, setOpacity] = useState(NORMAL_OPACITY);
@@ -32,8 +32,9 @@ export const GanttTask = ({ id, label, startTime, duration, totalDuration, color
                 cursor: 'pointer',
                 opacity: opacity,
                 stroke: '#788FA6',
-                strokeWidth: 1.5
+                strokeWidth: 1.5,
+                zIndex: 1
             }, onMouseLeave: onMouseLeave, onMouseMove: onMouseMove, onClick: handleClick }),
-        events.map((event) => (React.createElement(GanttChartEvent, { date: event.date, icon: event.icon, startTime: getEventStartTime(contractStartDate, event.date), GanttStart: GanttStart, totalDuration: totalDuration })))));
+        events.map((event) => (React.createElement(GanttChartEvent, { key: event.date + event.icon + id, date: event.date, icon: event.icon, startTime: getStartTime(contractStartDate, event.date), GanttStart: GanttStart, totalDuration: totalDuration })))));
 };
 GanttTask.displayName = 'GanttTask';

@@ -5,7 +5,8 @@ export const GanttChartEvent = ({ icon, startTime, GanttStart, totalDuration }) 
         React.createElement("div", { style: {
                 display: 'flex',
                 alignItems: 'center',
-                height: '100%'
+                height: '100%',
+                zIndex: 2
             } },
             React.createElement(Icon, { name: icon }))));
 };

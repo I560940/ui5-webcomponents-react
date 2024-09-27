@@ -69,15 +69,17 @@ export const countTaskDuration = (dateStart, dateEnd) => {
     const diffInMilliseconds = Math.abs(end.getTime() - start.getTime());
     return diffInMilliseconds / (1000 * 60 * 60 * 24);
 };
-export const getTaskStartTime = (contractStartDate, taskStartDate) => {
+/**
+ * Calculates the start time of a task relative to the contract start date.
+ *
+ * @param {string} contractStartDate - The start date of the contract in ISO format.
+ * @param {string} taskStartDate - The start date of the task in ISO format.
+ *
+ * @returns {number} - The start time of the task relative to the contract start date.
+ */
+export const getStartTime = (contractStartDate, taskStartDate) => {
     const contractStart = new Date(contractStartDate);
     const taskStart = new Date(taskStartDate);
     const diffInMilliseconds = Math.abs(contractStart.getTime() - taskStart.getTime());
     return diffInMilliseconds / (1000 * 60 * 60 * 24) - 1;
-};
-export const getEventStartTime = (contractStartDate, date) => {
-    const eventDate = new Date(date);
-    const contractStart = new Date(contractStartDate);
-    const diffInMilliseconds = Math.abs(contractStart.getTime() - eventDate.getTime());
-    return diffInMilliseconds / (1000 * 60 * 60 * 24);
 };

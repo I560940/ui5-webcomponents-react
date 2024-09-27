@@ -14,7 +14,7 @@ export interface GanttChartBodyProps {
     showAnnotation?: boolean;
     showVerticalLineOnHover?: boolean;
     showStaticVerticalLine?: boolean;
-    staticVerticalLinePosition?: number;
+    staticVerticalLinePosition?: string;
     unscaledWidth?: number;
     openRowIndex: OpenRowIndex;
     openSubRowIndexes: OpenSubRowIndexes;

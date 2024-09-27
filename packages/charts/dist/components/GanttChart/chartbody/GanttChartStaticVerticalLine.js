@@ -3,10 +3,10 @@ import React from 'react';
 /**
  * Component that renders a vertical line in the Gantt chart. This line is static and does not move.
  */
-const GanttChartStaticVerticalLine = ({ verticalLinePosition }) => {
+const GanttChartStaticVerticalLine = ({ GanttStart, totalDuration, time }) => {
     return (React.createElement("div", { style: {
             position: 'absolute',
-            left: verticalLinePosition,
+            left: `${((time + 1 - GanttStart) / totalDuration) * 100}%`,
             top: -5,
             width: 1,
             height: '105%',

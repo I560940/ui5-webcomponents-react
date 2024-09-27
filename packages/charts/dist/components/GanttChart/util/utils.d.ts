@@ -35,5 +35,12 @@ export declare const calculateTotalDuration: (contractDuration: DateRange) => nu
  * @returns {number} - The duration of the task in days.
  */
 export declare const countTaskDuration: (dateStart: string, dateEnd: string) => number;
-export declare const getTaskStartTime: (contractStartDate: string, taskStartDate: string) => number;
-export declare const getEventStartTime: (contractStartDate: string, date: string) => number;
+/**
+ * Calculates the start time of a task relative to the contract start date.
+ *
+ * @param {string} contractStartDate - The start date of the contract in ISO format.
+ * @param {string} taskStartDate - The start date of the task in ISO format.
+ *
+ * @returns {number} - The start time of the task relative to the contract start date.
+ */
+export declare const getStartTime: (contractStartDate: string, taskStartDate: string) => number;

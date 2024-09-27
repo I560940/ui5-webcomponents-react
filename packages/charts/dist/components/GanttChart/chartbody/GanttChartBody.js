@@ -3,6 +3,7 @@ import { GanttChartRowGroup } from '../chartRow/GanttChartRowGroup.js';
 import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 import { GanttChartBodyCtx } from '../util/context.js';
 import { useStyles } from '../util/styles.js';
+import { getStartTime } from '../util/utils.js';
 import { GanttChartHoverVerticalLine } from './GanttChartHoverVerticalLine.js';
 import { GanttChartLayer } from './GanttChartLayer.js';
 import { GanttChartStaticVerticalLine } from './GanttChartStaticVerticalLine.js';
@@ -34,12 +35,11 @@ const GanttChartBody = (props) => {
         onTaskClick?.(task, event);
     };
     return (React.createElement("div", { "data-component-name": "GanttChartBody", ref: bodyRef, className: classes.chartBody, style: style, onMouseMove: onMouseMove, onMouseLeave: onMouseLeave },
-        React.createElement(GanttChartLayer, { name: "GanttChartGridLayer", ignoreClick: true }),
         React.createElement(GanttChartLayer, { name: "GanttChartRowsLayer", ignoreClick: true },
             React.createElement(GanttChartRowGroup, { dataset: dataset, rowHeight: rowHeight, totalDuration: totalDuration, contractDuration: contractDuration, GanttStart: 0, showTooltip: showTooltipOnHover, hideTooltip: hideTooltip, handleTaskClick: handleTaskClick, openRowIndex: openRowIndex, openSubRowIndexes: openSubRowIndexes })),
         showAnnotation && annotations != null ? (React.createElement(GanttChartLayer, { name: "GanttChartAnnotationLayer", isAnnotation: true, ignoreClick: true },
             React.createElement(GanttChartBodyCtx.Provider, { value: { chartBodyWidth: width } }, annotations))) : null,
         showVerticalLineOnHover && verticalLinePosition && (React.createElement(GanttChartHoverVerticalLine, { verticalLinePosition: verticalLinePosition })),
-        showStaticVerticalLine && React.createElement(GanttChartStaticVerticalLine, { verticalLinePosition: staticVerticalLinePosition })));
+        showStaticVerticalLine && (React.createElement(GanttChartStaticVerticalLine, { time: getStartTime(contractDuration.dateStart, staticVerticalLinePosition) + 0.5, totalDuration: totalDuration, GanttStart: 0 }))));
 };
 export { GanttChartBody };
