@@ -46,7 +46,7 @@ export const GanttChartRow = ({
       {rowData.tasks?.map((task, index) => {
         return (
           <GanttTask
-            key={index + 1}
+            key={task.id + index + task.dateStart + task.dateEnd}
             id={task.id}
             label={task.status ?? 'Elo'}
             startTime={getStartTime(contractDuration?.dateStart, task.dateStart)}

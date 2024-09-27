@@ -8,6 +8,7 @@ export interface GanttChartProps extends CommonProps {
     rowHeight?: number;
     annotations?: ReactNode | ReactNode[];
     onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
+    onLegendClick?: (event: React.MouseEvent) => void;
     showAnnotation?: boolean;
     showStatus?: boolean;
     showVerticalLineOnHover?: boolean;

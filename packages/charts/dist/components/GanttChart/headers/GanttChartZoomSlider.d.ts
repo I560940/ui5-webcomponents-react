@@ -7,5 +7,6 @@ export interface GanttChartZoomSliderProps {
     dimensions: DimensionsState;
     resetScroll: () => void;
     onScale: (x: number) => void;
+    onLegendClick: (event: React.MouseEvent) => void;
 }
 export declare const GanttChartZoomSlider: (props: GanttChartZoomSliderProps) => React.JSX.Element;
