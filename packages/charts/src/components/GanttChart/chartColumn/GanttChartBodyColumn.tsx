@@ -33,7 +33,7 @@ export interface GanttChartBodyColumnProps {
   showVerticalLineOnHover?: boolean;
   showStaticVerticalLine?: boolean;
   showStatus?: boolean;
-  staticVerticalLinePosition?: number;
+  staticVerticalLinePosition?: string;
   annotations?: ReactNode | ReactNode[];
   openRowIndex: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;

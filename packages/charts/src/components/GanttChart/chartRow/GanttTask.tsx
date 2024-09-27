@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react';
 import React, { useState } from 'react';
 import type { IGanttChartEvent } from '../types/GanttChartTypes.js';
 import { HOVER_OPACITY, NORMAL_OPACITY, THROTTLE_INTERVAL } from '../util/constants.js';
-import { getEventStartTime } from '../util/utils.js';
+import { getStartTime } from '../util/utils.js';
 import { GanttChartEvent } from './GanttChartEvent.js';
 
 interface GanttTaskProps {
@@ -122,7 +122,8 @@ export const GanttTask = ({
           cursor: 'pointer',
           opacity: opacity,
           stroke: '#788FA6',
-          strokeWidth: 1.5
+          strokeWidth: 1.5,
+          zIndex: 1
         }}
         onMouseLeave={onMouseLeave}
         onMouseMove={onMouseMove}
@@ -130,9 +131,10 @@ export const GanttTask = ({
       />
       {events.map((event) => (
         <GanttChartEvent
+          key={event.date + event.icon + id}
           date={event.date}
           icon={event.icon}
-          startTime={getEventStartTime(contractStartDate, event.date)}
+          startTime={getStartTime(contractStartDate, event.date)}
           GanttStart={GanttStart}
           totalDuration={totalDuration}
         />

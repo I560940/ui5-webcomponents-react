@@ -31,7 +31,7 @@ export interface GanttChartProps extends CommonProps {
   showStatus?: boolean;
   showVerticalLineOnHover?: boolean;
   showStaticVerticalLine?: boolean;
-  staticVerticalLinePosition?: number;
+  staticVerticalLinePosition?: string;
 }
 
 const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => {

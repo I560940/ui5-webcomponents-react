@@ -1,7 +1,7 @@
 import React from 'react';
 import type { DateRange, IGanttChartRow } from '../types/GanttChartTypes.js';
 import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
-import { countTaskDuration, getTaskStartTime } from '../util/utils.js';
+import { countTaskDuration, getStartTime } from '../util/utils.js';
 import { GanttTask } from './GanttTask.js';
 
 interface GanttChartRowProps {
@@ -49,7 +49,7 @@ export const GanttChartRow = ({
             key={index + 1}
             id={task.id}
             label={task.status ?? 'Elo'}
-            startTime={getTaskStartTime(contractDuration?.dateStart, task.dateStart)}
+            startTime={getStartTime(contractDuration?.dateStart, task.dateStart)}
             duration={countTaskDuration(task.dateStart, task.dateEnd)}
             totalDuration={totalDuration}
             color={task.color}

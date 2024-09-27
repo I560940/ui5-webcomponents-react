@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ThemingParameters } from '@ui5/webcomponents-react-base';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React from 'react';
 import { dummyDataSet } from './examples/Dataset.js';
@@ -22,7 +21,10 @@ export const Default: Story = {
   args: {
     dataset: dummyDataSet,
     contractDuration: { dateStart: '2022-10-01T00:00:00.000Z', dateEnd: '2027-09-30T00:00:00.000Z' },
-    showStatus: false
+    showStatus: false,
+    staticVerticalLinePosition: new Date().toISOString(),
+    showStaticVerticalLine: true,
+    showVerticalLineOnHover: true
   }
 };
 

@@ -16,7 +16,8 @@ export const GanttChartEvent = ({ icon, startTime, GanttStart, totalDuration }: 
         style={{
           display: 'flex',
           alignItems: 'center',
-          height: '100%'
+          height: '100%',
+          zIndex: 2
         }}
       >
         <Icon name={icon} />

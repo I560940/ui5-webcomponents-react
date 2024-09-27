@@ -1,10 +1,5 @@
 import { differenceInDays, endOfMonth, formatDistanceStrict, startOfMonth } from 'date-fns/fp';
-import type {
-  DateRange,
-  IGanttChartRow,
-  OpenRowIndex,
-  OpenSubRowIndexes
-} from '../types/GanttChartTypes.js';
+import type { DateRange, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
 
 /**
  * Function to count all rows in a dataset of Gantt chart rows, including nested details and sub-details.
@@ -92,16 +87,17 @@ export const countTaskDuration = (dateStart: string, dateEnd: string): number =>
   return diffInMilliseconds / (1000 * 60 * 60 * 24);
 };
 
-export const getTaskStartTime = (contractStartDate: string, taskStartDate: string): number => {
+/**
+ * Calculates the start time of a task relative to the contract start date.
+ *
+ * @param {string} contractStartDate - The start date of the contract in ISO format.
+ * @param {string} taskStartDate - The start date of the task in ISO format.
+ *
+ * @returns {number} - The start time of the task relative to the contract start date.
+ */
+export const getStartTime = (contractStartDate: string, taskStartDate: string): number => {
   const contractStart = new Date(contractStartDate);
   const taskStart = new Date(taskStartDate);
   const diffInMilliseconds = Math.abs(contractStart.getTime() - taskStart.getTime());
   return diffInMilliseconds / (1000 * 60 * 60 * 24) - 1;
-};
-
-export const getEventStartTime = (contractStartDate: string, date: string): number => {
-  const eventDate = new Date(date);
-  const contractStart = new Date(contractStartDate);
-  const diffInMilliseconds = Math.abs(contractStart.getTime() - eventDate.getTime());
-  return diffInMilliseconds / (1000 * 60 * 60 * 24);
 };
