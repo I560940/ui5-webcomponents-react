@@ -1,6 +1,6 @@
 import { throttle } from '@ui5/webcomponents-react-base';
 import type { CSSProperties } from 'react';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { IGanttChartEvent } from '../types/GanttChartTypes.js';
 import { HOVER_OPACITY, NORMAL_OPACITY, THROTTLE_INTERVAL } from '../util/constants.js';
 import { getStartTime } from '../util/utils.js';
@@ -80,6 +80,40 @@ export const GanttTask = ({
   contractStartDate
 }: GanttTaskProps) => {
   const [opacity, setOpacity] = useState(NORMAL_OPACITY);
+  const rectRef = useRef<SVGRectElement>(null);
+  const [shouldRectBeVisible, setShouldRectBeVisible] = useState(false);
+  const [eventIconShift, setEventIconShift] = useState(0);
+  const EVENT_ICON_SIZE = 16;
+
+  useEffect(() => {
+    const rectElement = rectRef.current;
+    if (!rectElement) return;
+
+    const updateRectVisibility = () => {
+      const width = rectElement.getBBox().width;
+      if (width - 2 > EVENT_ICON_SIZE) {
+        setShouldRectBeVisible(true);
+        setEventIconShift(0);
+      } else {
+        setShouldRectBeVisible(false);
+        setEventIconShift(Math.abs(width - EVENT_ICON_SIZE - 1));
+      }
+      // Set your desired width threshold
+    };
+
+    updateRectVisibility(); // Initial check
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateRectVisibility();
+    });
+
+    resizeObserver.observe(rectElement);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [rectRef]);
+
   const onMouseLeave = (evt: React.MouseEvent<SVGRectElement, MouseEvent>) => {
     evt.stopPropagation();
     hideTooltip();
@@ -108,6 +142,7 @@ export const GanttTask = ({
   return (
     <g>
       <rect
+        ref={rectRef}
         data-component-name="GanttChartTaskRect"
         id={id}
         x={`${((startTime + 1 - GanttStart) / totalDuration) * 100}%`}
@@ -117,11 +152,11 @@ export const GanttTask = ({
         rx="4"
         ry="4"
         style={{
-          fill: color,
+          fill: shouldRectBeVisible ? color : 'none',
           pointerEvents: 'auto',
           cursor: 'pointer',
           opacity: opacity,
-          stroke: '#788FA6',
+          stroke: shouldRectBeVisible ? '#788FA6' : 'none',
           strokeWidth: 1.5,
           zIndex: 1
         }}
@@ -137,6 +172,8 @@ export const GanttTask = ({
           startTime={getStartTime(contractStartDate, event.date)}
           GanttStart={GanttStart}
           totalDuration={totalDuration}
+          iconSize={EVENT_ICON_SIZE}
+          shiftIconPx={eventIconShift}
         />
       ))}
     </g>

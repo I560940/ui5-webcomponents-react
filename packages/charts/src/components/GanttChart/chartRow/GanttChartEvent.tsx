@@ -7,11 +7,25 @@ interface GanttChartEventProps {
   startTime: number;
   GanttStart: number;
   totalDuration: number;
+  iconSize?: number;
+  shiftIconPx?: number;
 }
 
-export const GanttChartEvent = ({ icon, startTime, GanttStart, totalDuration }: GanttChartEventProps) => {
+export const GanttChartEvent = ({
+  icon,
+  startTime,
+  GanttStart,
+  totalDuration,
+  iconSize = 16,
+  shiftIconPx = 0
+}: GanttChartEventProps) => {
   return (
-    <foreignObject x={`${((startTime + 1 - GanttStart) / totalDuration) * 100}%`} width={`10%`} height="100%">
+    <foreignObject
+      x={`${((startTime + 1.2 - GanttStart) / totalDuration) * 100}%`}
+      width={iconSize}
+      height="100%"
+      transform={`translate(${-shiftIconPx}, 0)`}
+    >
       <div
         style={{
           display: 'flex',
@@ -20,7 +34,7 @@ export const GanttChartEvent = ({ icon, startTime, GanttStart, totalDuration }: 
           zIndex: 2
         }}
       >
-        <Icon name={icon} />
+        <Icon name={icon} style={{ width: iconSize }} />
       </div>
     </foreignObject>
   );
