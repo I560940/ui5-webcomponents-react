@@ -5,6 +5,8 @@ interface GanttChartEventProps {
     startTime: number;
     GanttStart: number;
     totalDuration: number;
+    iconSize?: number;
+    shiftIconPx?: number;
 }
-export declare const GanttChartEvent: ({ icon, startTime, GanttStart, totalDuration }: GanttChartEventProps) => React.JSX.Element;
+export declare const GanttChartEvent: ({ icon, startTime, GanttStart, totalDuration, iconSize, shiftIconPx }: GanttChartEventProps) => React.JSX.Element;
 export {};
