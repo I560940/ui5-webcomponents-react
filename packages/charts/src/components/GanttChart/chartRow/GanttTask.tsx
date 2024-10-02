@@ -98,7 +98,6 @@ export const GanttTask = ({
         setShouldRectBeVisible(false);
         setEventIconShift(Math.abs(width - EVENT_ICON_SIZE - 1));
       }
-      // Set your desired width threshold
     };
 
     updateRectVisibility(); // Initial check
