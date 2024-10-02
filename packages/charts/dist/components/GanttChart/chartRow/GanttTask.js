@@ -64,6 +64,6 @@ export const GanttTask = ({ id, label, startTime, duration, totalDuration, color
                 strokeWidth: 1.5,
                 zIndex: 1
             }, onMouseLeave: onMouseLeave, onMouseMove: onMouseMove, onClick: handleClick }),
-        events.map((event) => (React.createElement(GanttChartEvent, { key: event.date + event.icon + id, date: event.date, icon: event.icon, startTime: getStartTime(contractStartDate, event.date), GanttStart: GanttStart, totalDuration: totalDuration, iconSize: EVENT_ICON_SIZE, shiftIconPx: eventIconShift })))));
+        events.map((event) => (React.createElement(GanttChartEvent, { key: event.date + event.icon + id, date: event.date, icon: event.icon, iconColor: event.color, startTime: getStartTime(contractStartDate, event.date), GanttStart: GanttStart, totalDuration: totalDuration, iconSize: EVENT_ICON_SIZE, shiftIconPx: eventIconShift })))));
 };
 GanttTask.displayName = 'GanttTask';
