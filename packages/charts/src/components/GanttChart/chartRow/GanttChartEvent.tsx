@@ -9,6 +9,7 @@ interface GanttChartEventProps {
   totalDuration: number;
   iconSize?: number;
   shiftIconPx?: number;
+  iconColor?: string;
 }
 
 export const GanttChartEvent = ({
@@ -17,7 +18,8 @@ export const GanttChartEvent = ({
   GanttStart,
   totalDuration,
   iconSize = 16,
-  shiftIconPx = 0
+  shiftIconPx = 0,
+  iconColor
 }: GanttChartEventProps) => {
   return (
     <foreignObject
@@ -34,7 +36,7 @@ export const GanttChartEvent = ({
           zIndex: 2
         }}
       >
-        <Icon name={icon} style={{ width: iconSize }} />
+        <Icon name={icon} style={{ width: iconSize, color: iconColor && iconColor }} />
       </div>
     </foreignObject>
   );

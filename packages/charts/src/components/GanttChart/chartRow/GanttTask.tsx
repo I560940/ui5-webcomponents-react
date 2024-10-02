@@ -169,6 +169,7 @@ export const GanttTask = ({
           key={event.date + event.icon + id}
           date={event.date}
           icon={event.icon}
+          iconColor={event.color}
           startTime={getStartTime(contractStartDate, event.date)}
           GanttStart={GanttStart}
           totalDuration={totalDuration}
