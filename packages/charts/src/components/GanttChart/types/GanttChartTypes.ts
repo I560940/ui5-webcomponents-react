@@ -61,6 +61,8 @@ export interface IGanttChartEvent {
    * The date on which the icon will be placed on the Gantt.
    */
   date: string;
+
+  color?: CSSProperties['color'];
 }
 
 /**

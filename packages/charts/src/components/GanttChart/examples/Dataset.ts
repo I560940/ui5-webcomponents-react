@@ -1,5 +1,9 @@
 import type { IGanttChartRow } from '../types/GanttChartTypes.js';
 
+export const dummyDataSetSolution: IGanttChartRow[] =
+    [
+]
+
 export const dummyDataSet: IGanttChartRow[] = [
     {
         "id": "k8C3RUsu7jsG}DKFeQz4Pm",

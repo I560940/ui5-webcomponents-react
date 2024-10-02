@@ -1,3 +1,4 @@
+export const dummyDataSetSolution = [];
 export const dummyDataSet = [
     {
         "id": "k8C3RUsu7jsG}DKFeQz4Pm",
