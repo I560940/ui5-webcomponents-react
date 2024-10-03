@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { DateRange, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
+import { flattenDataset } from '../util/utils.js';
 import { GanttChartRow } from './GanttChartRow.js';
 import { GanttContractDuration } from './GanttContractDuration.js';
 
@@ -17,13 +18,29 @@ export interface GanttChartRowGroupProps {
   openSubRowIndexes: OpenSubRowIndexes;
 }
 export const GanttChartRowGroup = (props: GanttChartRowGroupProps) => {
-  const { dataset, rowHeight, totalDuration, contractDuration, GanttStart, showTooltip, handleTaskClick, hideTooltip } =
-    props;
+  const {
+    dataset,
+    rowHeight,
+    totalDuration,
+    contractDuration,
+    GanttStart,
+    showTooltip,
+    handleTaskClick,
+    hideTooltip,
+    openRowIndex,
+    openSubRowIndexes
+  } = props;
+
+  const [flattenedDataset, setFlattenedDataset] = useState<IGanttChartRow[]>([]);
+
+  useEffect(() => {
+    setFlattenedDataset(flattenDataset(dataset, openRowIndex, openSubRowIndexes));
+  }, [dataset, openRowIndex, openSubRowIndexes]);
 
   return (
     <svg width="100%" height="100%">
       <GanttContractDuration contractDuration={contractDuration} />
-      {dataset.map((data, index) => {
+      {flattenedDataset.map((data, index) => {
         return (
           <GanttChartRow
             key={index}

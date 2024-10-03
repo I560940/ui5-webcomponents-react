@@ -45,12 +45,12 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
       <div className={classes.rowLabels} style={style}>
         <div style={{ height: ROW_CONTRACT_DURATION_HEIGHT }} />
         {dataset.map((row, rowIndex) => {
-          const showCollapseIcon = row.details?.length > 0 && dataType === 'label';
+          const showCollapseIcon = row.subRows?.length > 0 && dataType === 'label';
           return (
             <React.Fragment key={`row-${rowIndex}`}>
               <RowLabelItem
                 key={`item-${rowIndex}`}
-                padding="10px"
+                padding={showCollapseIcon ? '-10px' : '10px'}
                 collapseIcon={
                   showCollapseIcon ? (
                     openRowIndex === rowIndex ? (
@@ -67,8 +67,8 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
               >
                 {row[dataType]}
               </RowLabelItem>
-              {row.details?.map((detail, detailIndex) => {
-                const showCollapseIcon = detail.subDetails?.length > 0 && dataType === 'label';
+              {row.subRows?.map((subRow, detailIndex) => {
+                const showCollapseIcon = subRow.subRows?.length > 0 && dataType === 'label';
                 return (
                   <React.Fragment key={`row-detail-${detailIndex}`}>
                     <RowLabelItem
@@ -87,9 +87,9 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
                       isActive={openRowIndex === rowIndex}
                       rowHeight={rowHeight}
                     >
-                      {detail[dataType]}
+                      {subRow[dataType]}
                     </RowLabelItem>
-                    {detail.subDetails?.map((subDetail, subDetailIndex) => (
+                    {subRow.subRows?.map((subDetail, subDetailIndex) => (
                       <RowLabelItem
                         key={`subdetail-${subDetailIndex}`}
                         padding={dataType === 'label' ? '40px' : '10px'}
