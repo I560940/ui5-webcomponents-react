@@ -44,3 +44,14 @@ export declare const countTaskDuration: (dateStart: string, dateEnd: string) => 
  * @returns {number} - The start time of the task relative to the contract start date.
  */
 export declare const getStartTime: (contractStartDate: string, taskStartDate: string) => number;
+/**
+ * Function to flatten a dataset of Gantt chart rows, including nested subRows and theirs nested subRows.
+ * It processes the dataset to include the expanded rows based on the specified open row and sub-row indexes.
+ *
+ * @param {IGanttChartRow[]} dataset - The original dataset containing Gantt chart rows.
+ * @param {OpenRowIndex} openRowIndex - The index of the row that is currently expanded.
+ * @param {OpenSubRowIndexes} openSubRowIndexes - An object mapping the indexes of expanded sub-rows.
+ *
+ * @returns {IGanttChartRow[]} - The flattened dataset, including expanded rows and sub-rows.
+ */
+export declare const flattenDataset: (dataset: IGanttChartRow[], openRowIndex: OpenRowIndex, openSubRowIndexes: OpenSubRowIndexes) => IGanttChartRow[];

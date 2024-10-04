@@ -63,7 +63,7 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
                 onClick={() => handleClick(rowIndex)}
                 isActive={true}
                 rowHeight={rowHeight}
-                style={{ display: dataType === 'status' ? 'flex' : 'initial' }}
+                style={{ display: dataType === 'status' ? 'flex' : 'initial', border: "solid" }}
               >
                 {row[dataType]}
               </RowLabelItem>

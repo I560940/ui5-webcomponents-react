@@ -13,11 +13,11 @@ export const countAllRows = (rows, openRowIndex, openSubRowIndexes) => {
     let count = 0;
     rows?.forEach((row, rowIndex) => {
         count++;
-        if (row.details && rowIndex === openRowIndex) {
-            row.details.forEach((detail, detailIndex) => {
+        if (row.subRows && rowIndex === openRowIndex) {
+            row.subRows.forEach((detail, detailIndex) => {
                 count++;
-                if (detail.subDetails && openSubRowIndexes[`${rowIndex}-${detailIndex}`]) {
-                    detail.subDetails.forEach(() => {
+                if (detail.subRows && openSubRowIndexes[`${rowIndex}-${detailIndex}`]) {
+                    detail.subRows.forEach(() => {
                         count++;
                     });
                 }
@@ -82,4 +82,37 @@ export const getStartTime = (contractStartDate, taskStartDate) => {
     const taskStart = new Date(taskStartDate);
     const diffInMilliseconds = Math.abs(contractStart.getTime() - taskStart.getTime());
     return diffInMilliseconds / (1000 * 60 * 60 * 24) - 1;
+};
+/**
+ * Function to flatten a dataset of Gantt chart rows, including nested subRows and theirs nested subRows.
+ * It processes the dataset to include the expanded rows based on the specified open row and sub-row indexes.
+ *
+ * @param {IGanttChartRow[]} dataset - The original dataset containing Gantt chart rows.
+ * @param {OpenRowIndex} openRowIndex - The index of the row that is currently expanded.
+ * @param {OpenSubRowIndexes} openSubRowIndexes - An object mapping the indexes of expanded sub-rows.
+ *
+ * @returns {IGanttChartRow[]} - The flattened dataset, including expanded rows and sub-rows.
+ */
+export const flattenDataset = (dataset, openRowIndex, openSubRowIndexes) => {
+    const flattenedDataset = [];
+    const flattenSubDetails = (subRows) => {
+        subRows.forEach((subRow) => {
+            flattenedDataset.push(subRow);
+        });
+    };
+    const flattenDetails = (subRows, rowIndex) => {
+        subRows.forEach((subRow, detailIndex) => {
+            flattenedDataset.push(subRow);
+            if (subRow.subRows && openSubRowIndexes[`${rowIndex}-${detailIndex}`]) {
+                flattenSubDetails(subRow.subRows);
+            }
+        });
+    };
+    dataset?.forEach((row, rowIndex) => {
+        flattenedDataset.push(row);
+        if (row.subRows && rowIndex === openRowIndex) {
+            flattenDetails(row.subRows, rowIndex);
+        }
+    });
+    return flattenedDataset;
 };

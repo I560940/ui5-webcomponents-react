@@ -6,6 +6,7 @@ export interface IGanttChartRow {
     details?: IGanttChartRow[];
     subDetails?: IGanttChartRow[];
     tasks: IGanttChartTask[];
+    subRows?: IGanttChartRow[];
 }
 /**
  * This is the data representing each task on the row.
