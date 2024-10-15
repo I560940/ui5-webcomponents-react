@@ -7,6 +7,7 @@ export interface IGanttChartRow {
   details?: IGanttChartRow[];
   subDetails?: IGanttChartRow[];
   tasks: IGanttChartTask[];
+  subRows?: IGanttChartRow[];
 }
 
 /**

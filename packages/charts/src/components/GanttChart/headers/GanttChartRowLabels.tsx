@@ -35,6 +35,8 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
 
   const classes = useStyles();
 
+  const statusPadding = '0px';
+
   const style: CSSProperties = {
     width: width,
     height: `${numOfRows * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}px`
@@ -45,12 +47,12 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
       <div className={classes.rowLabels} style={style}>
         <div style={{ height: ROW_CONTRACT_DURATION_HEIGHT }} />
         {dataset.map((row, rowIndex) => {
-          const showCollapseIcon = row.details?.length > 0 && dataType === 'label';
+          const showCollapseIcon = row.subRows?.length > 0 && dataType === 'label';
           return (
-            <React.Fragment key={`row-${rowIndex}`}>
+            <div key={`row-${rowIndex}`} style={{ transform: dataType === 'label' && 'translateX(-20px)' }}>
               <RowLabelItem
                 key={`item-${rowIndex}`}
-                padding="10px"
+                padding={showCollapseIcon ? '0px' : dataType === 'status' ? statusPadding : '25px'}
                 collapseIcon={
                   showCollapseIcon ? (
                     openRowIndex === rowIndex ? (
@@ -63,17 +65,20 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
                 onClick={() => handleClick(rowIndex)}
                 isActive={true}
                 rowHeight={rowHeight}
-                style={{ display: dataType === 'status' ? 'flex' : 'initial' }}
+                style={{
+                  display: dataType === 'status' ? 'flex' : 'initial',
+                  border: 'solid'
+                }}
               >
                 {row[dataType]}
               </RowLabelItem>
-              {row.details?.map((detail, detailIndex) => {
-                const showCollapseIcon = detail.subDetails?.length > 0 && dataType === 'label';
+              {row.subRows?.map((subRow, detailIndex) => {
+                const showCollapseIcon = subRow.subRows?.length > 0 && dataType === 'label';
                 return (
                   <React.Fragment key={`row-detail-${detailIndex}`}>
                     <RowLabelItem
                       key={`detail-${detailIndex}`}
-                      padding={dataType === 'label' ? '20px' : '10px'}
+                      padding={showCollapseIcon ? '10px' : dataType === 'status' ? statusPadding : '35px'}
                       collapseIcon={
                         showCollapseIcon ? (
                           openSubRowIndexes[`${rowIndex}-${detailIndex}`] ? (
@@ -86,13 +91,14 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
                       onClick={() => handleSubClick(rowIndex, detailIndex)}
                       isActive={openRowIndex === rowIndex}
                       rowHeight={rowHeight}
+                      style={{ display: dataType === 'status' ? 'flex' : 'initial' }}
                     >
-                      {detail[dataType]}
+                      {subRow[dataType]}
                     </RowLabelItem>
-                    {detail.subDetails?.map((subDetail, subDetailIndex) => (
+                    {subRow.subRows?.map((subDetail, subDetailIndex) => (
                       <RowLabelItem
                         key={`subdetail-${subDetailIndex}`}
-                        padding={dataType === 'label' ? '40px' : '10px'}
+                        padding={dataType === 'label' ? '50px' : statusPadding}
                         isActive={openSubRowIndexes[`${rowIndex}-${detailIndex}`]}
                         rowHeight={rowHeight}
                       >
@@ -102,7 +108,7 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
                   </React.Fragment>
                 );
               })}
-            </React.Fragment>
+            </div>
           );
         })}
       </div>
