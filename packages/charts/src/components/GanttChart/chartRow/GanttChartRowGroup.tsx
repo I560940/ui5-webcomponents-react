@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import type { DateRange, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
+import type {
+  DateRange,
+  IGanttChartRow,
+  OpenRowIndex,
+  OpenSubRowIndexes,
+  IGanttChartEvent
+} from '../types/GanttChartTypes.js';
 import { flattenDataset } from '../util/utils.js';
 import { GanttChartRow } from './GanttChartRow.js';
 import { GanttContractDuration } from './GanttContractDuration.js';
@@ -13,9 +19,12 @@ export interface GanttChartRowGroupProps {
   showTooltip: (...x: unknown[]) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
+  handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
   hideTooltip: () => void;
   openRowIndex: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
+  chartBodyScale: number;
+  ganttChartBodyWidth: number;
 }
 export const GanttChartRowGroup = (props: GanttChartRowGroupProps) => {
   const {
@@ -28,7 +37,10 @@ export const GanttChartRowGroup = (props: GanttChartRowGroupProps) => {
     handleTaskClick,
     hideTooltip,
     openRowIndex,
-    openSubRowIndexes
+    openSubRowIndexes,
+    chartBodyScale,
+    ganttChartBodyWidth,
+    handleEventsClick
   } = props;
 
   const [flattenedDataset, setFlattenedDataset] = useState<IGanttChartRow[]>([]);
@@ -53,6 +65,9 @@ export const GanttChartRowGroup = (props: GanttChartRowGroupProps) => {
             hideTooltip={hideTooltip}
             handleTaskClick={handleTaskClick}
             contractDuration={contractDuration}
+            chartBodyScale={chartBodyScale}
+            ganttChartBodyWidth={ganttChartBodyWidth}
+            handleEventsClick={handleEventsClick}
           />
         );
       })}

@@ -1,9 +1,9 @@
 import { throttle } from '@ui5/webcomponents-react-base';
 import type { CSSProperties } from 'react';
 import React, { useEffect, useRef, useState } from 'react';
-import type { IGanttChartEvent } from '../types/GanttChartTypes.js';
+import type { IEventsGroup, IGanttChartEvent } from '../types/GanttChartTypes.js';
 import { HOVER_OPACITY, NORMAL_OPACITY, THROTTLE_INTERVAL } from '../util/constants.js';
-import { getStartTime } from '../util/utils.js';
+import { groupOverlappingEvents } from '../util/utils.js';
 import { GanttChartEvent } from './GanttChartEvent.js';
 
 interface GanttTaskProps {
@@ -63,6 +63,12 @@ interface GanttTaskProps {
   events: IGanttChartEvent[];
 
   contractStartDate: string;
+
+  chartBodyScale: number;
+
+  ganttChartBodyWidth: number;
+
+  handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
 }
 
 export const GanttTask = ({
@@ -77,12 +83,16 @@ export const GanttTask = ({
   hideTooltip,
   handleTaskClick,
   events,
-  contractStartDate
+  contractStartDate,
+  ganttChartBodyWidth,
+  chartBodyScale,
+  handleEventsClick
 }: GanttTaskProps) => {
   const [opacity, setOpacity] = useState(NORMAL_OPACITY);
   const rectRef = useRef<SVGRectElement>(null);
   const [shouldRectBeVisible, setShouldRectBeVisible] = useState(false);
   const [eventIconShift, setEventIconShift] = useState(0);
+  const [groupedEvents, setGroupedEvents] = useState<IEventsGroup[]>([]);
   const EVENT_ICON_SIZE = 16;
 
   useEffect(() => {
@@ -113,6 +123,20 @@ export const GanttTask = ({
     };
   }, [rectRef]);
 
+  useEffect(() => {
+    setGroupedEvents(
+      groupOverlappingEvents(
+        events,
+        contractStartDate,
+        startTime,
+        totalDuration,
+        chartBodyScale,
+        ganttChartBodyWidth,
+        EVENT_ICON_SIZE
+      )
+    );
+  }, [events, contractStartDate, startTime, totalDuration, chartBodyScale, ganttChartBodyWidth]);
+
   const onMouseLeave = (evt: React.MouseEvent<SVGRectElement, MouseEvent>) => {
     evt.stopPropagation();
     hideTooltip();
@@ -127,7 +151,7 @@ export const GanttTask = ({
 
   const onMouseMove = throttle(mouseMoveHandler, THROTTLE_INTERVAL, { trailing: false });
 
-  const handleClick = (event: React.MouseEvent) => {
+  const handleClickEvent = (event: React.MouseEvent) => {
     handleTaskClick({ id, label, startTime, duration, color }, event);
   };
 
@@ -161,19 +185,16 @@ export const GanttTask = ({
         }}
         onMouseLeave={onMouseLeave}
         onMouseMove={onMouseMove}
-        onClick={handleClick}
+        onClick={handleClickEvent}
       />
-      {events.map((event) => (
+      {groupedEvents.map((group) => (
         <GanttChartEvent
-          key={event.date + event.icon + id}
-          date={event.date}
-          icon={event.icon}
-          iconColor={event.color}
-          startTime={getStartTime(contractStartDate, event.date)}
-          GanttStart={GanttStart}
-          totalDuration={totalDuration}
+          key={group.key + 'event'}
+          events={group.events}
           iconSize={EVENT_ICON_SIZE}
           shiftIconPx={eventIconShift}
+          position={group.positionPx}
+          handleEventsClick={handleEventsClick}
         />
       ))}
     </g>
