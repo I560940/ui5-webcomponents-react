@@ -7,7 +7,8 @@ import type {
   DimensionsState,
   IGanttChartRow,
   OpenRowIndex,
-  OpenSubRowIndexes
+  OpenSubRowIndexes,
+  IGanttChartEvent
 } from '../types/GanttChartTypes.js';
 import {
   COLUMN_COMPONENT_WIDTH,
@@ -39,6 +40,7 @@ export interface GanttChartBodyColumnProps {
   openSubRowIndexes: OpenSubRowIndexes;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
+  onEventClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
 }
 
 export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
@@ -59,7 +61,8 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
     staticVerticalLinePosition,
     openRowIndex,
     openSubRowIndexes,
-    onTaskClick
+    onTaskClick,
+    onEventClick
   } = props;
   const [isGrabbed, setIsGrabbed] = useState(false);
   const [mPos, setMPos] = useState(0);
@@ -136,6 +139,7 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
         staticVerticalLinePosition={staticVerticalLinePosition}
         unscaledWidth={unscaledBodyWidth}
         onTaskClick={onTaskClick}
+        onEventClick={onEventClick}
         openRowIndex={openRowIndex}
         openSubRowIndexes={openSubRowIndexes}
       />

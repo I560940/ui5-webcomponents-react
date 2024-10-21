@@ -1,7 +1,13 @@
 import type { CSSProperties, ReactNode } from 'react';
 import React, { useRef, useState } from 'react';
 import { GanttChartRowGroup } from '../chartRow/GanttChartRowGroup.js';
-import type { DateRange, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
+import type {
+  DateRange,
+  IGanttChartRow,
+  OpenRowIndex,
+  OpenSubRowIndexes,
+  IGanttChartEvent
+} from '../types/GanttChartTypes.js';
 import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 import { GanttChartBodyCtx } from '../util/context.js';
 import { useStyles } from '../util/styles.js';
@@ -22,6 +28,7 @@ export interface GanttChartBodyProps {
   annotations?: ReactNode | ReactNode[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
+  onEventClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
   showAnnotation?: boolean;
   showVerticalLineOnHover?: boolean;
   showStaticVerticalLine?: boolean;
@@ -48,7 +55,8 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
     staticVerticalLinePosition,
     openRowIndex,
     openSubRowIndexes,
-    chartBodyScale
+    chartBodyScale,
+    onEventClick
   } = props;
   const classes = useStyles();
   const tooltipRef = useRef<GanttTooltipHandle>(null);
@@ -89,6 +97,10 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
     onTaskClick?.(task, event);
   };
 
+  const handleEventsClick = (events: IGanttChartEvent[], e: React.MouseEvent) => {
+    onEventClick?.(events, e);
+  };
+
   return (
     <div
       data-component-name="GanttChartBody"
@@ -112,6 +124,7 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
           openSubRowIndexes={openSubRowIndexes}
           chartBodyScale={chartBodyScale}
           ganttChartBodyWidth={width}
+          handleEventsClick={handleEventsClick}
         />
       </GanttChartLayer>
 

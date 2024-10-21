@@ -54,6 +54,10 @@ export interface IGanttChartTask {
  */
 export interface IGanttChartEvent {
   /**
+   * The unique id of the event.
+   */
+  id: string;
+  /**
    * The icon to be displayed on the Gantt. It has to be from SAP Icons library.
    */
   icon: string;

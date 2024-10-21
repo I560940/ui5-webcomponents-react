@@ -67,6 +67,8 @@ interface GanttTaskProps {
   chartBodyScale: number;
 
   ganttChartBodyWidth: number;
+
+  handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
 }
 
 export const GanttTask = ({
@@ -83,7 +85,8 @@ export const GanttTask = ({
   events,
   contractStartDate,
   ganttChartBodyWidth,
-  chartBodyScale
+  chartBodyScale,
+  handleEventsClick
 }: GanttTaskProps) => {
   const [opacity, setOpacity] = useState(NORMAL_OPACITY);
   const rectRef = useRef<SVGRectElement>(null);
@@ -148,7 +151,7 @@ export const GanttTask = ({
 
   const onMouseMove = throttle(mouseMoveHandler, THROTTLE_INTERVAL, { trailing: false });
 
-  const handleClick = (event: React.MouseEvent) => {
+  const handleClickEvent = (event: React.MouseEvent) => {
     handleTaskClick({ id, label, startTime, duration, color }, event);
   };
 
@@ -182,7 +185,7 @@ export const GanttTask = ({
         }}
         onMouseLeave={onMouseLeave}
         onMouseMove={onMouseMove}
-        onClick={handleClick}
+        onClick={handleClickEvent}
       />
       {groupedEvents.map((group) => (
         <GanttChartEvent
@@ -191,6 +194,7 @@ export const GanttTask = ({
           iconSize={EVENT_ICON_SIZE}
           shiftIconPx={eventIconShift}
           position={group.positionPx}
+          handleEventsClick={handleEventsClick}
         />
       ))}
     </g>

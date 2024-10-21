@@ -1,5 +1,5 @@
 import React from 'react';
-import type { DateRange, IGanttChartRow } from '../types/GanttChartTypes.js';
+import type { DateRange, IGanttChartRow, IGanttChartEvent } from '../types/GanttChartTypes.js';
 import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 import { countTaskDuration, getStartTime } from '../util/utils.js';
 import { GanttTask } from './GanttTask.js';
@@ -13,6 +13,7 @@ interface GanttChartRowProps {
   showTooltip: (...x: unknown[]) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
+  handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
   hideTooltip: () => void;
   contractDuration: DateRange;
   chartBodyScale: number;
@@ -35,6 +36,7 @@ export const GanttChartRow = ({
   contractDuration,
   chartBodyScale,
   ganttChartBodyWidth,
+  handleEventsClick,
   ...rest
 }: GanttChartRowProps) => {
   return (
@@ -65,6 +67,7 @@ export const GanttChartRow = ({
             contractStartDate={contractDuration.dateStart}
             chartBodyScale={chartBodyScale}
             ganttChartBodyWidth={ganttChartBodyWidth}
+            handleEventsClick={handleEventsClick}
           />
         );
       })}

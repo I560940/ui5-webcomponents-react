@@ -7,7 +7,7 @@ import { GanttChartZoomSlider } from './headers/GanttChartZoomSlider.js';
 import { useCollapsableRows } from './hooks/useCollapsableRows.js';
 import { useDimensions } from './hooks/useDimensions.js';
 import { GanttChartPlaceholder } from './Placeholder.js';
-import type { DateRange, IGanttChartRow } from './types/GanttChartTypes.js';
+import type { DateRange, IGanttChartRow, IGanttChartEvent } from './types/GanttChartTypes.js';
 import {
   DEFAULT_ROW_HEIGHT,
   COLUMN_HEADER_HEIGHT,
@@ -19,7 +19,6 @@ import {
 } from './util/constants.js';
 import { useStyles } from './util/styles.js';
 import { calculateTotalDuration } from './util/utils.js';
-
 export interface GanttChartProps extends CommonProps {
   dataset?: IGanttChartRow[];
   contractDuration: DateRange;
@@ -27,6 +26,7 @@ export interface GanttChartProps extends CommonProps {
   annotations?: ReactNode | ReactNode[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
+  onEventClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
   onLegendClick?: (event: React.MouseEvent) => void;
   showAnnotation?: boolean;
   showStatus?: boolean;
@@ -41,6 +41,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
     contractDuration,
     rowHeight = DEFAULT_ROW_HEIGHT,
     onTaskClick,
+    onEventClick,
     onLegendClick,
     annotations,
     showAnnotation,
@@ -144,6 +145,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
           showStatus={showStatus}
           staticVerticalLinePosition={staticVerticalLinePosition}
           onTaskClick={onTaskClick}
+          onEventClick={onEventClick}
           openRowIndex={openRowIndex}
           openSubRowIndexes={openSubRowIndexes}
         />

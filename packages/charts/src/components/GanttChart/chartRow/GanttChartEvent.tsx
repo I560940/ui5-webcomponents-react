@@ -11,19 +11,40 @@ interface GanttChartEventProps {
   iconColor?: string;
   events: IGanttChartEvent[];
   position: number;
+  handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
 }
 
-export const GanttChartEvent = ({ iconSize = 16, shiftIconPx = 0, events = [], position }: GanttChartEventProps) => {
+export const GanttChartEvent = ({
+  iconSize = 16,
+  shiftIconPx = 0,
+  events = [],
+  position,
+  handleEventsClick
+}: GanttChartEventProps) => {
+  const handleEventClickEvent = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    handleEventsClick(events, e);
+  };
+
   return (
-    <foreignObject x={position} width={iconSize} height="100%" transform={`translate(${-shiftIconPx}, 0)`}>
+    <foreignObject
+      x={position}
+      width={iconSize}
+      height="100%"
+      transform={`translate(${-shiftIconPx}, 0)`}
+      style={{ overflow: 'visible', pointerEvents: 'none' }}
+    >
       <div
         style={{
           position: 'relative',
           display: 'flex',
           alignItems: 'center',
           height: '100%',
-          zIndex: 2
+          zIndex: 2,
+          pointerEvents: 'auto',
+          cursor: 'pointer'
         }}
+        onClick={handleEventClickEvent}
       >
         <Icon name={events[0].icon} style={{ width: iconSize, color: events[0].color }} />
         {events.length > 1 && (
