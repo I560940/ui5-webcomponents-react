@@ -123,6 +123,7 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
       <GanttChartBody
         dataset={dataset}
         width={bodyWidth}
+        chartBodyScale={chartBodyScale}
         height={height - COLUMN_HEADER_HEIGHT - ROW_CONTRACT_DURATION_HEIGHT}
         rowHeight={rowHeight}
         numOfItems={numberOfRows}

@@ -16,6 +16,8 @@ export interface GanttChartRowGroupProps {
   hideTooltip: () => void;
   openRowIndex: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
+  chartBodyScale: number;
+  ganttChartBodyWidth: number;
 }
 export const GanttChartRowGroup = (props: GanttChartRowGroupProps) => {
   const {
@@ -28,7 +30,9 @@ export const GanttChartRowGroup = (props: GanttChartRowGroupProps) => {
     handleTaskClick,
     hideTooltip,
     openRowIndex,
-    openSubRowIndexes
+    openSubRowIndexes,
+    chartBodyScale,
+    ganttChartBodyWidth
   } = props;
 
   const [flattenedDataset, setFlattenedDataset] = useState<IGanttChartRow[]>([]);
@@ -53,6 +57,8 @@ export const GanttChartRowGroup = (props: GanttChartRowGroupProps) => {
             hideTooltip={hideTooltip}
             handleTaskClick={handleTaskClick}
             contractDuration={contractDuration}
+            chartBodyScale={chartBodyScale}
+            ganttChartBodyWidth={ganttChartBodyWidth}
           />
         );
       })}

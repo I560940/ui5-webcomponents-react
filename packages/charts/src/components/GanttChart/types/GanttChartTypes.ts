@@ -110,3 +110,10 @@ export type TimelineData = {
   quartersMonths: QuarterMonths[];
   yearsQuarters: YearQuarters[];
 };
+
+export interface IEventsGroup {
+  key: string;
+  events: IGanttChartEvent[];
+  startTime: number;
+  positionPx: number;
+}

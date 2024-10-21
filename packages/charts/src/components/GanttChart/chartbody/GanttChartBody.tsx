@@ -29,6 +29,7 @@ export interface GanttChartBodyProps {
   unscaledWidth?: number;
   openRowIndex: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
+  chartBodyScale: number;
 }
 
 const GanttChartBody = (props: GanttChartBodyProps) => {
@@ -46,7 +47,8 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
     showStaticVerticalLine,
     staticVerticalLinePosition,
     openRowIndex,
-    openSubRowIndexes
+    openSubRowIndexes,
+    chartBodyScale
   } = props;
   const classes = useStyles();
   const tooltipRef = useRef<GanttTooltipHandle>(null);
@@ -108,6 +110,8 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
           handleTaskClick={handleTaskClick}
           openRowIndex={openRowIndex}
           openSubRowIndexes={openSubRowIndexes}
+          chartBodyScale={chartBodyScale}
+          ganttChartBodyWidth={width}
         />
       </GanttChartLayer>
 

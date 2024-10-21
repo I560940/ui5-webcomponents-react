@@ -15,6 +15,8 @@ interface GanttChartRowProps {
   handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
   hideTooltip: () => void;
   contractDuration: DateRange;
+  chartBodyScale: number;
+  ganttChartBodyWidth: number;
 }
 
 /**
@@ -31,6 +33,8 @@ export const GanttChartRow = ({
   hideTooltip,
   handleTaskClick,
   contractDuration,
+  chartBodyScale,
+  ganttChartBodyWidth,
   ...rest
 }: GanttChartRowProps) => {
   return (
@@ -48,7 +52,7 @@ export const GanttChartRow = ({
           <GanttTask
             key={task.id + index + task.dateStart + task.dateEnd}
             id={task.id}
-            label={task.status ?? 'Elo'}
+            label={task.status ?? ''}
             startTime={getStartTime(contractDuration?.dateStart, task.dateStart)}
             duration={countTaskDuration(task.dateStart, task.dateEnd)}
             totalDuration={totalDuration}
@@ -59,6 +63,8 @@ export const GanttChartRow = ({
             handleTaskClick={handleTaskClick}
             events={task.events}
             contractStartDate={contractDuration.dateStart}
+            chartBodyScale={chartBodyScale}
+            ganttChartBodyWidth={ganttChartBodyWidth}
           />
         );
       })}
