@@ -144,6 +144,18 @@ export const flattenDataset = (
   return flattenedDataset;
 };
 
+/**
+ * Groups overlapping events in the Gantt chart. It groups events that are close to each other in time and space.
+ * The grouping is based on the distance between the events' start times and their positions on the chart.
+ *
+ * @param {IGanttChartEvent[]} events - The list of events to group.
+ * @param {string} contractStartDate - The start date of the contract in ISO format.
+ * @param {number} GanttStart - The start time of the Gantt chart in days.
+ * @param {number} totalDuration - The total duration of the Gantt chart in days.
+ * @param {number} chartBodyScale - The scale of the Gantt chart body.
+ * @param {number} svgWidth - The width of the SVG element containing the Gantt chart.
+ * @param {number} iconSize - The size of the event icons.
+ */
 export const groupOverlappingEvents = (
   events,
   contractStartDate,
