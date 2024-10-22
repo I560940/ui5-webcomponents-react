@@ -49,7 +49,7 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
         {dataset.map((row, rowIndex) => {
           const showCollapseIcon = row.subRows?.length > 0 && dataType === 'label';
           return (
-            <div key={`row-${rowIndex}`} style={{ transform: dataType === 'label' && 'translateX(-20px)' }}>
+            <div key={`row-${rowIndex}`}>
               <RowLabelItem
                 key={`item-${rowIndex}`}
                 padding={showCollapseIcon ? '0px' : dataType === 'status' ? statusPadding : '25px'}
