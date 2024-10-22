@@ -46,6 +46,9 @@ export interface IGanttChartTask {
  */
 export interface IGanttChartEvent {
     /**
+     * The unique id of the event.
+     */
+    /**
      * The icon to be displayed on the Gantt. It has to be from SAP Icons library.
      */
     icon: string;
@@ -93,3 +96,9 @@ export type TimelineData = {
     quartersMonths: QuarterMonths[];
     yearsQuarters: YearQuarters[];
 };
+export interface IEventsGroup {
+    key: string;
+    events: IGanttChartEvent[];
+    startTime: number;
+    positionPx: number;
+}

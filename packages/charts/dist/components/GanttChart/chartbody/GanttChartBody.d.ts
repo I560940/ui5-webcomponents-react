@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import React from 'react';
-import type { DateRange, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
+import type { DateRange, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes, IGanttChartEvent } from '../types/GanttChartTypes.js';
 export interface GanttChartBodyProps {
     dataset: IGanttChartRow[];
     width?: number;
@@ -11,6 +11,7 @@ export interface GanttChartBodyProps {
     contractDuration: DateRange;
     annotations?: ReactNode | ReactNode[];
     onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
+    onEventClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
     showAnnotation?: boolean;
     showVerticalLineOnHover?: boolean;
     showStaticVerticalLine?: boolean;
@@ -18,6 +19,7 @@ export interface GanttChartBodyProps {
     unscaledWidth?: number;
     openRowIndex: OpenRowIndex;
     openSubRowIndexes: OpenSubRowIndexes;
+    chartBodyScale: number;
 }
 declare const GanttChartBody: (props: GanttChartBodyProps) => React.JSX.Element;
 export { GanttChartBody };

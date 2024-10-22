@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import React from 'react';
-import type { DateRange, DimensionsState, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
+import type { DateRange, DimensionsState, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes, IGanttChartEvent } from '../types/GanttChartTypes.js';
 export interface GanttChartBodyColumnProps {
     dataset: IGanttChartRow[];
     dimensions: DimensionsState;
@@ -19,5 +19,6 @@ export interface GanttChartBodyColumnProps {
     openRowIndex: OpenRowIndex;
     openSubRowIndexes: OpenSubRowIndexes;
     onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
+    onEventClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
 }
 export declare const GanttChartBodyColumn: (props: GanttChartBodyColumnProps) => React.JSX.Element;

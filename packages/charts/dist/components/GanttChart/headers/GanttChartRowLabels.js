@@ -16,7 +16,7 @@ export const GanttChartRowLabels = (props) => {
             React.createElement("div", { style: { height: ROW_CONTRACT_DURATION_HEIGHT } }),
             dataset.map((row, rowIndex) => {
                 const showCollapseIcon = row.subRows?.length > 0 && dataType === 'label';
-                return (React.createElement("div", { key: `row-${rowIndex}`, style: { transform: dataType === 'label' && 'translateX(-20px)' } },
+                return (React.createElement("div", { key: `row-${rowIndex}` },
                     React.createElement(RowLabelItem, { key: `item-${rowIndex}`, padding: showCollapseIcon ? '0px' : dataType === 'status' ? statusPadding : '25px', collapseIcon: showCollapseIcon ? (openRowIndex === rowIndex ? (React.createElement(Icon, { name: "navigation-down-arrow" })) : (React.createElement(Icon, { name: "navigation-right-arrow" }))) : null, onClick: () => handleClick(rowIndex), isActive: true, rowHeight: rowHeight, style: {
                             display: dataType === 'status' ? 'flex' : 'initial',
                             border: 'solid'

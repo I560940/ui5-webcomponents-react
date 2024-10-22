@@ -116,3 +116,58 @@ export const flattenDataset = (dataset, openRowIndex, openSubRowIndexes) => {
     });
     return flattenedDataset;
 };
+/**
+ * Groups overlapping events in the Gantt chart. It groups events that are close to each other in time and space.
+ * The grouping is based on the distance between the events' start times and their positions on the chart.
+ *
+ * @param {IGanttChartEvent[]} events - The list of events to group.
+ * @param {string} contractStartDate - The start date of the contract in ISO format.
+ * @param {number} GanttStart - The start time of the Gantt chart in days.
+ * @param {number} totalDuration - The total duration of the Gantt chart in days.
+ * @param {number} chartBodyScale - The scale of the Gantt chart body.
+ * @param {number} svgWidth - The width of the SVG element containing the Gantt chart.
+ * @param {number} iconSize - The size of the event icons.
+ */
+export const groupOverlappingEvents = (events, contractStartDate, GanttStart, totalDuration, chartBodyScale, svgWidth, iconSize) => {
+    const baseThresholdPx = iconSize;
+    const minOverlapThresholdPx = iconSize * 0.9;
+    const overlapThresholdPx = Math.max(baseThresholdPx / chartBodyScale, minOverlapThresholdPx);
+    //@ts-expect-error - to be reviewed later, the function works correctly
+    const sortedEvents = events.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+    const groups = [];
+    let currentGroup = [];
+    let groupStartPositionPx = null;
+    sortedEvents.forEach((event) => {
+        const startTime = getStartTime(contractStartDate, event.date);
+        const positionPx = ((startTime + 1.2 - GanttStart) / totalDuration) * svgWidth;
+        const eventWithStartTime = { ...event, startTime, positionPx };
+        if (currentGroup.length === 0) {
+            currentGroup.push(eventWithStartTime);
+            groupStartPositionPx = positionPx;
+        }
+        else {
+            if (positionPx - groupStartPositionPx <= overlapThresholdPx) {
+                currentGroup.push(eventWithStartTime);
+            }
+            else {
+                groups.push({
+                    key: currentGroup.map((e) => e.date + e.icon).join('-'),
+                    events: currentGroup,
+                    startTime: currentGroup[0].startTime,
+                    positionPx: currentGroup[0].positionPx
+                });
+                currentGroup = [eventWithStartTime];
+                groupStartPositionPx = positionPx;
+            }
+        }
+    });
+    if (currentGroup.length > 0) {
+        groups.push({
+            key: currentGroup.map((e) => e.date + e.icon).join('-'),
+            events: currentGroup,
+            startTime: currentGroup[0].startTime,
+            positionPx: currentGroup[0].positionPx
+        });
+    }
+    return groups;
+};

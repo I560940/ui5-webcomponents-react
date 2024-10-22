@@ -6,9 +6,9 @@ import { GanttTask } from './GanttTask.js';
  * This represents each row of the GanttChart. It is used to display
  * the task items and milestones.
  */
-export const GanttChartRow = ({ rowData, rowHeight, rowIndex, totalDuration, GanttStart, showTooltip, hideTooltip, handleTaskClick, contractDuration, ...rest }) => {
+export const GanttChartRow = ({ rowData, rowHeight, rowIndex, totalDuration, GanttStart, showTooltip, hideTooltip, handleTaskClick, contractDuration, chartBodyScale, ganttChartBodyWidth, handleEventsClick, ...rest }) => {
     return (React.createElement("svg", { x: "0", y: `${rowIndex * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}`, width: "100%", height: `${rowHeight}`, style: { pointerEvents: 'none' }, "data-component-name": "GanttChartRow", ...rest }, rowData.tasks?.map((task, index) => {
-        return (React.createElement(GanttTask, { key: task.id + index + task.dateStart + task.dateEnd, id: task.id, label: task.status ?? 'Elo', startTime: getStartTime(contractDuration?.dateStart, task.dateStart), duration: countTaskDuration(task.dateStart, task.dateEnd), totalDuration: totalDuration, color: task.color, GanttStart: GanttStart, showTooltip: showTooltip, hideTooltip: hideTooltip, handleTaskClick: handleTaskClick, events: task.events, contractStartDate: contractDuration.dateStart }));
+        return (React.createElement(GanttTask, { key: task.id + index + task.dateStart + task.dateEnd, id: task.id, label: task.status ?? '', startTime: getStartTime(contractDuration?.dateStart, task.dateStart), duration: countTaskDuration(task.dateStart, task.dateEnd), totalDuration: totalDuration, color: task.color, GanttStart: GanttStart, showTooltip: showTooltip, hideTooltip: hideTooltip, handleTaskClick: handleTaskClick, events: task.events, contractStartDate: contractDuration.dateStart, chartBodyScale: chartBodyScale, ganttChartBodyWidth: ganttChartBodyWidth, handleEventsClick: handleEventsClick }));
     })));
 };
 GanttChartRow.displayName = 'GanttChartRow';

@@ -38,9 +38,12 @@ interface GanttTaskProps {
     hideTooltip: () => void;
     events: IGanttChartEvent[];
     contractStartDate: string;
+    chartBodyScale: number;
+    ganttChartBodyWidth: number;
+    handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
 }
 export declare const GanttTask: {
-    ({ id, label, startTime, duration, totalDuration, color, GanttStart, showTooltip, hideTooltip, handleTaskClick, events, contractStartDate }: GanttTaskProps): React.JSX.Element;
+    ({ id, label, startTime, duration, totalDuration, color, GanttStart, showTooltip, hideTooltip, handleTaskClick, events, contractStartDate, ganttChartBodyWidth, chartBodyScale, handleEventsClick }: GanttTaskProps): React.JSX.Element;
     displayName: string;
 };
 export {};

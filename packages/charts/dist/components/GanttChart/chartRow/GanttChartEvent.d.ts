@@ -1,13 +1,14 @@
 import React from 'react';
+import type { IGanttChartEvent } from '../types/GanttChartTypes.js';
 interface GanttChartEventProps {
-    date: string;
-    icon: string;
-    startTime: number;
-    GanttStart: number;
-    totalDuration: number;
+    date?: string;
+    icon?: string;
     iconSize?: number;
     shiftIconPx?: number;
     iconColor?: string;
+    events: IGanttChartEvent[];
+    position: number;
+    handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
 }
-export declare const GanttChartEvent: ({ icon, startTime, GanttStart, totalDuration, iconSize, shiftIconPx, iconColor }: GanttChartEventProps) => React.JSX.Element;
+export declare const GanttChartEvent: ({ iconSize, shiftIconPx, events, position, handleEventsClick }: GanttChartEventProps) => React.JSX.Element;
 export {};

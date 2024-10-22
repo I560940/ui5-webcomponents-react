@@ -9,7 +9,7 @@ import { DEFAULT_ROW_HEIGHT, COLUMN_HEADER_HEIGHT, COLUMN_STATUS_WIDTH, CONTROLS
 import { useStyles } from './util/styles.js';
 import { calculateTotalDuration } from './util/utils.js';
 const GanttChart = forwardRef((props, fRef) => {
-    const { dataset, contractDuration, rowHeight = DEFAULT_ROW_HEIGHT, onTaskClick, onLegendClick, annotations, showAnnotation, showVerticalLineOnHover, showStaticVerticalLine, staticVerticalLinePosition, showStatus = true, ...rest } = props;
+    const { dataset, contractDuration, rowHeight = DEFAULT_ROW_HEIGHT, onTaskClick, onEventClick, onLegendClick, annotations, showAnnotation, showVerticalLineOnHover, showStaticVerticalLine, staticVerticalLinePosition, showStatus = true, ...rest } = props;
     const { openRowIndex, openSubRowIndexes, numberOfRows, handleClick, handleSubClick } = useCollapsableRows(dataset);
     const { dimensions, height, bodyWidth, gridTemplateColumns, setDimensions, chartBodyScale, setChartBodyScale } = useDimensions(showStatus, rowHeight, numberOfRows);
     const { dateStart, dateEnd } = contractDuration;
@@ -52,7 +52,7 @@ const GanttChart = forwardRef((props, fRef) => {
         React.createElement("div", { className: classes.main, ref: ref, style: style, "data-component-name": "GanttChart" },
             React.createElement(GanttChartColumn, { height: height, width: COLUMN_COMPONENT_WIDTH, columnTitle: COLUMN_COMPONENT_TITLE, rowHeight: rowHeight, dataset: dataset, dataType: "label", handleClick: handleClick, handleSubClick: handleSubClick, openRowIndex: openRowIndex, openSubRowIndexes: openSubRowIndexes, numberOfRows: numberOfRows, showStatus: showStatus }),
             showStatus ? (React.createElement(GanttChartColumn, { height: height, width: COLUMN_STATUS_WIDTH, columnTitle: COLUMN_STATUS_TITLE, rowHeight: rowHeight, dataset: dataset, dataType: "status", openRowIndex: openRowIndex, openSubRowIndexes: openSubRowIndexes, numberOfRows: numberOfRows })) : null,
-            React.createElement(GanttChartBodyColumn, { dataset: dataset, dimensions: dimensions, chartBodyScale: chartBodyScale, height: height, rowHeight: rowHeight, numberOfRows: numberOfRows, totalDuration: totalDuration, contractDuration: contractDuration, annotations: annotations, showAnnotation: showAnnotation, showVerticalLineOnHover: showVerticalLineOnHover, showStaticVerticalLine: showStaticVerticalLine, showStatus: showStatus, staticVerticalLinePosition: staticVerticalLinePosition, onTaskClick: onTaskClick, openRowIndex: openRowIndex, openSubRowIndexes: openSubRowIndexes }))));
+            React.createElement(GanttChartBodyColumn, { dataset: dataset, dimensions: dimensions, chartBodyScale: chartBodyScale, height: height, rowHeight: rowHeight, numberOfRows: numberOfRows, totalDuration: totalDuration, contractDuration: contractDuration, annotations: annotations, showAnnotation: showAnnotation, showVerticalLineOnHover: showVerticalLineOnHover, showStaticVerticalLine: showStaticVerticalLine, showStatus: showStatus, staticVerticalLinePosition: staticVerticalLinePosition, onTaskClick: onTaskClick, onEventClick: onEventClick, openRowIndex: openRowIndex, openSubRowIndexes: openSubRowIndexes }))));
 });
 GanttChart.displayName = 'GanttChart';
 export { GanttChart };
