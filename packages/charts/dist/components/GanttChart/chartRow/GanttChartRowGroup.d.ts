@@ -1,5 +1,5 @@
 import React from 'react';
-import type { DateRange, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes, IGanttChartEvent } from '../types/GanttChartTypes.js';
+import type { DateRange, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes, IGanttChartEvent, IGanttChartTask } from '../types/GanttChartTypes.js';
 export interface GanttChartRowGroupProps {
     dataset: IGanttChartRow[];
     rowHeight: number;
@@ -7,7 +7,7 @@ export interface GanttChartRowGroupProps {
     contractDuration: DateRange;
     GanttStart: number;
     showTooltip: (...x: unknown[]) => void;
-    handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
+    handleTaskClick: (parentId: string, task: IGanttChartTask, event: React.MouseEvent) => void;
     handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
     hideTooltip: () => void;
     openRowIndex: OpenRowIndex;

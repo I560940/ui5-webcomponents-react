@@ -47,12 +47,17 @@ const GanttChart = forwardRef((props, fRef) => {
     if (!dataset || dataset?.length === 0 || !dateStart || !dateEnd) {
         return React.createElement(GanttChartPlaceholder, null);
     }
+    const handleTaskClick = (parentId, task, event) => {
+        if (onTaskClick) {
+            onTaskClick(parentId, task, event);
+        }
+    };
     return (React.createElement("div", { ref: fRef, ...rest },
         React.createElement(GanttChartZoomSlider, { onScale: (value) => setChartBodyScale(value), onLegendClick: onLegendClick, dimensions: dimensions, resetScroll: resetScroll }),
         React.createElement("div", { className: classes.main, ref: ref, style: style, "data-component-name": "GanttChart" },
             React.createElement(GanttChartColumn, { height: height, width: COLUMN_COMPONENT_WIDTH, columnTitle: COLUMN_COMPONENT_TITLE, rowHeight: rowHeight, dataset: dataset, dataType: "label", handleClick: handleClick, handleSubClick: handleSubClick, openRowIndex: openRowIndex, openSubRowIndexes: openSubRowIndexes, numberOfRows: numberOfRows, showStatus: showStatus }),
             showStatus ? (React.createElement(GanttChartColumn, { height: height, width: COLUMN_STATUS_WIDTH, columnTitle: COLUMN_STATUS_TITLE, rowHeight: rowHeight, dataset: dataset, dataType: "status", openRowIndex: openRowIndex, openSubRowIndexes: openSubRowIndexes, numberOfRows: numberOfRows })) : null,
-            React.createElement(GanttChartBodyColumn, { dataset: dataset, dimensions: dimensions, chartBodyScale: chartBodyScale, height: height, rowHeight: rowHeight, numberOfRows: numberOfRows, totalDuration: totalDuration, contractDuration: contractDuration, annotations: annotations, showAnnotation: showAnnotation, showVerticalLineOnHover: showVerticalLineOnHover, showStaticVerticalLine: showStaticVerticalLine, showStatus: showStatus, staticVerticalLinePosition: staticVerticalLinePosition, onTaskClick: onTaskClick, onEventClick: onEventClick, openRowIndex: openRowIndex, openSubRowIndexes: openSubRowIndexes }))));
+            React.createElement(GanttChartBodyColumn, { dataset: dataset, dimensions: dimensions, chartBodyScale: chartBodyScale, height: height, rowHeight: rowHeight, numberOfRows: numberOfRows, totalDuration: totalDuration, contractDuration: contractDuration, annotations: annotations, showAnnotation: showAnnotation, showVerticalLineOnHover: showVerticalLineOnHover, showStaticVerticalLine: showStaticVerticalLine, showStatus: showStatus, staticVerticalLinePosition: staticVerticalLinePosition, handleTaskClick: handleTaskClick, onEventClick: onEventClick, openRowIndex: openRowIndex, openSubRowIndexes: openSubRowIndexes }))));
 });
 GanttChart.displayName = 'GanttChart';
 export { GanttChart };

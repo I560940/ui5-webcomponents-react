@@ -1,6 +1,5 @@
-import type { CSSProperties } from 'react';
 import React from 'react';
-import type { IGanttChartEvent } from '../types/GanttChartTypes.js';
+import type { IGanttChartEvent, IGanttChartTask } from '../types/GanttChartTypes.js';
 interface GanttTaskProps {
     /**
      * The unique id of the task. This is used to get the position
@@ -8,10 +7,6 @@ interface GanttTaskProps {
      * from it.
      */
     id?: string;
-    /**
-     * The task item label. If not set, the label of the row is used.
-     */
-    label?: string;
     /**
      * The starting time of the task on the Gantt. Can
      * also be seen as the x-offset of the task. It is a
@@ -28,22 +23,22 @@ interface GanttTaskProps {
      * where to position the milestone.
      */
     totalDuration: number;
-    color: CSSProperties['color'];
     GanttStart: number;
     showTooltip: (mouseX: number, mouseY: number, name: string, startTime: number, duration: number, color: string, isMilestone: boolean) => void;
     /**
      * Callback function to handle the click event on the task.
      */
-    handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
+    handleTaskClick: (parentId: string, task: IGanttChartTask, event: React.MouseEvent) => void;
     hideTooltip: () => void;
-    events: IGanttChartEvent[];
     contractStartDate: string;
     chartBodyScale: number;
     ganttChartBodyWidth: number;
     handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
+    task: IGanttChartTask;
+    parentId: string;
 }
 export declare const GanttTask: {
-    ({ id, label, startTime, duration, totalDuration, color, GanttStart, showTooltip, hideTooltip, handleTaskClick, events, contractStartDate, ganttChartBodyWidth, chartBodyScale, handleEventsClick }: GanttTaskProps): React.JSX.Element;
+    ({ id, startTime, duration, totalDuration, GanttStart, showTooltip, hideTooltip, handleTaskClick, contractStartDate, ganttChartBodyWidth, chartBodyScale, handleEventsClick, task, parentId }: GanttTaskProps): React.JSX.Element;
     displayName: string;
 };
 export {};

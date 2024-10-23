@@ -8,7 +8,7 @@ import { GanttChartHoverVerticalLine } from './GanttChartHoverVerticalLine.js';
 import { GanttChartLayer } from './GanttChartLayer.js';
 import { GanttChartStaticVerticalLine } from './GanttChartStaticVerticalLine.js';
 const GanttChartBody = (props) => {
-    const { dataset, width, rowHeight, numOfItems, totalDuration, contractDuration, onTaskClick, annotations, showAnnotation, showVerticalLineOnHover, showStaticVerticalLine, staticVerticalLinePosition, openRowIndex, openSubRowIndexes, chartBodyScale, onEventClick } = props;
+    const { dataset, width, rowHeight, numOfItems, totalDuration, contractDuration, handleTaskClick, annotations, showAnnotation, showVerticalLineOnHover, showStaticVerticalLine, staticVerticalLinePosition, openRowIndex, openSubRowIndexes, chartBodyScale, onEventClick } = props;
     const classes = useStyles();
     const tooltipRef = useRef(null);
     const bodyRef = useRef(null);
@@ -29,10 +29,6 @@ const GanttChartBody = (props) => {
     };
     const onMouseLeave = () => {
         setVerticalLinePosition(null);
-    };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleTaskClick = (task, event) => {
-        onTaskClick?.(task, event);
     };
     const handleEventsClick = (events, e) => {
         onEventClick?.(events, e);

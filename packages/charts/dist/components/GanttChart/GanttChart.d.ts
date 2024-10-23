@@ -1,13 +1,13 @@
 import type { CommonProps } from '@ui5/webcomponents-react';
 import type { ReactNode } from 'react';
 import React from 'react';
-import type { DateRange, IGanttChartRow, IGanttChartEvent } from './types/GanttChartTypes.js';
+import type { DateRange, IGanttChartRow, IGanttChartEvent, IGanttChartTask } from './types/GanttChartTypes.js';
 export interface GanttChartProps extends CommonProps {
     dataset?: IGanttChartRow[];
     contractDuration: DateRange;
     rowHeight?: number;
     annotations?: ReactNode | ReactNode[];
-    onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
+    onTaskClick?: (parentId: string, task: IGanttChartTask, event: React.MouseEvent) => void;
     onEventClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
     onLegendClick?: (event: React.MouseEvent) => void;
     showAnnotation?: boolean;
