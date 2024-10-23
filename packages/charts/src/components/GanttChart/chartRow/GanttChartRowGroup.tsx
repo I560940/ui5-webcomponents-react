@@ -4,12 +4,12 @@ import type {
   IGanttChartRow,
   OpenRowIndex,
   OpenSubRowIndexes,
-  IGanttChartEvent
+  IGanttChartEvent,
+  IGanttChartTask
 } from '../types/GanttChartTypes.js';
 import { flattenDataset } from '../util/utils.js';
 import { GanttChartRow } from './GanttChartRow.js';
 import { GanttContractDuration } from './GanttContractDuration.js';
-
 export interface GanttChartRowGroupProps {
   dataset: IGanttChartRow[];
   rowHeight: number;
@@ -18,7 +18,7 @@ export interface GanttChartRowGroupProps {
   GanttStart: number;
   showTooltip: (...x: unknown[]) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
+  handleTaskClick: (parentId: string, task: IGanttChartTask, event: React.MouseEvent) => void;
   handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
   hideTooltip: () => void;
   openRowIndex: OpenRowIndex;
