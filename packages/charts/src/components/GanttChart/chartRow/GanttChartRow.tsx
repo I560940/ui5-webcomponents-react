@@ -18,6 +18,7 @@ interface GanttChartRowProps {
   contractDuration: DateRange;
   chartBodyScale: number;
   ganttChartBodyWidth: number;
+  shouldEventsBeGrouped: boolean;
 }
 
 /**
@@ -37,6 +38,7 @@ export const GanttChartRow = ({
   chartBodyScale,
   ganttChartBodyWidth,
   handleEventsClick,
+  shouldEventsBeGrouped,
   ...rest
 }: GanttChartRowProps) => {
   return (
@@ -67,6 +69,7 @@ export const GanttChartRow = ({
             handleEventsClick={handleEventsClick}
             task={task}
             parentId={rowData.id}
+            shouldEventsBeGrouped={shouldEventsBeGrouped}
           />
         );
       })}

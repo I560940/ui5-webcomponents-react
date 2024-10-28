@@ -2,7 +2,7 @@ import { throttle } from '@ui5/webcomponents-react-base';
 import React, { useEffect, useRef, useState } from 'react';
 import type { IEventsGroup, IGanttChartEvent, IGanttChartTask } from '../types/GanttChartTypes.js';
 import { HOVER_OPACITY, NORMAL_OPACITY, THROTTLE_INTERVAL } from '../util/constants.js';
-import { groupOverlappingEvents } from '../util/utils.js';
+import { getStartTime, groupOverlappingEvents } from '../util/utils.js';
 import { GanttChartEvent } from './GanttChartEvent.js';
 
 interface GanttTaskProps {
@@ -63,6 +63,8 @@ interface GanttTaskProps {
   task: IGanttChartTask;
 
   parentId: string;
+
+  shouldEventsBeGrouped: boolean;
 }
 
 export const GanttTask = ({
@@ -79,7 +81,8 @@ export const GanttTask = ({
   chartBodyScale,
   handleEventsClick,
   task,
-  parentId
+  parentId,
+  shouldEventsBeGrouped
 }: GanttTaskProps) => {
   const [opacity, setOpacity] = useState(NORMAL_OPACITY);
   const rectRef = useRef<SVGRectElement>(null);
@@ -118,17 +121,27 @@ export const GanttTask = ({
 
   useEffect(() => {
     setGroupedEvents(
-      groupOverlappingEvents(
-        task.events,
-        contractStartDate,
-        startTime,
-        totalDuration,
-        chartBodyScale,
-        ganttChartBodyWidth,
-        EVENT_ICON_SIZE
-      )
+      shouldEventsBeGrouped
+        ? groupOverlappingEvents(
+            task.events,
+            contractStartDate,
+            startTime,
+            totalDuration,
+            chartBodyScale,
+            ganttChartBodyWidth,
+            EVENT_ICON_SIZE
+          )
+        : []
     );
-  }, [task.events, contractStartDate, startTime, totalDuration, chartBodyScale, ganttChartBodyWidth]);
+  }, [
+    task.events,
+    contractStartDate,
+    startTime,
+    totalDuration,
+    chartBodyScale,
+    ganttChartBodyWidth,
+    shouldEventsBeGrouped
+  ]);
 
   const onMouseLeave = (evt: React.MouseEvent<SVGRectElement, MouseEvent>) => {
     evt.stopPropagation();
@@ -180,16 +193,27 @@ export const GanttTask = ({
         onMouseMove={onMouseMove}
         onClick={handleClickEvent}
       />
-      {groupedEvents.map((group) => (
-        <GanttChartEvent
-          key={group.key + 'event'}
-          events={group.events}
-          iconSize={EVENT_ICON_SIZE}
-          shiftIconPx={eventIconShift}
-          position={group.positionPx}
-          handleEventsClick={handleEventsClick}
-        />
-      ))}
+      {shouldEventsBeGrouped
+        ? groupedEvents.map((group) => (
+            <GanttChartEvent
+              key={group.key + 'event'}
+              events={group.events}
+              iconSize={EVENT_ICON_SIZE}
+              shiftIconPx={eventIconShift}
+              position={group.positionPx}
+              handleEventsClick={handleEventsClick}
+            />
+          ))
+        : task.events.map((event) => (
+            <GanttChartEvent
+              key={event.id}
+              events={[event]}
+              iconSize={EVENT_ICON_SIZE}
+              shiftIconPx={eventIconShift}
+              position={`${((getStartTime(contractStartDate, event.date) + 1.2 - GanttStart) / totalDuration) * 100}%`}
+              handleEventsClick={handleEventsClick}
+            />
+          ))}
     </g>
   );
 };

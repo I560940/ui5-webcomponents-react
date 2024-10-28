@@ -10,7 +10,7 @@ interface GanttChartEventProps {
   shiftIconPx?: number;
   iconColor?: string;
   events: IGanttChartEvent[];
-  position: number;
+  position: number | string;
   handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
 }
 

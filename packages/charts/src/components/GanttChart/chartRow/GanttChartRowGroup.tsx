@@ -25,6 +25,7 @@ export interface GanttChartRowGroupProps {
   openSubRowIndexes: OpenSubRowIndexes;
   chartBodyScale: number;
   ganttChartBodyWidth: number;
+  shouldEventsBeGrouped: boolean;
 }
 export const GanttChartRowGroup = (props: GanttChartRowGroupProps) => {
   const {
@@ -40,7 +41,8 @@ export const GanttChartRowGroup = (props: GanttChartRowGroupProps) => {
     openSubRowIndexes,
     chartBodyScale,
     ganttChartBodyWidth,
-    handleEventsClick
+    handleEventsClick,
+    shouldEventsBeGrouped
   } = props;
 
   const [flattenedDataset, setFlattenedDataset] = useState<IGanttChartRow[]>([]);
@@ -68,6 +70,7 @@ export const GanttChartRowGroup = (props: GanttChartRowGroupProps) => {
             chartBodyScale={chartBodyScale}
             ganttChartBodyWidth={ganttChartBodyWidth}
             handleEventsClick={handleEventsClick}
+            shouldEventsBeGrouped={shouldEventsBeGrouped}
           />
         );
       })}

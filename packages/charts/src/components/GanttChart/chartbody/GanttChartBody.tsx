@@ -38,6 +38,7 @@ export interface GanttChartBodyProps {
   openRowIndex: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
   chartBodyScale: number;
+  shouldEventsBeGrouped: boolean;
 }
 
 const GanttChartBody = (props: GanttChartBodyProps) => {
@@ -57,7 +58,8 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
     openRowIndex,
     openSubRowIndexes,
     chartBodyScale,
-    onEventClick
+    onEventClick,
+    shouldEventsBeGrouped
   } = props;
   const classes = useStyles();
   const tooltipRef = useRef<GanttTooltipHandle>(null);
@@ -121,6 +123,7 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
           chartBodyScale={chartBodyScale}
           ganttChartBodyWidth={width}
           handleEventsClick={handleEventsClick}
+          shouldEventsBeGrouped={shouldEventsBeGrouped}
         />
       </GanttChartLayer>
 

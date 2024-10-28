@@ -42,6 +42,7 @@ export interface GanttChartBodyColumnProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleTaskClick?: (parentId: string, task: IGanttChartTask, event: React.MouseEvent) => void;
   onEventClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
+  shouldEventsBeGrouped: boolean;
 }
 
 export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
@@ -63,7 +64,8 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
     openRowIndex,
     openSubRowIndexes,
     handleTaskClick,
-    onEventClick
+    onEventClick,
+    shouldEventsBeGrouped
   } = props;
   const [isGrabbed, setIsGrabbed] = useState(false);
   const [mPos, setMPos] = useState(0);
@@ -143,6 +145,7 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
         onEventClick={onEventClick}
         openRowIndex={openRowIndex}
         openSubRowIndexes={openSubRowIndexes}
+        shouldEventsBeGrouped={shouldEventsBeGrouped}
       />
     </div>
   );

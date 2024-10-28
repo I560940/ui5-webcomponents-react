@@ -33,6 +33,7 @@ export interface GanttChartProps extends CommonProps {
   showVerticalLineOnHover?: boolean;
   showStaticVerticalLine?: boolean;
   staticVerticalLinePosition?: string;
+  shouldEventsBeGrouped?: boolean;
 }
 
 const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => {
@@ -49,6 +50,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
     showStaticVerticalLine,
     staticVerticalLinePosition,
     showStatus = true,
+    shouldEventsBeGrouped = false,
     ...rest
   } = props;
   const { openRowIndex, openSubRowIndexes, numberOfRows, handleClick, handleSubClick } = useCollapsableRows(dataset);
@@ -154,6 +156,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
           onEventClick={onEventClick}
           openRowIndex={openRowIndex}
           openSubRowIndexes={openSubRowIndexes}
+          shouldEventsBeGrouped={shouldEventsBeGrouped}
         />
       </div>
     </div>
