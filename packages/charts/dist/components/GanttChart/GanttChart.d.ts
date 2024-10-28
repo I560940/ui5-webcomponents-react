@@ -15,6 +15,7 @@ export interface GanttChartProps extends CommonProps {
     showVerticalLineOnHover?: boolean;
     showStaticVerticalLine?: boolean;
     staticVerticalLinePosition?: string;
+    shouldEventsBeGrouped?: boolean;
 }
 declare const GanttChart: React.ForwardRefExoticComponent<GanttChartProps & React.RefAttributes<HTMLDivElement>>;
 export { GanttChart };

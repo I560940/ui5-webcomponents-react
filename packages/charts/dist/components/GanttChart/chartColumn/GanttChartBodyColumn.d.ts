@@ -20,5 +20,6 @@ export interface GanttChartBodyColumnProps {
     openSubRowIndexes: OpenSubRowIndexes;
     handleTaskClick?: (parentId: string, task: IGanttChartTask, event: React.MouseEvent) => void;
     onEventClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
+    shouldEventsBeGrouped: boolean;
 }
 export declare const GanttChartBodyColumn: (props: GanttChartBodyColumnProps) => React.JSX.Element;

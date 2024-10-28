@@ -14,6 +14,7 @@ export interface GanttChartRowGroupProps {
     openSubRowIndexes: OpenSubRowIndexes;
     chartBodyScale: number;
     ganttChartBodyWidth: number;
+    shouldEventsBeGrouped: boolean;
 }
 export declare const GanttChartRowGroup: {
     (props: GanttChartRowGroupProps): React.JSX.Element;

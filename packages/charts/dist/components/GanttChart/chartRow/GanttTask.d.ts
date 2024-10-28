@@ -36,9 +36,10 @@ interface GanttTaskProps {
     handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
     task: IGanttChartTask;
     parentId: string;
+    shouldEventsBeGrouped: boolean;
 }
 export declare const GanttTask: {
-    ({ id, startTime, duration, totalDuration, GanttStart, showTooltip, hideTooltip, handleTaskClick, contractStartDate, ganttChartBodyWidth, chartBodyScale, handleEventsClick, task, parentId }: GanttTaskProps): React.JSX.Element;
+    ({ id, startTime, duration, totalDuration, GanttStart, showTooltip, hideTooltip, handleTaskClick, contractStartDate, ganttChartBodyWidth, chartBodyScale, handleEventsClick, task, parentId, shouldEventsBeGrouped }: GanttTaskProps): React.JSX.Element;
     displayName: string;
 };
 export {};

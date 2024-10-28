@@ -20,6 +20,7 @@ export interface GanttChartBodyProps {
     openRowIndex: OpenRowIndex;
     openSubRowIndexes: OpenSubRowIndexes;
     chartBodyScale: number;
+    shouldEventsBeGrouped: boolean;
 }
 declare const GanttChartBody: (props: GanttChartBodyProps) => React.JSX.Element;
 export { GanttChartBody };

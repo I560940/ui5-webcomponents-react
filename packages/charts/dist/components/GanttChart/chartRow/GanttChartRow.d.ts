@@ -13,13 +13,14 @@ interface GanttChartRowProps {
     contractDuration: DateRange;
     chartBodyScale: number;
     ganttChartBodyWidth: number;
+    shouldEventsBeGrouped: boolean;
 }
 /**
  * This represents each row of the GanttChart. It is used to display
  * the task items and milestones.
  */
 export declare const GanttChartRow: {
-    ({ rowData, rowHeight, rowIndex, totalDuration, GanttStart, showTooltip, hideTooltip, handleTaskClick, contractDuration, chartBodyScale, ganttChartBodyWidth, handleEventsClick, ...rest }: GanttChartRowProps): React.JSX.Element;
+    ({ rowData, rowHeight, rowIndex, totalDuration, GanttStart, showTooltip, hideTooltip, handleTaskClick, contractDuration, chartBodyScale, ganttChartBodyWidth, handleEventsClick, shouldEventsBeGrouped, ...rest }: GanttChartRowProps): React.JSX.Element;
     displayName: string;
 };
 export {};
