@@ -1,9 +1,8 @@
 import { throttle } from '@ui5/webcomponents-react-base';
-import type { CSSProperties } from 'react';
 import React, { useEffect, useRef, useState } from 'react';
-import type { IEventsGroup, IGanttChartEvent } from '../types/GanttChartTypes.js';
+import type { IEventsGroup, IGanttChartEvent, IGanttChartTask } from '../types/GanttChartTypes.js';
 import { HOVER_OPACITY, NORMAL_OPACITY, THROTTLE_INTERVAL } from '../util/constants.js';
-import { groupOverlappingEvents } from '../util/utils.js';
+import { getStartTime, groupOverlappingEvents } from '../util/utils.js';
 import { GanttChartEvent } from './GanttChartEvent.js';
 
 interface GanttTaskProps {
@@ -13,11 +12,6 @@ interface GanttTaskProps {
    * from it.
    */
   id?: string;
-
-  /**
-   * The task item label. If not set, the label of the row is used.
-   */
-  label?: string;
 
   /**
    * The starting time of the task on the Gantt. Can
@@ -38,8 +32,6 @@ interface GanttTaskProps {
    */
   totalDuration: number;
 
-  color: CSSProperties['color'];
-
   GanttStart: number;
 
   showTooltip: (
@@ -56,11 +48,9 @@ interface GanttTaskProps {
    * Callback function to handle the click event on the task.
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
+  handleTaskClick: (parentId: string, task: IGanttChartTask, event: React.MouseEvent) => void;
 
   hideTooltip: () => void;
-
-  events: IGanttChartEvent[];
 
   contractStartDate: string;
 
@@ -69,24 +59,30 @@ interface GanttTaskProps {
   ganttChartBodyWidth: number;
 
   handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
+
+  task: IGanttChartTask;
+
+  parentId: string;
+
+  shouldEventsBeGrouped: boolean;
 }
 
 export const GanttTask = ({
   id,
-  label,
   startTime,
   duration,
   totalDuration,
-  color,
   GanttStart,
   showTooltip,
   hideTooltip,
   handleTaskClick,
-  events,
   contractStartDate,
   ganttChartBodyWidth,
   chartBodyScale,
-  handleEventsClick
+  handleEventsClick,
+  task,
+  parentId,
+  shouldEventsBeGrouped
 }: GanttTaskProps) => {
   const [opacity, setOpacity] = useState(NORMAL_OPACITY);
   const rectRef = useRef<SVGRectElement>(null);
@@ -125,17 +121,27 @@ export const GanttTask = ({
 
   useEffect(() => {
     setGroupedEvents(
-      groupOverlappingEvents(
-        events,
-        contractStartDate,
-        startTime,
-        totalDuration,
-        chartBodyScale,
-        ganttChartBodyWidth,
-        EVENT_ICON_SIZE
-      )
+      shouldEventsBeGrouped
+        ? groupOverlappingEvents(
+            task.events,
+            contractStartDate,
+            startTime,
+            totalDuration,
+            chartBodyScale,
+            ganttChartBodyWidth,
+            EVENT_ICON_SIZE
+          )
+        : []
     );
-  }, [events, contractStartDate, startTime, totalDuration, chartBodyScale, ganttChartBodyWidth]);
+  }, [
+    task.events,
+    contractStartDate,
+    startTime,
+    totalDuration,
+    chartBodyScale,
+    ganttChartBodyWidth,
+    shouldEventsBeGrouped
+  ]);
 
   const onMouseLeave = (evt: React.MouseEvent<SVGRectElement, MouseEvent>) => {
     evt.stopPropagation();
@@ -146,13 +152,13 @@ export const GanttTask = ({
   const mouseMoveHandler = (evt: React.MouseEvent<SVGRectElement, MouseEvent>) => {
     evt.stopPropagation();
     setOpacity(HOVER_OPACITY);
-    showTooltip(evt.clientX, evt.clientY, label, startTime, duration, color, false);
+    showTooltip(evt.clientX, evt.clientY, task.status && '', startTime, duration, task.color, false);
   };
 
   const onMouseMove = throttle(mouseMoveHandler, THROTTLE_INTERVAL, { trailing: false });
 
   const handleClickEvent = (event: React.MouseEvent) => {
-    handleTaskClick({ id, label, startTime, duration, color }, event);
+    handleTaskClick(parentId, task, event);
   };
 
   // The 10% y value is to create a little gap between the top grid line and the
@@ -175,7 +181,7 @@ export const GanttTask = ({
         rx="4"
         ry="4"
         style={{
-          fill: shouldRectBeVisible ? color : 'none',
+          fill: shouldRectBeVisible ? task.color : 'none',
           pointerEvents: 'auto',
           cursor: 'pointer',
           opacity: opacity,
@@ -187,16 +193,27 @@ export const GanttTask = ({
         onMouseMove={onMouseMove}
         onClick={handleClickEvent}
       />
-      {groupedEvents.map((group) => (
-        <GanttChartEvent
-          key={group.key + 'event'}
-          events={group.events}
-          iconSize={EVENT_ICON_SIZE}
-          shiftIconPx={eventIconShift}
-          position={group.positionPx}
-          handleEventsClick={handleEventsClick}
-        />
-      ))}
+      {shouldEventsBeGrouped
+        ? groupedEvents.map((group) => (
+            <GanttChartEvent
+              key={group.key + 'event'}
+              events={group.events}
+              iconSize={EVENT_ICON_SIZE}
+              shiftIconPx={eventIconShift}
+              position={group.positionPx}
+              handleEventsClick={handleEventsClick}
+            />
+          ))
+        : task.events.map((event) => (
+            <GanttChartEvent
+              key={event.id}
+              events={[event]}
+              iconSize={EVENT_ICON_SIZE}
+              shiftIconPx={eventIconShift}
+              position={`${((getStartTime(contractStartDate, event.date) + 1.2 - GanttStart) / totalDuration) * 100}%`}
+              handleEventsClick={handleEventsClick}
+            />
+          ))}
     </g>
   );
 };

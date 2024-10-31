@@ -171,7 +171,6 @@ export const groupOverlappingEvents = (
 
   //@ts-expect-error - to be reviewed later, the function works correctly
   const sortedEvents = events.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
-
   const groups = [];
   let currentGroup = [];
   let groupStartPositionPx = null;
@@ -208,6 +207,5 @@ export const groupOverlappingEvents = (
       positionPx: currentGroup[0].positionPx
     });
   }
-
   return groups;
 };

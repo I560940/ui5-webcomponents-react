@@ -1,5 +1,5 @@
 import React from 'react';
-import type { DateRange, IGanttChartRow, IGanttChartEvent } from '../types/GanttChartTypes.js';
+import type { DateRange, IGanttChartRow, IGanttChartEvent, IGanttChartTask } from '../types/GanttChartTypes.js';
 interface GanttChartRowProps {
     rowData: IGanttChartRow;
     rowHeight: number;
@@ -7,19 +7,20 @@ interface GanttChartRowProps {
     totalDuration: number;
     GanttStart: number;
     showTooltip: (...x: unknown[]) => void;
-    handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
+    handleTaskClick: (parentId: string, task: IGanttChartTask, event: React.MouseEvent) => void;
     handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
     hideTooltip: () => void;
     contractDuration: DateRange;
     chartBodyScale: number;
     ganttChartBodyWidth: number;
+    shouldEventsBeGrouped: boolean;
 }
 /**
  * This represents each row of the GanttChart. It is used to display
  * the task items and milestones.
  */
 export declare const GanttChartRow: {
-    ({ rowData, rowHeight, rowIndex, totalDuration, GanttStart, showTooltip, hideTooltip, handleTaskClick, contractDuration, chartBodyScale, ganttChartBodyWidth, handleEventsClick, ...rest }: GanttChartRowProps): React.JSX.Element;
+    ({ rowData, rowHeight, rowIndex, totalDuration, GanttStart, showTooltip, hideTooltip, handleTaskClick, contractDuration, chartBodyScale, ganttChartBodyWidth, handleEventsClick, shouldEventsBeGrouped, ...rest }: GanttChartRowProps): React.JSX.Element;
     displayName: string;
 };
 export {};

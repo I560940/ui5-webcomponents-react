@@ -1,5 +1,5 @@
 import React from 'react';
-import type { DateRange, IGanttChartRow, IGanttChartEvent } from '../types/GanttChartTypes.js';
+import type { DateRange, IGanttChartRow, IGanttChartEvent, IGanttChartTask } from '../types/GanttChartTypes.js';
 import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 import { countTaskDuration, getStartTime } from '../util/utils.js';
 import { GanttTask } from './GanttTask.js';
@@ -12,12 +12,13 @@ interface GanttChartRowProps {
   GanttStart: number;
   showTooltip: (...x: unknown[]) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  handleTaskClick: (task: Record<string, any>, event: React.MouseEvent) => void;
+  handleTaskClick: (parentId: string, task: IGanttChartTask, event: React.MouseEvent) => void;
   handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
   hideTooltip: () => void;
   contractDuration: DateRange;
   chartBodyScale: number;
   ganttChartBodyWidth: number;
+  shouldEventsBeGrouped: boolean;
 }
 
 /**
@@ -37,6 +38,7 @@ export const GanttChartRow = ({
   chartBodyScale,
   ganttChartBodyWidth,
   handleEventsClick,
+  shouldEventsBeGrouped,
   ...rest
 }: GanttChartRowProps) => {
   return (
@@ -54,20 +56,20 @@ export const GanttChartRow = ({
           <GanttTask
             key={task.id + index + task.dateStart + task.dateEnd}
             id={task.id}
-            label={task.status ?? ''}
             startTime={getStartTime(contractDuration?.dateStart, task.dateStart)}
             duration={countTaskDuration(task.dateStart, task.dateEnd)}
             totalDuration={totalDuration}
-            color={task.color}
             GanttStart={GanttStart}
             showTooltip={showTooltip}
             hideTooltip={hideTooltip}
             handleTaskClick={handleTaskClick}
-            events={task.events}
             contractStartDate={contractDuration.dateStart}
             chartBodyScale={chartBodyScale}
             ganttChartBodyWidth={ganttChartBodyWidth}
             handleEventsClick={handleEventsClick}
+            task={task}
+            parentId={rowData.id}
+            shouldEventsBeGrouped={shouldEventsBeGrouped}
           />
         );
       })}

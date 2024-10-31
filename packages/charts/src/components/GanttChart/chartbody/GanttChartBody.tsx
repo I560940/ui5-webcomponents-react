@@ -6,7 +6,8 @@ import type {
   IGanttChartRow,
   OpenRowIndex,
   OpenSubRowIndexes,
-  IGanttChartEvent
+  IGanttChartEvent,
+  IGanttChartTask
 } from '../types/GanttChartTypes.js';
 import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 import { GanttChartBodyCtx } from '../util/context.js';
@@ -27,7 +28,7 @@ export interface GanttChartBodyProps {
   contractDuration: DateRange;
   annotations?: ReactNode | ReactNode[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
+  handleTaskClick?: (parentId: string, task: IGanttChartTask, event: React.MouseEvent) => void;
   onEventClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
   showAnnotation?: boolean;
   showVerticalLineOnHover?: boolean;
@@ -37,6 +38,7 @@ export interface GanttChartBodyProps {
   openRowIndex: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
   chartBodyScale: number;
+  shouldEventsBeGrouped: boolean;
 }
 
 const GanttChartBody = (props: GanttChartBodyProps) => {
@@ -47,7 +49,7 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
     numOfItems,
     totalDuration,
     contractDuration,
-    onTaskClick,
+    handleTaskClick,
     annotations,
     showAnnotation,
     showVerticalLineOnHover,
@@ -56,7 +58,8 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
     openRowIndex,
     openSubRowIndexes,
     chartBodyScale,
-    onEventClick
+    onEventClick,
+    shouldEventsBeGrouped
   } = props;
   const classes = useStyles();
   const tooltipRef = useRef<GanttTooltipHandle>(null);
@@ -92,11 +95,6 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
     setVerticalLinePosition(null);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleTaskClick = (task: Record<string, any>, event: React.MouseEvent) => {
-    onTaskClick?.(task, event);
-  };
-
   const handleEventsClick = (events: IGanttChartEvent[], e: React.MouseEvent) => {
     onEventClick?.(events, e);
   };
@@ -125,6 +123,7 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
           chartBodyScale={chartBodyScale}
           ganttChartBodyWidth={width}
           handleEventsClick={handleEventsClick}
+          shouldEventsBeGrouped={shouldEventsBeGrouped}
         />
       </GanttChartLayer>
 

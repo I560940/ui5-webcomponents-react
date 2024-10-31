@@ -7,7 +7,7 @@ import { GanttChartZoomSlider } from './headers/GanttChartZoomSlider.js';
 import { useCollapsableRows } from './hooks/useCollapsableRows.js';
 import { useDimensions } from './hooks/useDimensions.js';
 import { GanttChartPlaceholder } from './Placeholder.js';
-import type { DateRange, IGanttChartRow, IGanttChartEvent } from './types/GanttChartTypes.js';
+import type { DateRange, IGanttChartRow, IGanttChartEvent, IGanttChartTask } from './types/GanttChartTypes.js';
 import {
   DEFAULT_ROW_HEIGHT,
   COLUMN_HEADER_HEIGHT,
@@ -25,7 +25,7 @@ export interface GanttChartProps extends CommonProps {
   rowHeight?: number;
   annotations?: ReactNode | ReactNode[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onTaskClick?: (task: Record<string, any>, event: React.MouseEvent) => void;
+  onTaskClick?: (parentId: string, task: IGanttChartTask, event: React.MouseEvent) => void;
   onEventClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
   onLegendClick?: (event: React.MouseEvent) => void;
   showAnnotation?: boolean;
@@ -33,6 +33,7 @@ export interface GanttChartProps extends CommonProps {
   showVerticalLineOnHover?: boolean;
   showStaticVerticalLine?: boolean;
   staticVerticalLinePosition?: string;
+  shouldEventsBeGrouped?: boolean;
 }
 
 const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => {
@@ -49,6 +50,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
     showStaticVerticalLine,
     staticVerticalLinePosition,
     showStatus = true,
+    shouldEventsBeGrouped = false,
     ...rest
   } = props;
   const { openRowIndex, openSubRowIndexes, numberOfRows, handleClick, handleSubClick } = useCollapsableRows(dataset);
@@ -92,6 +94,12 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
   if (!dataset || dataset?.length === 0 || !dateStart || !dateEnd) {
     return <GanttChartPlaceholder />;
   }
+
+  const handleTaskClick = (parentId: string, task: IGanttChartTask, event: React.MouseEvent) => {
+    if (onTaskClick) {
+      onTaskClick(parentId, task, event);
+    }
+  };
 
   return (
     <div ref={fRef} {...rest}>
@@ -144,10 +152,11 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
           showStaticVerticalLine={showStaticVerticalLine}
           showStatus={showStatus}
           staticVerticalLinePosition={staticVerticalLinePosition}
-          onTaskClick={onTaskClick}
+          handleTaskClick={handleTaskClick}
           onEventClick={onEventClick}
           openRowIndex={openRowIndex}
           openSubRowIndexes={openSubRowIndexes}
+          shouldEventsBeGrouped={shouldEventsBeGrouped}
         />
       </div>
     </div>
