@@ -68,6 +68,8 @@ export interface IGanttChartEvent {
   date: string;
 
   color?: CSSProperties['color'];
+
+  startTime: number;
 }
 
 /**

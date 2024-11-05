@@ -127,7 +127,6 @@ export const GanttTask = ({
             contractStartDate,
             startTime,
             totalDuration,
-            chartBodyScale,
             ganttChartBodyWidth,
             EVENT_ICON_SIZE
           )
@@ -196,11 +195,10 @@ export const GanttTask = ({
       {shouldEventsBeGrouped
         ? groupedEvents.map((group) => (
             <GanttChartEvent
-              key={group.key + 'event'}
+              key={group.key}
               events={group.events}
               iconSize={EVENT_ICON_SIZE}
-              shiftIconPx={eventIconShift}
-              position={group.positionPx}
+              position={`${(group.startTime / totalDuration) * 100}%`}
               handleEventsClick={handleEventsClick}
             />
           ))

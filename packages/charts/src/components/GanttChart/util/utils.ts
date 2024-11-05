@@ -1,5 +1,12 @@
 import { differenceInDays, endOfMonth, formatDistanceStrict, startOfMonth } from 'date-fns/fp';
-import type { DateRange, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
+import type {
+  DateRange,
+  IEventsGroup,
+  IGanttChartEvent,
+  IGanttChartRow,
+  OpenRowIndex,
+  OpenSubRowIndexes
+} from '../types/GanttChartTypes.js';
 
 /**
  * Function to count all rows in a dataset of Gantt chart rows, including nested details and sub-details.
@@ -144,68 +151,57 @@ export const flattenDataset = (
   return flattenedDataset;
 };
 
-/**
- * Groups overlapping events in the Gantt chart. It groups events that are close to each other in time and space.
- * The grouping is based on the distance between the events' start times and their positions on the chart.
- *
- * @param {IGanttChartEvent[]} events - The list of events to group.
- * @param {string} contractStartDate - The start date of the contract in ISO format.
- * @param {number} GanttStart - The start time of the Gantt chart in days.
- * @param {number} totalDuration - The total duration of the Gantt chart in days.
- * @param {number} chartBodyScale - The scale of the Gantt chart body.
- * @param {number} svgWidth - The width of the SVG element containing the Gantt chart.
- * @param {number} iconSize - The size of the event icons.
- */
 export const groupOverlappingEvents = (
-  events,
-  contractStartDate,
-  GanttStart,
-  totalDuration,
-  chartBodyScale,
-  svgWidth,
-  iconSize
-) => {
-  const baseThresholdPx = iconSize;
-  const minOverlapThresholdPx = iconSize * 0.9;
-  const overlapThresholdPx = Math.max(baseThresholdPx / chartBodyScale, minOverlapThresholdPx);
+  events: IGanttChartEvent[],
+  contractStartDate: string,
+  GanttStart: number,
+  totalDuration: number,
+  svgWidth: number,
+  iconSize: number
+): IEventsGroup[] => {
+  const eventsWithPositions = events.map((event) => {
+    const startTime = getStartTime(contractStartDate, event.date) + 1.3;
+    const positionPx = ((startTime - GanttStart) / totalDuration) * svgWidth;
+    return { ...event, startTime, positionPx };
+  });
 
-  //@ts-expect-error - to be reviewed later, the function works correctly
-  const sortedEvents = events.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
-  const groups = [];
-  let currentGroup = [];
-  let groupStartPositionPx = null;
+  const sortedEvents = eventsWithPositions.sort((a, b) => a.positionPx - b.positionPx);
+
+  const overlapThresholdPx = iconSize;
+
+  const groups: IEventsGroup[] = [];
+  let currentGroup: IGanttChartEvent[] = [];
+  let groupPositionPx: number | null = null;
 
   sortedEvents.forEach((event) => {
-    const startTime = getStartTime(contractStartDate, event.date);
-    const positionPx = ((startTime + 1.2 - GanttStart) / totalDuration) * svgWidth;
-    const eventWithStartTime = { ...event, startTime, positionPx };
-
     if (currentGroup.length === 0) {
-      currentGroup.push(eventWithStartTime);
-      groupStartPositionPx = positionPx;
+      currentGroup.push(event);
+      groupPositionPx = event.positionPx;
     } else {
-      if (positionPx - groupStartPositionPx <= overlapThresholdPx) {
-        currentGroup.push(eventWithStartTime);
+      const distance = event.positionPx - groupPositionPx;
+      if (distance < overlapThresholdPx) {
+        currentGroup.push(event);
       } else {
         groups.push({
-          key: currentGroup.map((e) => e.date + e.icon).join('-'),
+          key: currentGroup.map((e) => e.id || e.date).join('-'),
           events: currentGroup,
           startTime: currentGroup[0].startTime,
-          positionPx: currentGroup[0].positionPx
+          positionPx: groupPositionPx
         });
-        currentGroup = [eventWithStartTime];
-        groupStartPositionPx = positionPx;
+        currentGroup = [event];
+        groupPositionPx = event.positionPx;
       }
     }
   });
 
   if (currentGroup.length > 0) {
     groups.push({
-      key: currentGroup.map((e) => e.date + e.icon).join('-'),
+      key: currentGroup.map((e) => e.id || e.date).join('-'),
       events: currentGroup,
       startTime: currentGroup[0].startTime,
-      positionPx: currentGroup[0].positionPx
+      positionPx: groupPositionPx
     });
   }
+
   return groups;
 };
