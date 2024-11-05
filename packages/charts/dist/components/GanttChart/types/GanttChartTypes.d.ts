@@ -58,6 +58,7 @@ export interface IGanttChartEvent {
      */
     date: string;
     color?: CSSProperties['color'];
+    startTime: number;
 }
 /**
  * The data representing the connection between two tasks on the Gantt.

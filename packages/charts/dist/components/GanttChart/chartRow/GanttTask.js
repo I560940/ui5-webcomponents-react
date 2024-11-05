@@ -36,7 +36,7 @@ export const GanttTask = ({ id, startTime, duration, totalDuration, GanttStart, 
     }, [rectRef]);
     useEffect(() => {
         setGroupedEvents(shouldEventsBeGrouped
-            ? groupOverlappingEvents(task.events, contractStartDate, startTime, totalDuration, chartBodyScale, ganttChartBodyWidth, EVENT_ICON_SIZE)
+            ? groupOverlappingEvents(task.events, contractStartDate, startTime, totalDuration, ganttChartBodyWidth, EVENT_ICON_SIZE)
             : []);
     }, [
         task.events,
@@ -78,7 +78,7 @@ export const GanttTask = ({ id, startTime, duration, totalDuration, GanttStart, 
                 zIndex: 1
             }, onMouseLeave: onMouseLeave, onMouseMove: onMouseMove, onClick: handleClickEvent }),
         shouldEventsBeGrouped
-            ? groupedEvents.map((group) => (React.createElement(GanttChartEvent, { key: group.key + 'event', events: group.events, iconSize: EVENT_ICON_SIZE, shiftIconPx: eventIconShift, position: group.positionPx, handleEventsClick: handleEventsClick })))
+            ? groupedEvents.map((group) => (React.createElement(GanttChartEvent, { key: group.key, events: group.events, iconSize: EVENT_ICON_SIZE, position: `${(group.startTime / totalDuration) * 100}%`, handleEventsClick: handleEventsClick })))
             : task.events.map((event) => (React.createElement(GanttChartEvent, { key: event.id, events: [event], iconSize: EVENT_ICON_SIZE, shiftIconPx: eventIconShift, position: `${((getStartTime(contractStartDate, event.date) + 1.2 - GanttStart) / totalDuration) * 100}%`, handleEventsClick: handleEventsClick })))));
 };
 GanttTask.displayName = 'GanttTask';

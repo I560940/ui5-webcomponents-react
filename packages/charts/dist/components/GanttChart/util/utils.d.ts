@@ -1,4 +1,4 @@
-import type { DateRange, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
+import type { DateRange, IEventsGroup, IGanttChartEvent, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
 /**
  * Function to count all rows in a dataset of Gantt chart rows, including nested details and sub-details.
  * It calculates the total number of rows based on the expanded rows and sub-rows determined by the provided open row and sub-row indexes.
@@ -55,16 +55,4 @@ export declare const getStartTime: (contractStartDate: string, taskStartDate: st
  * @returns {IGanttChartRow[]} - The flattened dataset, including expanded rows and sub-rows.
  */
 export declare const flattenDataset: (dataset: IGanttChartRow[], openRowIndex: OpenRowIndex, openSubRowIndexes: OpenSubRowIndexes) => IGanttChartRow[];
-/**
- * Groups overlapping events in the Gantt chart. It groups events that are close to each other in time and space.
- * The grouping is based on the distance between the events' start times and their positions on the chart.
- *
- * @param {IGanttChartEvent[]} events - The list of events to group.
- * @param {string} contractStartDate - The start date of the contract in ISO format.
- * @param {number} GanttStart - The start time of the Gantt chart in days.
- * @param {number} totalDuration - The total duration of the Gantt chart in days.
- * @param {number} chartBodyScale - The scale of the Gantt chart body.
- * @param {number} svgWidth - The width of the SVG element containing the Gantt chart.
- * @param {number} iconSize - The size of the event icons.
- */
-export declare const groupOverlappingEvents: (events: any, contractStartDate: any, GanttStart: any, totalDuration: any, chartBodyScale: any, svgWidth: any, iconSize: any) => any[];
+export declare const groupOverlappingEvents: (events: IGanttChartEvent[], contractStartDate: string, GanttStart: number, totalDuration: number, svgWidth: number, iconSize: number) => IEventsGroup[];
