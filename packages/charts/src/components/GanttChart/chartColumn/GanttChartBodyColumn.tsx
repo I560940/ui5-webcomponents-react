@@ -115,7 +115,8 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
         width: unscaledBodyWidth,
         height: height,
         cursor: getCursor(),
-        overflowX: 'auto'
+        overflowX: 'auto',
+        paddingBottom: `15px`
       }}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
