@@ -70,6 +70,8 @@ export interface IGanttChartEvent {
   color?: CSSProperties['color'];
 
   startTime: number;
+
+  shouldBeGrouped?: boolean;
 }
 
 /**
