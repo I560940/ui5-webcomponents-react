@@ -43,7 +43,9 @@ export const GanttChartBodyColumn = (props) => {
     return (React.createElement("div", { "data-component-name": "GanttChartBodyContainer", className: classes.bodyContainer, ref: bodyConRef, style: {
             width: unscaledBodyWidth,
             height: height,
-            cursor: getCursor()
+            cursor: getCursor(),
+            overflowX: 'auto',
+            paddingBottom: `15px`
         }, onMouseDown: onMouseDown, onMouseUp: onMouseUp, onMouseMove: mouseMoveHandler },
         React.createElement(GanttChartTimeline, { width: bodyWidth, height: COLUMN_HEADER_HEIGHT, totalDuration: totalDuration, contractDuration: contractDuration }),
         React.createElement(GanttChartBody, { dataset: dataset, width: bodyWidth, chartBodyScale: chartBodyScale, height: height - COLUMN_HEADER_HEIGHT - ROW_CONTRACT_DURATION_HEIGHT, rowHeight: rowHeight, numOfItems: numberOfRows, totalDuration: totalDuration, contractDuration: contractDuration, annotations: annotations, showAnnotation: showAnnotation, showVerticalLineOnHover: showVerticalLineOnHover, showStaticVerticalLine: showStaticVerticalLine, staticVerticalLinePosition: staticVerticalLinePosition, unscaledWidth: unscaledBodyWidth, handleTaskClick: handleTaskClick, onEventClick: onEventClick, openRowIndex: openRowIndex, openSubRowIndexes: openSubRowIndexes, shouldEventsBeGrouped: shouldEventsBeGrouped })));
