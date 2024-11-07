@@ -116,6 +116,20 @@ export const flattenDataset = (dataset, openRowIndex, openSubRowIndexes) => {
     });
     return flattenedDataset;
 };
+/**
+ * Groups overlapping events on the Gantt chart.
+ * It groups events that are too close to each other based on the provided overlap threshold.
+ * ShouldBeGrouped boolean property from IGanttChartEvent determines if the event should be grouped.
+ *
+ * @param {IGanttChartEvent[]} events - The list of events to group.
+ * @param {string} contractStartDate - The start date of the contract in ISO format.
+ * @param {number} GanttStart - The start time of the Gantt chart.
+ * @param {number} totalDuration - The total duration of the contract in days.
+ * @param {number} svgWidth - The width of the SVG element.
+ * @param {number} iconSize - The size of the event icons.
+ *
+ * @returns {IEventsGroup[]} - An array of grouped events.
+ */
 export const groupOverlappingEvents = (events, contractStartDate, GanttStart, totalDuration, svgWidth, iconSize) => {
     const eventsWithPositions = events.map((event) => {
         const startTime = getStartTime(contractStartDate, event.date) + 1.3;
@@ -128,25 +142,47 @@ export const groupOverlappingEvents = (events, contractStartDate, GanttStart, to
     let currentGroup = [];
     let groupPositionPx = null;
     sortedEvents.forEach((event) => {
-        if (currentGroup.length === 0) {
-            currentGroup.push(event);
-            groupPositionPx = event.positionPx;
-        }
-        else {
-            const distance = event.positionPx - groupPositionPx;
-            if (distance < overlapThresholdPx) {
+        if (event.shouldBeGrouped) {
+            if (currentGroup.length === 0) {
                 currentGroup.push(event);
+                groupPositionPx = event.positionPx;
             }
             else {
+                const distance = event.positionPx - groupPositionPx;
+                if (distance < overlapThresholdPx) {
+                    currentGroup.push(event);
+                }
+                else {
+                    groups.push({
+                        key: currentGroup.map((e) => e.id || e.date).join('-'),
+                        events: currentGroup,
+                        startTime: currentGroup[0].startTime,
+                        //@ts-expect-error - TS2339: Property 'positionPx' does not exist on type 'IGanttChartEvent'.
+                        positionPx: currentGroup[0].positionPx
+                    });
+                    currentGroup = [event];
+                    groupPositionPx = event.positionPx;
+                }
+            }
+        }
+        else {
+            if (currentGroup.length > 0) {
                 groups.push({
                     key: currentGroup.map((e) => e.id || e.date).join('-'),
                     events: currentGroup,
                     startTime: currentGroup[0].startTime,
-                    positionPx: groupPositionPx
+                    //@ts-expect-error - TS2339: Property 'positionPx' does not exist on type 'IGanttChartEvent'.
+                    positionPx: currentGroup[0].positionPx
                 });
-                currentGroup = [event];
-                groupPositionPx = event.positionPx;
+                currentGroup = [];
+                groupPositionPx = null;
             }
+            groups.push({
+                key: event.id || event.date,
+                events: [event],
+                startTime: event.startTime,
+                positionPx: event.positionPx
+            });
         }
     });
     if (currentGroup.length > 0) {
@@ -154,7 +190,8 @@ export const groupOverlappingEvents = (events, contractStartDate, GanttStart, to
             key: currentGroup.map((e) => e.id || e.date).join('-'),
             events: currentGroup,
             startTime: currentGroup[0].startTime,
-            positionPx: groupPositionPx
+            //@ts-expect-error - TS2339: Property 'positionPx' does not exist on type 'IGanttChartEvent'.
+            positionPx: currentGroup[0].positionPx
         });
     }
     return groups;

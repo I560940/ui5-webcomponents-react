@@ -55,4 +55,18 @@ export declare const getStartTime: (contractStartDate: string, taskStartDate: st
  * @returns {IGanttChartRow[]} - The flattened dataset, including expanded rows and sub-rows.
  */
 export declare const flattenDataset: (dataset: IGanttChartRow[], openRowIndex: OpenRowIndex, openSubRowIndexes: OpenSubRowIndexes) => IGanttChartRow[];
+/**
+ * Groups overlapping events on the Gantt chart.
+ * It groups events that are too close to each other based on the provided overlap threshold.
+ * ShouldBeGrouped boolean property from IGanttChartEvent determines if the event should be grouped.
+ *
+ * @param {IGanttChartEvent[]} events - The list of events to group.
+ * @param {string} contractStartDate - The start date of the contract in ISO format.
+ * @param {number} GanttStart - The start time of the Gantt chart.
+ * @param {number} totalDuration - The total duration of the contract in days.
+ * @param {number} svgWidth - The width of the SVG element.
+ * @param {number} iconSize - The size of the event icons.
+ *
+ * @returns {IEventsGroup[]} - An array of grouped events.
+ */
 export declare const groupOverlappingEvents: (events: IGanttChartEvent[], contractStartDate: string, GanttStart: number, totalDuration: number, svgWidth: number, iconSize: number) => IEventsGroup[];
