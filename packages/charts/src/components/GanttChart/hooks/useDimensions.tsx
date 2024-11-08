@@ -22,7 +22,7 @@ export const useDimensions = (showStatus: boolean, rowHeight: number, numberOfRo
     ? dimensions.width - COLUMN_COMPONENT_WIDTH - COLUMN_STATUS_WIDTH
     : dimensions.width - COLUMN_COMPONENT_WIDTH;
   const bodyWidth = unscaledBodyWidth * chartBodyScale;
-  const height = rowHeight * numberOfRows + COLUMN_HEADER_HEIGHT + ROW_CONTRACT_DURATION_HEIGHT + 30;
+  const height = rowHeight * numberOfRows + COLUMN_HEADER_HEIGHT + ROW_CONTRACT_DURATION_HEIGHT;
   const gridTemplateColumns = showStatus
     ? `${COLUMN_COMPONENT_WIDTH}px ${COLUMN_STATUS_WIDTH}px auto`
     : `${COLUMN_COMPONENT_WIDTH}px auto`;
