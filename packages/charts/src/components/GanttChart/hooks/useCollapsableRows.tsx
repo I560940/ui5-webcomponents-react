@@ -13,6 +13,11 @@ export const useCollapsableRows = (dataset: IGanttChartRow[]) => {
     setNumberOfRows(() => countAllRows(dataset, openRowIndexes, openSubRowIndexes));
   }, [dataset, numberOfRows, openRowIndexes, openSubRowIndexes]);
 
+  useEffect(() => {
+    setOpenRowIndexes([]);
+    setOpenSubRowIndexes({});
+  }, [dataset]);
+
   const handleClick = (index: number): void => {
     if (openRowIndexes.includes(index)) {
       setOpenRowIndexes(openRowIndexes.filter((i) => i !== index));
