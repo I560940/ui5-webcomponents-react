@@ -24,7 +24,6 @@ export const useCollapsableRows = (dataset: IGanttChartRow[]) => {
     } else {
       setOpenRowIndexes([...openRowIndexes, index]);
     }
-    setOpenSubRowIndexes({});
   };
 
   const handleSubClick = (parentIndex: number, index: number): void => {

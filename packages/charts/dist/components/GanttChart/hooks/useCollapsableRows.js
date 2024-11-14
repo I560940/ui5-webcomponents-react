@@ -18,7 +18,6 @@ export const useCollapsableRows = (dataset) => {
         else {
             setOpenRowIndexes([...openRowIndexes, index]);
         }
-        setOpenSubRowIndexes({});
     };
     const handleSubClick = (parentIndex, index) => {
         setOpenSubRowIndexes((prevState) => ({
