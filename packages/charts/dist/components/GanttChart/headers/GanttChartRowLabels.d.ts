@@ -8,7 +8,7 @@ export interface GanttChartRowLabelsProps {
     dataType: ColumnDataType;
     handleClick?: (rowIndex: number) => void;
     handleSubClick?: (parentIndex: number, index: number) => void;
-    openRowIndex: OpenRowIndex;
+    openRowIndexes: OpenRowIndex;
     openSubRowIndexes: OpenSubRowIndexes;
     numOfRows: number;
 }

@@ -1,6 +1,6 @@
-import type { IGanttChartRow, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
+import type { IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
 export declare const useCollapsableRows: (dataset: IGanttChartRow[]) => {
-    openRowIndex: number;
+    openRowIndexes: OpenRowIndex;
     openSubRowIndexes: OpenSubRowIndexes;
     numberOfRows: number;
     handleClick: (index: number) => void;

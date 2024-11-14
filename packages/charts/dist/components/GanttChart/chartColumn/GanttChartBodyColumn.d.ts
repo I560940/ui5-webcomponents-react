@@ -16,7 +16,7 @@ export interface GanttChartBodyColumnProps {
     showStatus?: boolean;
     staticVerticalLinePosition?: string;
     annotations?: ReactNode | ReactNode[];
-    openRowIndex: OpenRowIndex;
+    openRowIndexes: OpenRowIndex;
     openSubRowIndexes: OpenSubRowIndexes;
     handleTaskClick?: (parentId: string, task: IGanttChartTask, event: React.MouseEvent) => void;
     onEventClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;

@@ -14,7 +14,7 @@ export interface GanttChartRowLabelsProps {
   dataType: ColumnDataType;
   handleClick?: (rowIndex: number) => void;
   handleSubClick?: (parentIndex: number, index: number) => void;
-  openRowIndex: OpenRowIndex;
+  openRowIndexes: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
   numOfRows: number;
 }
@@ -28,7 +28,7 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
     dataType,
     handleClick,
     handleSubClick,
-    openRowIndex,
+    openRowIndexes,
     openSubRowIndexes,
     numOfRows
   } = props;
@@ -55,7 +55,7 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
                 padding={showCollapseIcon ? '0px' : dataType === 'status' ? statusPadding : '25px'}
                 collapseIcon={
                   showCollapseIcon ? (
-                    openRowIndex === rowIndex ? (
+                    openRowIndexes.includes(rowIndex) ? (
                       <Icon name="navigation-down-arrow" />
                     ) : (
                       <Icon name="navigation-right-arrow" />
@@ -89,7 +89,7 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
                         ) : null
                       }
                       onClick={() => handleSubClick(rowIndex, detailIndex)}
-                      isActive={openRowIndex === rowIndex}
+                      isActive={openRowIndexes.includes(rowIndex)}
                       rowHeight={rowHeight}
                       style={{ display: dataType === 'status' ? 'flex' : 'initial' }}
                     >

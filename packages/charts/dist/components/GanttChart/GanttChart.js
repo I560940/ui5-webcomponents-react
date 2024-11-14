@@ -10,7 +10,7 @@ import { useStyles } from './util/styles.js';
 import { calculateTotalDuration } from './util/utils.js';
 const GanttChart = forwardRef((props, fRef) => {
     const { dataset, contractDuration, rowHeight = DEFAULT_ROW_HEIGHT, onTaskClick, onEventClick, onLegendClick, annotations, showAnnotation, showVerticalLineOnHover, showStaticVerticalLine, staticVerticalLinePosition, showStatus = true, shouldEventsBeGrouped = false, ...rest } = props;
-    const { openRowIndex, openSubRowIndexes, numberOfRows, handleClick, handleSubClick } = useCollapsableRows(dataset);
+    const { openRowIndexes, openSubRowIndexes, numberOfRows, handleClick, handleSubClick } = useCollapsableRows(dataset);
     const { dimensions, height, bodyWidth, gridTemplateColumns, setDimensions, chartBodyScale, setChartBodyScale } = useDimensions(showStatus, rowHeight, numberOfRows);
     const { dateStart, dateEnd } = contractDuration;
     const totalDuration = calculateTotalDuration(contractDuration);
@@ -55,9 +55,9 @@ const GanttChart = forwardRef((props, fRef) => {
     return (React.createElement("div", { ref: fRef, ...rest },
         React.createElement(GanttChartZoomSlider, { onScale: (value) => setChartBodyScale(value), onLegendClick: onLegendClick, dimensions: dimensions, resetScroll: resetScroll }),
         React.createElement("div", { className: classes.main, ref: ref, style: style, "data-component-name": "GanttChart" },
-            React.createElement(GanttChartColumn, { height: height, width: COLUMN_COMPONENT_WIDTH, columnTitle: COLUMN_COMPONENT_TITLE, rowHeight: rowHeight, dataset: dataset, dataType: "label", handleClick: handleClick, handleSubClick: handleSubClick, openRowIndex: openRowIndex, openSubRowIndexes: openSubRowIndexes, numberOfRows: numberOfRows, showStatus: showStatus }),
-            showStatus ? (React.createElement(GanttChartColumn, { height: height, width: COLUMN_STATUS_WIDTH, columnTitle: COLUMN_STATUS_TITLE, rowHeight: rowHeight, dataset: dataset, dataType: "status", openRowIndex: openRowIndex, openSubRowIndexes: openSubRowIndexes, numberOfRows: numberOfRows })) : null,
-            React.createElement(GanttChartBodyColumn, { dataset: dataset, dimensions: dimensions, chartBodyScale: chartBodyScale, height: height, rowHeight: rowHeight, numberOfRows: numberOfRows, totalDuration: totalDuration, contractDuration: contractDuration, annotations: annotations, showAnnotation: showAnnotation, showVerticalLineOnHover: showVerticalLineOnHover, showStaticVerticalLine: showStaticVerticalLine, showStatus: showStatus, staticVerticalLinePosition: staticVerticalLinePosition, handleTaskClick: handleTaskClick, onEventClick: onEventClick, openRowIndex: openRowIndex, openSubRowIndexes: openSubRowIndexes, shouldEventsBeGrouped: shouldEventsBeGrouped }))));
+            React.createElement(GanttChartColumn, { height: height, width: COLUMN_COMPONENT_WIDTH, columnTitle: COLUMN_COMPONENT_TITLE, rowHeight: rowHeight, dataset: dataset, dataType: "label", handleClick: handleClick, handleSubClick: handleSubClick, openRowIndexes: openRowIndexes, openSubRowIndexes: openSubRowIndexes, numberOfRows: numberOfRows, showStatus: showStatus }),
+            showStatus ? (React.createElement(GanttChartColumn, { height: height, width: COLUMN_STATUS_WIDTH, columnTitle: COLUMN_STATUS_TITLE, rowHeight: rowHeight, dataset: dataset, dataType: "status", openRowIndexes: openRowIndexes, openSubRowIndexes: openSubRowIndexes, numberOfRows: numberOfRows })) : null,
+            React.createElement(GanttChartBodyColumn, { dataset: dataset, dimensions: dimensions, chartBodyScale: chartBodyScale, height: height, rowHeight: rowHeight, numberOfRows: numberOfRows, totalDuration: totalDuration, contractDuration: contractDuration, annotations: annotations, showAnnotation: showAnnotation, showVerticalLineOnHover: showVerticalLineOnHover, showStaticVerticalLine: showStaticVerticalLine, showStatus: showStatus, staticVerticalLinePosition: staticVerticalLinePosition, handleTaskClick: handleTaskClick, onEventClick: onEventClick, openRowIndexes: openRowIndexes, openSubRowIndexes: openSubRowIndexes, shouldEventsBeGrouped: shouldEventsBeGrouped }))));
 });
 GanttChart.displayName = 'GanttChart';
 export { GanttChart };

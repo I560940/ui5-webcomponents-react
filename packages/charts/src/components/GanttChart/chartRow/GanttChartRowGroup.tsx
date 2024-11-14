@@ -21,7 +21,7 @@ export interface GanttChartRowGroupProps {
   handleTaskClick: (parentId: string, task: IGanttChartTask, event: React.MouseEvent) => void;
   handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
   hideTooltip: () => void;
-  openRowIndex: OpenRowIndex;
+  openRowIndexes: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
   chartBodyScale: number;
   ganttChartBodyWidth: number;
@@ -37,7 +37,7 @@ export const GanttChartRowGroup = (props: GanttChartRowGroupProps) => {
     showTooltip,
     handleTaskClick,
     hideTooltip,
-    openRowIndex,
+    openRowIndexes,
     openSubRowIndexes,
     chartBodyScale,
     ganttChartBodyWidth,
@@ -48,8 +48,8 @@ export const GanttChartRowGroup = (props: GanttChartRowGroupProps) => {
   const [flattenedDataset, setFlattenedDataset] = useState<IGanttChartRow[]>([]);
 
   useEffect(() => {
-    setFlattenedDataset(flattenDataset(dataset, openRowIndex, openSubRowIndexes));
-  }, [dataset, openRowIndex, openSubRowIndexes]);
+    setFlattenedDataset(flattenDataset(dataset, openRowIndexes, openSubRowIndexes));
+  }, [dataset, openRowIndexes, openSubRowIndexes]);
 
   return (
     <svg width="100%" height="100%">

@@ -1,20 +1,23 @@
 import { useEffect, useState } from 'react';
 import { countAllRows } from '../util/utils.js';
 export const useCollapsableRows = (dataset) => {
-    const [openRowIndex, setOpenRowIndex] = useState(null);
+    const [openRowIndexes, setOpenRowIndexes] = useState([]);
     const [openSubRowIndexes, setOpenSubRowIndexes] = useState({});
-    const [numberOfRows, setNumberOfRows] = useState(() => countAllRows(dataset, openRowIndex, openSubRowIndexes));
+    const [numberOfRows, setNumberOfRows] = useState(() => countAllRows(dataset, openRowIndexes, openSubRowIndexes));
     useEffect(() => {
-        setNumberOfRows(() => countAllRows(dataset, openRowIndex, openSubRowIndexes));
-    }, [dataset, numberOfRows, openRowIndex, openSubRowIndexes]);
+        setNumberOfRows(() => countAllRows(dataset, openRowIndexes, openSubRowIndexes));
+    }, [dataset, numberOfRows, openRowIndexes, openSubRowIndexes]);
+    useEffect(() => {
+        setOpenRowIndexes([]);
+        setOpenSubRowIndexes({});
+    }, [dataset]);
     const handleClick = (index) => {
-        if (openRowIndex === index) {
-            setOpenRowIndex(null);
+        if (openRowIndexes.includes(index)) {
+            setOpenRowIndexes(openRowIndexes.filter((i) => i !== index));
         }
         else {
-            setOpenRowIndex(index);
+            setOpenRowIndexes([...openRowIndexes, index]);
         }
-        setOpenSubRowIndexes({});
     };
     const handleSubClick = (parentIndex, index) => {
         setOpenSubRowIndexes((prevState) => ({
@@ -22,5 +25,5 @@ export const useCollapsableRows = (dataset) => {
             [`${parentIndex}-${index}`]: !prevState[`${parentIndex}-${index}`]
         }));
     };
-    return { openRowIndex, openSubRowIndexes, numberOfRows, handleClick, handleSubClick };
+    return { openRowIndexes, openSubRowIndexes, numberOfRows, handleClick, handleSubClick };
 };

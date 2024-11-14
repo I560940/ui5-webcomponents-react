@@ -4,7 +4,7 @@ import { GanttChartTimeline } from '../headers/GanttChartTimeline/GanttChartTime
 import { COLUMN_COMPONENT_WIDTH, COLUMN_HEADER_HEIGHT, COLUMN_STATUS_WIDTH, MOUSE_CURSOR_AUTO, MOUSE_CURSOR_GRAB, MOUSE_CURSOR_GRABBING, ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 import { useStyles } from '../util/styles.js';
 export const GanttChartBodyColumn = (props) => {
-    const { dataset, dimensions, chartBodyScale, height, rowHeight, numberOfRows, totalDuration, contractDuration, annotations, showAnnotation, showVerticalLineOnHover, showStaticVerticalLine, showStatus, staticVerticalLinePosition, openRowIndex, openSubRowIndexes, handleTaskClick, onEventClick, shouldEventsBeGrouped } = props;
+    const { dataset, dimensions, chartBodyScale, height, rowHeight, numberOfRows, totalDuration, contractDuration, annotations, showAnnotation, showVerticalLineOnHover, showStaticVerticalLine, showStatus, staticVerticalLinePosition, openRowIndexes, openSubRowIndexes, handleTaskClick, onEventClick, shouldEventsBeGrouped } = props;
     const [isGrabbed, setIsGrabbed] = useState(false);
     const [mPos, setMPos] = useState(0);
     const classes = useStyles();
@@ -48,5 +48,5 @@ export const GanttChartBodyColumn = (props) => {
             paddingBottom: `15px`
         }, onMouseDown: onMouseDown, onMouseUp: onMouseUp, onMouseMove: mouseMoveHandler },
         React.createElement(GanttChartTimeline, { width: bodyWidth, height: COLUMN_HEADER_HEIGHT, totalDuration: totalDuration, contractDuration: contractDuration }),
-        React.createElement(GanttChartBody, { dataset: dataset, width: bodyWidth, chartBodyScale: chartBodyScale, height: height - COLUMN_HEADER_HEIGHT - ROW_CONTRACT_DURATION_HEIGHT, rowHeight: rowHeight, numOfItems: numberOfRows, totalDuration: totalDuration, contractDuration: contractDuration, annotations: annotations, showAnnotation: showAnnotation, showVerticalLineOnHover: showVerticalLineOnHover, showStaticVerticalLine: showStaticVerticalLine, staticVerticalLinePosition: staticVerticalLinePosition, unscaledWidth: unscaledBodyWidth, handleTaskClick: handleTaskClick, onEventClick: onEventClick, openRowIndex: openRowIndex, openSubRowIndexes: openSubRowIndexes, shouldEventsBeGrouped: shouldEventsBeGrouped })));
+        React.createElement(GanttChartBody, { dataset: dataset, width: bodyWidth, chartBodyScale: chartBodyScale, height: height - COLUMN_HEADER_HEIGHT - ROW_CONTRACT_DURATION_HEIGHT, rowHeight: rowHeight, numOfItems: numberOfRows, totalDuration: totalDuration, contractDuration: contractDuration, annotations: annotations, showAnnotation: showAnnotation, showVerticalLineOnHover: showVerticalLineOnHover, showStaticVerticalLine: showStaticVerticalLine, staticVerticalLinePosition: staticVerticalLinePosition, unscaledWidth: unscaledBodyWidth, handleTaskClick: handleTaskClick, onEventClick: onEventClick, openRowIndexes: openRowIndexes, openSubRowIndexes: openSubRowIndexes, shouldEventsBeGrouped: shouldEventsBeGrouped })));
 };

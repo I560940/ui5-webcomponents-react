@@ -9,7 +9,7 @@ export interface GanttChartColumnProps {
     dataType: ColumnDataType;
     handleClick?: (index: number) => void;
     handleSubClick?: (parentIndex: number, index: number) => void;
-    openRowIndex: OpenRowIndex;
+    openRowIndexes: OpenRowIndex;
     openSubRowIndexes: OpenSubRowIndexes;
     numberOfRows: number;
     showStatus?: boolean;
