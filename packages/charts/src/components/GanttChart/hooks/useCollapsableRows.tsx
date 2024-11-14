@@ -3,21 +3,21 @@ import type { IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/G
 import { countAllRows } from '../util/utils.js';
 
 export const useCollapsableRows = (dataset: IGanttChartRow[]) => {
-  const [openRowIndex, setOpenRowIndex] = useState<OpenRowIndex>(null);
+  const [openRowIndexes, setOpenRowIndexes] = useState<OpenRowIndex>([]);
   const [openSubRowIndexes, setOpenSubRowIndexes] = useState<OpenSubRowIndexes>({});
   const [numberOfRows, setNumberOfRows] = useState<number>(() =>
-    countAllRows(dataset, openRowIndex, openSubRowIndexes)
+    countAllRows(dataset, openRowIndexes, openSubRowIndexes)
   );
 
   useEffect(() => {
-    setNumberOfRows(() => countAllRows(dataset, openRowIndex, openSubRowIndexes));
-  }, [dataset, numberOfRows, openRowIndex, openSubRowIndexes]);
+    setNumberOfRows(() => countAllRows(dataset, openRowIndexes, openSubRowIndexes));
+  }, [dataset, numberOfRows, openRowIndexes, openSubRowIndexes]);
 
   const handleClick = (index: number): void => {
-    if (openRowIndex === index) {
-      setOpenRowIndex(null);
+    if (openRowIndexes.includes(index)) {
+      setOpenRowIndexes(openRowIndexes.filter((i) => i !== index));
     } else {
-      setOpenRowIndex(index);
+      setOpenRowIndexes([...openRowIndexes, index]);
     }
     setOpenSubRowIndexes({});
   };
@@ -29,5 +29,5 @@ export const useCollapsableRows = (dataset: IGanttChartRow[]) => {
     }));
   };
 
-  return { openRowIndex, openSubRowIndexes, numberOfRows, handleClick, handleSubClick };
+  return { openRowIndexes, openSubRowIndexes, numberOfRows, handleClick, handleSubClick };
 };

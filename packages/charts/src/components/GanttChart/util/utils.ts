@@ -27,7 +27,7 @@ export const countAllRows = (
 
   rows?.forEach((row, rowIndex) => {
     count++;
-    if (row.subRows && rowIndex === openRowIndex) {
+    if (row.subRows && openRowIndex.includes(rowIndex)) {
       row.subRows.forEach((detail, detailIndex) => {
         count++;
 
@@ -143,7 +143,7 @@ export const flattenDataset = (
 
   dataset?.forEach((row, rowIndex) => {
     flattenedDataset.push(row);
-    if (row.subRows && rowIndex === openRowIndex) {
+    if (row.subRows && openRowIndex.includes(rowIndex)) {
       flattenDetails(row.subRows, rowIndex);
     }
   });

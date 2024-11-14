@@ -37,7 +37,7 @@ export interface GanttChartBodyColumnProps {
   showStatus?: boolean;
   staticVerticalLinePosition?: string;
   annotations?: ReactNode | ReactNode[];
-  openRowIndex: OpenRowIndex;
+  openRowIndexes: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleTaskClick?: (parentId: string, task: IGanttChartTask, event: React.MouseEvent) => void;
@@ -61,7 +61,7 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
     showStaticVerticalLine,
     showStatus,
     staticVerticalLinePosition,
-    openRowIndex,
+    openRowIndexes,
     openSubRowIndexes,
     handleTaskClick,
     onEventClick,
@@ -145,7 +145,7 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
         unscaledWidth={unscaledBodyWidth}
         handleTaskClick={handleTaskClick}
         onEventClick={onEventClick}
-        openRowIndex={openRowIndex}
+        openRowIndexes={openRowIndexes}
         openSubRowIndexes={openSubRowIndexes}
         shouldEventsBeGrouped={shouldEventsBeGrouped}
       />

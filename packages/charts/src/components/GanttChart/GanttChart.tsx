@@ -53,7 +53,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
     shouldEventsBeGrouped = false,
     ...rest
   } = props;
-  const { openRowIndex, openSubRowIndexes, numberOfRows, handleClick, handleSubClick } = useCollapsableRows(dataset);
+  const { openRowIndexes, openSubRowIndexes, numberOfRows, handleClick, handleSubClick } = useCollapsableRows(dataset);
   const { dimensions, height, bodyWidth, gridTemplateColumns, setDimensions, chartBodyScale, setChartBodyScale } =
     useDimensions(showStatus, rowHeight, numberOfRows);
   const { dateStart, dateEnd } = contractDuration;
@@ -119,7 +119,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
           dataType="label"
           handleClick={handleClick}
           handleSubClick={handleSubClick}
-          openRowIndex={openRowIndex}
+          openRowIndexes={openRowIndexes}
           openSubRowIndexes={openSubRowIndexes}
           numberOfRows={numberOfRows}
           showStatus={showStatus}
@@ -132,7 +132,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
             rowHeight={rowHeight}
             dataset={dataset}
             dataType="status"
-            openRowIndex={openRowIndex}
+            openRowIndexes={openRowIndexes}
             openSubRowIndexes={openSubRowIndexes}
             numberOfRows={numberOfRows}
           />
@@ -154,7 +154,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
           staticVerticalLinePosition={staticVerticalLinePosition}
           handleTaskClick={handleTaskClick}
           onEventClick={onEventClick}
-          openRowIndex={openRowIndex}
+          openRowIndexes={openRowIndexes}
           openSubRowIndexes={openSubRowIndexes}
           shouldEventsBeGrouped={shouldEventsBeGrouped}
         />

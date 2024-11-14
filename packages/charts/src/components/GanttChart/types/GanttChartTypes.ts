@@ -84,7 +84,7 @@ export interface DateRange {
   dateEnd: string;
 }
 
-export type OpenRowIndex = number | null;
+export type OpenRowIndex = number[];
 export type OpenSubRowIndexes = { [key: string]: boolean };
 
 export type DimensionsState = {

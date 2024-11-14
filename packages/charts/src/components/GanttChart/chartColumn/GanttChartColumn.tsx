@@ -14,7 +14,7 @@ export interface GanttChartColumnProps {
   dataType: ColumnDataType;
   handleClick?: (index: number) => void;
   handleSubClick?: (parentIndex: number, index: number) => void;
-  openRowIndex: OpenRowIndex;
+  openRowIndexes: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
   numberOfRows: number;
   showStatus?: boolean;
@@ -30,7 +30,7 @@ export const GanttChartColumn = (props: GanttChartColumnProps) => {
     dataType,
     handleClick,
     handleSubClick,
-    openRowIndex,
+    openRowIndexes,
     openSubRowIndexes,
     numberOfRows,
     showStatus
@@ -53,7 +53,7 @@ export const GanttChartColumn = (props: GanttChartColumnProps) => {
         dataType={dataType}
         handleClick={handleClick ?? null}
         handleSubClick={handleSubClick ?? null}
-        openRowIndex={openRowIndex}
+        openRowIndexes={openRowIndexes}
         openSubRowIndexes={openSubRowIndexes}
         numOfRows={numberOfRows}
       />

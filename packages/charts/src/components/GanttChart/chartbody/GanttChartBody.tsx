@@ -35,7 +35,7 @@ export interface GanttChartBodyProps {
   showStaticVerticalLine?: boolean;
   staticVerticalLinePosition?: string;
   unscaledWidth?: number;
-  openRowIndex: OpenRowIndex;
+  openRowIndexes: OpenRowIndex;
   openSubRowIndexes: OpenSubRowIndexes;
   chartBodyScale: number;
   shouldEventsBeGrouped: boolean;
@@ -55,7 +55,7 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
     showVerticalLineOnHover,
     showStaticVerticalLine,
     staticVerticalLinePosition,
-    openRowIndex,
+    openRowIndexes,
     openSubRowIndexes,
     chartBodyScale,
     onEventClick,
@@ -118,7 +118,7 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
           showTooltip={showTooltipOnHover}
           hideTooltip={hideTooltip}
           handleTaskClick={handleTaskClick}
-          openRowIndex={openRowIndex}
+          openRowIndexes={openRowIndexes}
           openSubRowIndexes={openSubRowIndexes}
           chartBodyScale={chartBodyScale}
           ganttChartBodyWidth={width}
