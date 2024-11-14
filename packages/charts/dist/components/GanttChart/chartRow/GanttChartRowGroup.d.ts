@@ -10,7 +10,7 @@ export interface GanttChartRowGroupProps {
     handleTaskClick: (parentId: string, task: IGanttChartTask, event: React.MouseEvent) => void;
     handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
     hideTooltip: () => void;
-    openRowIndex: OpenRowIndex;
+    openRowIndexes: OpenRowIndex;
     openSubRowIndexes: OpenSubRowIndexes;
     chartBodyScale: number;
     ganttChartBodyWidth: number;
