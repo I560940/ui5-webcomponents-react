@@ -36,6 +36,10 @@ export interface IGanttChartTask {
      */
     color?: CSSProperties['color'];
     /**
+     * The tooltip text to be displayed on the Gantt task
+     */
+    tooltipText?: string;
+    /**
      * A list of events (icons) to be displayed on the task.
      */
     events: IGanttChartEvent[];
@@ -48,7 +52,7 @@ export interface IGanttChartEvent {
     /**
      * The unique id of the event.
      */
-    id: string;
+    id?: string;
     /**
      * The icon to be displayed on the Gantt. It has to be from SAP Icons library.
      */
@@ -58,7 +62,7 @@ export interface IGanttChartEvent {
      */
     date: string;
     color?: CSSProperties['color'];
-    startTime: number;
+    startTime?: number;
     shouldBeGrouped?: boolean;
 }
 /**

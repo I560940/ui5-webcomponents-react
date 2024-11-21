@@ -76,7 +76,7 @@ export const GanttTask = ({ id, startTime, duration, totalDuration, GanttStart, 
                 stroke: shouldRectBeVisible ? '#788FA6' : 'none',
                 strokeWidth: 1.5,
                 zIndex: 1
-            }, onMouseLeave: onMouseLeave, onMouseMove: onMouseMove, onClick: handleClickEvent }),
+            }, onMouseLeave: onMouseLeave, onMouseMove: onMouseMove, onClick: handleClickEvent }, task.tooltipText && React.createElement("title", null, task.tooltipText)),
         shouldEventsBeGrouped
             ? groupedEvents.map((group) => (React.createElement(GanttChartEvent, { key: group.key, events: group.events, iconSize: EVENT_ICON_SIZE, position: `${(group.startTime / totalDuration) * 100}%`, handleEventsClick: handleEventsClick })))
             : task.events.map((event) => (React.createElement(GanttChartEvent, { key: event.id, events: [event], iconSize: EVENT_ICON_SIZE, shiftIconPx: eventIconShift, position: `${((getStartTime(contractStartDate, event.date) + 1.2 - GanttStart) / totalDuration) * 100}%`, handleEventsClick: handleEventsClick })))));
