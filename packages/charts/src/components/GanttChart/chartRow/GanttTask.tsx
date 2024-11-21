@@ -191,7 +191,9 @@ export const GanttTask = ({
         onMouseLeave={onMouseLeave}
         onMouseMove={onMouseMove}
         onClick={handleClickEvent}
-      />
+      >
+        {task.tooltipText && <title>{task.tooltipText}</title>}
+      </rect>
       {shouldEventsBeGrouped
         ? groupedEvents.map((group) => (
             <GanttChartEvent
