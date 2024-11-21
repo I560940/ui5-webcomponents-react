@@ -52,7 +52,7 @@ export interface IGanttChartEvent {
     /**
      * The unique id of the event.
      */
-    id?: string;
+    id: string;
     /**
      * The icon to be displayed on the Gantt. It has to be from SAP Icons library.
      */
@@ -62,7 +62,7 @@ export interface IGanttChartEvent {
      */
     date: string;
     color?: CSSProperties['color'];
-    startTime?: number;
+    startTime: number;
     shouldBeGrouped?: boolean;
 }
 /**
