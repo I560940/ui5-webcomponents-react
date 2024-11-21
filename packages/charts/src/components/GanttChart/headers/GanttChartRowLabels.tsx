@@ -70,7 +70,7 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
                   border: 'solid'
                 }}
               >
-                {row[dataType]}
+                <span title={row[dataType]}>{row[dataType]}</span>
               </RowLabelItem>
               {row.subRows?.map((subRow, detailIndex) => {
                 const showCollapseIcon = subRow.subRows?.length > 0 && dataType === 'label';
@@ -93,7 +93,7 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
                       rowHeight={rowHeight}
                       style={{ display: dataType === 'status' ? 'flex' : 'initial' }}
                     >
-                      {subRow[dataType]}
+                      <span title={subRow[dataType]}>{subRow[dataType]}</span>
                     </RowLabelItem>
                     {subRow.subRows?.map((subDetail, subDetailIndex) => (
                       <RowLabelItem
@@ -102,7 +102,7 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
                         isActive={openSubRowIndexes[`${rowIndex}-${detailIndex}`]}
                         rowHeight={rowHeight}
                       >
-                        {subDetail[dataType]}
+                        <span title={subDetail[dataType]}>{subDetail[dataType]}</span>
                       </RowLabelItem>
                     ))}
                   </React.Fragment>
