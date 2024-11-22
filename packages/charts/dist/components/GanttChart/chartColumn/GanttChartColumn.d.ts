@@ -2,7 +2,6 @@ import React from 'react';
 import type { ColumnDataType, IGanttChartRow, OpenRowIndex, OpenSubRowIndexes } from '../types/GanttChartTypes.js';
 export interface GanttChartColumnProps {
     height: number;
-    width: number;
     columnTitle: string;
     rowHeight: number;
     dataset: IGanttChartRow[];

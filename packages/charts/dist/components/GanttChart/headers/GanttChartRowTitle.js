@@ -3,10 +3,9 @@ import { ThemingParameters } from '@ui5/webcomponents-react-base';
 import React from 'react';
 import { useStyles } from '../util/styles.js';
 export const GanttChartRowTitle = (props) => {
-    const { width, height, title } = props;
+    const { height, title } = props;
     const classes = useStyles();
     const style = {
-        width: width,
         height: height,
         color: ThemingParameters.sapTitleColor
     };
