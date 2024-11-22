@@ -4,11 +4,12 @@ import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 import { useStyles } from '../util/styles.js';
 import { RowLabelItem } from './RowLabelItem.js';
 export const GanttChartRowLabels = (props) => {
-    const { height, rowHeight, dataset, dataType, handleClick, handleSubClick, openRowIndexes, openSubRowIndexes, numOfRows } = props;
+    const { width, height, rowHeight, dataset, dataType, handleClick, handleSubClick, openRowIndexes, openSubRowIndexes, numOfRows } = props;
     const classes = useStyles();
     const statusPadding = '0px';
     const style = {
-        height: `${numOfRows * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}px`,
+        width: width,
+        height: `${numOfRows * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}px`
     };
     return (React.createElement("div", { style: { height } },
         React.createElement("div", { className: classes.rowLabels, style: style },
@@ -20,9 +21,7 @@ export const GanttChartRowLabels = (props) => {
                             display: dataType === 'status' ? 'flex' : 'initial',
                             border: 'solid'
                         } },
-                        React.createElement("span", { title: row[dataType], style: {
-                                marginRight: dataType === 'status' && 10
-                            } }, row[dataType])),
+                        React.createElement("span", { title: row[dataType] }, row[dataType])),
                     row.subRows?.map((subRow, detailIndex) => {
                         const showCollapseIcon = subRow.subRows?.length > 0 && dataType === 'label';
                         return (React.createElement(React.Fragment, { key: `row-detail-${detailIndex}` },
