@@ -1,537 +1,536 @@
 export const dummyDataSetSolution = [];
-export const dummyDataSet = [];
-//     [
-//     {
-//         "id": "k8C3RUsu7jsG}DKFeQz4Pm",
-//         "label": "SAP NLS for SAP BW",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zk8C3RUsu7jsG}DKFeQz4Pm",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": [
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-03-20T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-12-17T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-05-01T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-06-30T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-12-22T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2024-08-01T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-05-01T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-12-17T00:00:00.000Z"
-//                     }
-//                 ]
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGujYNhJ6aEW",
-//         "label": "SAP S/4HANA On Premise",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGujYNhJ6aEW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": [
-//                     {
-//                         "icon": "settings",
-//                         "date": "2025-06-30T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2024-06-01T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-01-01T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-01-31T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-01-01T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2025-06-30T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-01-01T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-01-31T00:00:00.000Z"
-//                     }
-//                 ]
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGufUQbdcaEW",
-//         "label": "SAP S/4HANA On Premise",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGufUQbdcaEW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": [
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-09-01T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-11-30T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-09-01T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-11-30T00:00:00.000Z"
-//                     }
-//                 ]
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGufeLmqgaEW",
-//         "label": "SAP S/4HANA On Premise",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGufeLmqgaEW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": []
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGug5DThVaEW",
-//         "label": "SAP S/4HANA On Premise",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGug5DThVaEW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": [
-//                     {
-//                         "icon": "settings",
-//                         "date": "2022-12-31T00:00:00.000Z"
-//                     }
-//                 ]
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGueuWM1CaEW",
-//         "label": "SAP Cloud Connector",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGueuWM1CaEW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": []
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGuf4mZIG4EW",
-//         "label": "SAP S/4HANA On Premise",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGuf4mZIG4EW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": [
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-06-01T00:00:00.000Z"
-//                     }
-//                 ]
-//             }
-//         ]
-//     },
-//     {
-//         "id": "k8C3RUsu7jsG}NMLfUQ4Pm",
-//         "label": "SAP S/4HANA On Premise",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2023-11-30T00:00:00.000Zk8C3RUsu7jsG}NMLfUQ4Pm",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2023-11-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": [
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-10-02T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-06-30T00:00:00.000Z"
-//                     }
-//                 ]
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGuhTSwrhaEW",
-//         "label": "SAP S/4HANA On Premise",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGuhTSwrhaEW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": []
-//             }
-//         ]
-//     },
-//     {
-//         "id": "k8C3RKdv7jwZulpZNkIMjm",
-//         "label": "SAP Webdispatcher",
-//         "tasks": [
-//             {
-//                 "id": "2023-12-20T00:00:00.000Z2027-09-30T00:00:00.000Zk8C3RKdv7jwZulpZNkIMjm",
-//                 "dateStart": "2023-12-20T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": []
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGulXOqChaEW",
-//         "label": "SAP HANA Smart Data Streaming (SDS)",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGulXOqChaEW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": [
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-06-01T00:00:00.000Z"
-//                     }
-//                 ]
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGufmBj4caEW",
-//         "label": "SAP BW/4HANA",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGufmBj4caEW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": [
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-12-22T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-03-20T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-12-17T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-05-01T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-06-30T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-12-29T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2024-12-31T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2024-04-01T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2024-08-01T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-05-01T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-12-17T00:00:00.000Z"
-//                     }
-//                 ]
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGugnotHUaEW",
-//         "label": "SAP S/4HANA On Premise",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGugnotHUaEW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": [
-//                     {
-//                         "icon": "settings",
-//                         "date": "2022-12-31T00:00:00.000Z"
-//                     }
-//                 ]
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGujip2htaEW",
-//         "label": "SAP S/4HANA On Premise",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGujip2htaEW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": [
-//                     {
-//                         "icon": "settings",
-//                         "date": "2022-10-31T00:00:00.000Z"
-//                     }
-//                 ]
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGuf{7pqvaEW",
-//         "label": "SAP S/4HANA On Premise",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2022-12-31T00:00:00.000Zb439kyb47jsGuf{7pqvaEW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2022-12-31T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": []
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGufJRT3VaEW",
-//         "label": "SAP LT Replication Server",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGufJRT3VaEW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": []
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGufB3uxVaEW",
-//         "label": "SAP HANA Cockpit",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGufB3uxVaEW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": []
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGukBGOVQaEW",
-//         "label": "Apache Webserver",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGukBGOVQaEW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": []
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGuft0zh44EW",
-//         "label": "SAP S/4HANA On Premise",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGuft0zh44EW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": [
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-09-01T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-11-30T00:00:00.000Z"
-//                     }
-//                 ]
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGulRST8r4EW",
-//         "label": "SAP S/4HANA On Premise",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGulRST8r4EW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": [
-//                     {
-//                         "icon": "settings",
-//                         "date": "2022-12-31T00:00:00.000Z"
-//                     }
-//                 ]
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGulCB6Yz4EW",
-//         "label": "SAP S/4HANA On Premise",
-//         "tasks": [
-//             {
-//                 "id": "2023-01-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGulCB6Yz4EW",
-//                 "dateStart": "2023-01-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": [
-//                     {
-//                         "icon": "settings",
-//                         "date": "2025-06-30T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2024-04-01T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-10-01T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2024-01-01T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2025-06-30T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2024-01-01T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2025-06-30T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-04-01T00:00:00.000Z"
-//                     },
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-04-01T00:00:00.000Z"
-//                     }
-//                 ]
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGuhLq63DaEW",
-//         "label": "SAP Analytics Cloud (SAC) agent",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGuhLq63DaEW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": []
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGuh55SbRaEW",
-//         "label": "HANA datamart",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGuh55SbRaEW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": [
-//                     {
-//                         "icon": "settings",
-//                         "date": "2023-06-01T00:00:00.000Z"
-//                     }
-//                 ]
-//             }
-//         ]
-//     },
-//     {
-//         "id": "b439kyb47jsGuej2DZ3aEW",
-//         "label": "SAP Webdispatcher",
-//         "tasks": [
-//             {
-//                 "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGuej2DZ3aEW",
-//                 "dateStart": "2022-10-01T00:00:00.000Z",
-//                 "dateEnd": "2027-09-30T00:00:00.000Z",
-//                 "color": "#788FA633",
-//                 "events": []
-//             }
-//         ]
-//     }
-// ]
+export const dummyDataSet = [
+/* {
+      "id": "k8C3RUsu7jsG}DKFeQz4Pm",
+      "label": "SAP NLS for SAP BW",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zk8C3RUsu7jsG}DKFeQz4Pm",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": [
+                  {
+                      "icon": "settings",
+                      "date": "2023-03-20T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-12-17T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-05-01T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-06-30T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-12-22T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2024-08-01T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-05-01T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-12-17T00:00:00.000Z"
+                  }
+              ]
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGujYNhJ6aEW",
+      "label": "SAP S/4HANA On Premise",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGujYNhJ6aEW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": [
+                  {
+                      "icon": "settings",
+                      "date": "2025-06-30T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2024-06-01T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-01-01T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-01-31T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-01-01T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2025-06-30T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-01-01T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-01-31T00:00:00.000Z"
+                  }
+              ]
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGufUQbdcaEW",
+      "label": "SAP S/4HANA On Premise",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGufUQbdcaEW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": [
+                  {
+                      "icon": "settings",
+                      "date": "2023-09-01T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-11-30T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-09-01T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-11-30T00:00:00.000Z"
+                  }
+              ]
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGufeLmqgaEW",
+      "label": "SAP S/4HANA On Premise",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGufeLmqgaEW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": []
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGug5DThVaEW",
+      "label": "SAP S/4HANA On Premise",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGug5DThVaEW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": [
+                  {
+                      "icon": "settings",
+                      "date": "2022-12-31T00:00:00.000Z"
+                  }
+              ]
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGueuWM1CaEW",
+      "label": "SAP Cloud Connector",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGueuWM1CaEW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": []
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGuf4mZIG4EW",
+      "label": "SAP S/4HANA On Premise",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGuf4mZIG4EW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": [
+                  {
+                      "icon": "settings",
+                      "date": "2023-06-01T00:00:00.000Z"
+                  }
+              ]
+          }
+      ]
+  },
+  {
+      "id": "k8C3RUsu7jsG}NMLfUQ4Pm",
+      "label": "SAP S/4HANA On Premise",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2023-11-30T00:00:00.000Zk8C3RUsu7jsG}NMLfUQ4Pm",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2023-11-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": [
+                  {
+                      "icon": "settings",
+                      "date": "2023-10-02T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-06-30T00:00:00.000Z"
+                  }
+              ]
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGuhTSwrhaEW",
+      "label": "SAP S/4HANA On Premise",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGuhTSwrhaEW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": []
+          }
+      ]
+  },
+  {
+      "id": "k8C3RKdv7jwZulpZNkIMjm",
+      "label": "SAP Webdispatcher",
+      "tasks": [
+          {
+              "id": "2023-12-20T00:00:00.000Z2027-09-30T00:00:00.000Zk8C3RKdv7jwZulpZNkIMjm",
+              "dateStart": "2023-12-20T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": []
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGulXOqChaEW",
+      "label": "SAP HANA Smart Data Streaming (SDS)",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGulXOqChaEW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": [
+                  {
+                      "icon": "settings",
+                      "date": "2023-06-01T00:00:00.000Z"
+                  }
+              ]
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGufmBj4caEW",
+      "label": "SAP BW/4HANA",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGufmBj4caEW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": [
+                  {
+                      "icon": "settings",
+                      "date": "2023-12-22T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-03-20T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-12-17T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-05-01T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-06-30T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-12-29T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2024-12-31T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2024-04-01T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2024-08-01T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-05-01T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-12-17T00:00:00.000Z"
+                  }
+              ]
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGugnotHUaEW",
+      "label": "SAP S/4HANA On Premise",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGugnotHUaEW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": [
+                  {
+                      "icon": "settings",
+                      "date": "2022-12-31T00:00:00.000Z"
+                  }
+              ]
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGujip2htaEW",
+      "label": "SAP S/4HANA On Premise",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGujip2htaEW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": [
+                  {
+                      "icon": "settings",
+                      "date": "2022-10-31T00:00:00.000Z"
+                  }
+              ]
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGuf{7pqvaEW",
+      "label": "SAP S/4HANA On Premise",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2022-12-31T00:00:00.000Zb439kyb47jsGuf{7pqvaEW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2022-12-31T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": []
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGufJRT3VaEW",
+      "label": "SAP LT Replication Server",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGufJRT3VaEW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": []
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGufB3uxVaEW",
+      "label": "SAP HANA Cockpit",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGufB3uxVaEW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": []
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGukBGOVQaEW",
+      "label": "Apache Webserver",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGukBGOVQaEW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": []
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGuft0zh44EW",
+      "label": "SAP S/4HANA On Premise",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGuft0zh44EW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": [
+                  {
+                      "icon": "settings",
+                      "date": "2023-09-01T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-11-30T00:00:00.000Z"
+                  }
+              ]
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGulRST8r4EW",
+      "label": "SAP S/4HANA On Premise",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGulRST8r4EW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": [
+                  {
+                      "icon": "settings",
+                      "date": "2022-12-31T00:00:00.000Z"
+                  }
+              ]
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGulCB6Yz4EW",
+      "label": "SAP S/4HANA On Premise",
+      "tasks": [
+          {
+              "id": "2023-01-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGulCB6Yz4EW",
+              "dateStart": "2023-01-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": [
+                  {
+                      "icon": "settings",
+                      "date": "2025-06-30T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2024-04-01T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-10-01T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2024-01-01T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2025-06-30T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2024-01-01T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2025-06-30T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-04-01T00:00:00.000Z"
+                  },
+                  {
+                      "icon": "settings",
+                      "date": "2023-04-01T00:00:00.000Z"
+                  }
+              ]
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGuhLq63DaEW",
+      "label": "SAP Analytics Cloud (SAC) agent",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGuhLq63DaEW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": []
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGuh55SbRaEW",
+      "label": "HANA datamart",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGuh55SbRaEW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": [
+                  {
+                      "icon": "settings",
+                      "date": "2023-06-01T00:00:00.000Z"
+                  }
+              ]
+          }
+      ]
+  },
+  {
+      "id": "b439kyb47jsGuej2DZ3aEW",
+      "label": "SAP Webdispatcher",
+      "tasks": [
+          {
+              "id": "2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zb439kyb47jsGuej2DZ3aEW",
+              "dateStart": "2022-10-01T00:00:00.000Z",
+              "dateEnd": "2027-09-30T00:00:00.000Z",
+              "color": "#788FA633",
+              "events": []
+          }
+      ]
+  }*/
+];
 // export const dummyDiscreteDataSet: IGanttChartRow[] = [
 //   {
 //     label: 'Discovery',

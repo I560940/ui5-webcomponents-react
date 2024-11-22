@@ -36,6 +36,10 @@ export interface IGanttChartTask {
      */
     color?: CSSProperties['color'];
     /**
+     * The tooltip text to be displayed on the Gantt task
+     */
+    tooltipText?: string;
+    /**
      * A list of events (icons) to be displayed on the task.
      */
     events: IGanttChartEvent[];
