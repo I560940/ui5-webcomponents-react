@@ -8,7 +8,6 @@ import { RowLabelItem } from './RowLabelItem.js';
 
 export interface GanttChartRowLabelsProps {
   dataset: IGanttChartRow[];
-  width: number;
   height: number;
   rowHeight: number;
   dataType: ColumnDataType;
@@ -21,7 +20,6 @@ export interface GanttChartRowLabelsProps {
 
 export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) => {
   const {
-    width,
     height,
     rowHeight,
     dataset,
@@ -38,8 +36,7 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
   const statusPadding = '0px';
 
   const style: CSSProperties = {
-    width: width,
-    height: `${numOfRows * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}px`
+    height: `${numOfRows * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}px`,
   };
 
   return (
@@ -70,7 +67,14 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
                   border: 'solid'
                 }}
               >
-                <span title={row[dataType]}>{row[dataType]}</span>
+                <span
+                  title={row[dataType]}
+                  style={{
+                    marginRight: dataType === 'status' && 10
+                  }}
+                >
+                  {row[dataType]}
+                </span>
               </RowLabelItem>
               {row.subRows?.map((subRow, detailIndex) => {
                 const showCollapseIcon = subRow.subRows?.length > 0 && dataType === 'label';
