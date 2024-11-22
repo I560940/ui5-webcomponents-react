@@ -1,5 +1,6 @@
 import React from 'react';
 export interface GanttChartRowTitleProps {
+    width: number;
     height: number;
     title: string;
 }

@@ -112,6 +112,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
       <div className={classes.main} ref={ref} style={style} data-component-name="GanttChart">
         <GanttChartColumn
           height={height}
+          width={COLUMN_COMPONENT_WIDTH}
           columnTitle={COLUMN_COMPONENT_TITLE}
           rowHeight={rowHeight}
           dataset={dataset}
@@ -126,6 +127,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
         {showStatus ? (
           <GanttChartColumn
             height={height}
+            width={COLUMN_STATUS_WIDTH}
             columnTitle={COLUMN_STATUS_TITLE}
             rowHeight={rowHeight}
             dataset={dataset}
