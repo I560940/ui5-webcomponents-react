@@ -44,7 +44,7 @@ export const GanttChartColumn = (props: GanttChartColumnProps) => {
         borderRight: dataType === 'status' || !showStatus ? solidOutline : ''
       }}
     >
-      <GanttChartRowTitle width={width} height={COLUMN_HEADER_HEIGHT} title={columnTitle} />
+      <GanttChartRowTitle width={width} height={COLUMN_HEADER_HEIGHT} title={columnTitle} showStatus={showStatus} />
       <GanttChartRowLabels
         width={width}
         height={height - COLUMN_HEADER_HEIGHT}
