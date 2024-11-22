@@ -5,16 +5,14 @@ import React from 'react';
 import { useStyles } from '../util/styles.js';
 
 export interface GanttChartRowTitleProps {
-  width: number;
   height: number;
   title: string;
 }
 
 export const GanttChartRowTitle = (props: GanttChartRowTitleProps) => {
-  const { width, height, title } = props;
+  const { height, title } = props;
   const classes = useStyles();
   const style: CSSProperties = {
-    width: width,
     height: height,
     color: ThemingParameters.sapTitleColor
   };
