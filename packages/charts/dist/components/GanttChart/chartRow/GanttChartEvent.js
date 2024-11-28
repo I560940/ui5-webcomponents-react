@@ -8,19 +8,18 @@ export const GanttChartEvent = ({ iconSize = 16, shiftIconPx = 0, events = [], p
     };
     return (React.createElement("foreignObject", { x: position, width: iconSize, height: "100%", transform: `translate(${-shiftIconPx}, 0)`, style: { overflow: 'visible', pointerEvents: 'none' } },
         React.createElement("div", { style: {
-                position: 'relative',
                 display: 'flex',
                 alignItems: 'center',
-                height: '100%',
+                height: '48px',
+                width: '48px',
                 zIndex: 2,
                 pointerEvents: 'auto',
                 cursor: 'pointer'
             }, onClick: handleEventClickEvent },
             React.createElement(Icon, { name: events[0].icon, style: { width: iconSize, color: events[0].color } }),
             events.length > 1 && (React.createElement("span", { style: {
-                    position: 'absolute',
-                    top: 10,
-                    right: 0,
+                    marginLeft: -7,
+                    marginBottom: 12,
                     backgroundColor: ThemingParameters.sapBrandColor,
                     color: 'white',
                     borderRadius: '50%',

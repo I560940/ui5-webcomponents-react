@@ -36,10 +36,10 @@ export const GanttChartEvent = ({
     >
       <div
         style={{
-          position: 'relative',
           display: 'flex',
           alignItems: 'center',
-          height: '100%',
+          height: '48px',
+          width: '48px',
           zIndex: 2,
           pointerEvents: 'auto',
           cursor: 'pointer'
@@ -50,9 +50,8 @@ export const GanttChartEvent = ({
         {events.length > 1 && (
           <span
             style={{
-              position: 'absolute',
-              top: 10,
-              right: 0,
+              marginLeft: -7,
+              marginBottom: 12,
               backgroundColor: ThemingParameters.sapBrandColor,
               color: 'white',
               borderRadius: '50%',
