@@ -18,6 +18,7 @@ import { GanttChartLayer } from './GanttChartLayer.js';
 import { GanttChartStaticVerticalLine } from './GanttChartStaticVerticalLine.js';
 import type { GanttTooltipHandle } from './GanttChartTooltip.js';
 
+
 export interface GanttChartBodyProps {
   dataset: IGanttChartRow[];
   width?: number;
