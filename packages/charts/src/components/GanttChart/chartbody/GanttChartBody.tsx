@@ -41,6 +41,7 @@ export interface GanttChartBodyProps {
   shouldEventsBeGrouped: boolean;
 }
 
+
 const GanttChartBody = (props: GanttChartBodyProps) => {
   const {
     dataset,
