@@ -1,7 +1,7 @@
 import type { IGanttChartRow } from '../types/GanttChartTypes.js';
 
 export const ferrovieLandscape: IGanttChartRow[] = [
-  /*{
+  {
     id: 'k8C3RKdv7js{m4BAuePMhm',
     label: 'SAP Cloud Connector',
     tasks: [
@@ -1777,7 +1777,7 @@ export const dummyDataSet: IGanttChartRow[] = [
         events: []
       }
     ]
-  }*/
+  }
 ];
 
 // export const dummyDiscreteDataSet: IGanttChartRow[] = [
