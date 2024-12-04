@@ -41,7 +41,7 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
     width: width,
     height: `${numOfRows * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}px`
   };
-  console.log('dataset', dataset);
+
   return (
     <div style={{ height }}>
       <div className={classes.rowLabels} style={style}>
@@ -148,4 +148,4 @@ export const GanttChartRowLabels: React.FC<GanttChartRowLabelsProps> = (props) =
       </div>
     </div>
   );
-}; //
+};

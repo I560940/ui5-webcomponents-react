@@ -11,7 +11,6 @@ export const GanttChartRowLabels = (props) => {
         width: width,
         height: `${numOfRows * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}px`
     };
-    console.log('dataset', dataset);
     return (React.createElement("div", { style: { height } },
         React.createElement("div", { className: classes.rowLabels, style: style },
             React.createElement("div", { style: { height: ROW_CONTRACT_DURATION_HEIGHT } }),
@@ -56,4 +55,4 @@ export const GanttChartRowLabels = (props) => {
                                 React.createElement("span", { title: subDetail[dataType] }, subDetail[dataType]))))));
                     })));
             }))));
-}; //
+};
