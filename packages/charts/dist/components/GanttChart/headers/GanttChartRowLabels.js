@@ -1,4 +1,4 @@
-import { Icon } from '@ui5/webcomponents-react';
+import { Icon, Label, Text } from '@ui5/webcomponents-react';
 import React from 'react';
 import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 import { useStyles } from '../util/styles.js';
@@ -11,6 +11,7 @@ export const GanttChartRowLabels = (props) => {
         width: width,
         height: `${numOfRows * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}px`
     };
+    console.log('dataset', dataset);
     return (React.createElement("div", { style: { height } },
         React.createElement("div", { className: classes.rowLabels, style: style },
             React.createElement("div", { style: { height: ROW_CONTRACT_DURATION_HEIGHT } }),
@@ -21,7 +22,31 @@ export const GanttChartRowLabels = (props) => {
                             display: dataType === 'status' ? 'flex' : 'initial',
                             border: 'solid'
                         } },
-                        React.createElement("span", { title: row[dataType] }, row[dataType])),
+                        React.createElement("span", { title: row[dataType] }, row[dataType]),
+                        dataType === 'label' && row['badge'] && (React.createElement(Label, { style: {
+                                position: 'absolute',
+                                display: 'inline-flex',
+                                height: '9px',
+                                width: '20px',
+                                justifyContent: 'flex-end',
+                                alignItems: 'center',
+                                flexShrink: '0',
+                                borderRadius: '8px',
+                                backgroundColor: 'var(--Tile-sapTile_OverlayForegroundColor, #1D2D3E)',
+                                marginTop: '25px'
+                            } },
+                            React.createElement(Text, { style: {
+                                    height: '9px',
+                                    color: '#FFF',
+                                    textAlign: 'right',
+                                    fontFamily: '72',
+                                    fontSize: '8px',
+                                    fontStyle: 'normal',
+                                    fontWeight: '700',
+                                    lineHeight: 'normal',
+                                    marginLeft: '4px',
+                                    marginBottom: '22px'
+                                } }, row['badge'])))),
                     row.subRows?.map((subRow, detailIndex) => {
                         const showCollapseIcon = subRow.subRows?.length > 0 && dataType === 'label';
                         return (React.createElement(React.Fragment, { key: `row-detail-${detailIndex}` },
@@ -31,4 +56,4 @@ export const GanttChartRowLabels = (props) => {
                                 React.createElement("span", { title: subDetail[dataType] }, subDetail[dataType]))))));
                     })));
             }))));
-};
+}; //
