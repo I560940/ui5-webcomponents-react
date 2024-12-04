@@ -24,7 +24,8 @@ export const Default: Story = {
     showStatus: false,
     staticVerticalLinePosition: new Date().toISOString(),
     showStaticVerticalLine: true,
-    showVerticalLineOnHover: true
+    showVerticalLineOnHover: true,
+    shouldEventsBeGrouped: true
   }
 };
 
