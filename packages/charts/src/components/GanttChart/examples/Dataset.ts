@@ -819,7 +819,7 @@ export const ferrovieTier: IGanttChartRow[] = [
         tasks: [
           {
             id: 'bd8fa39b-0dce-4b5d-91dc-7404b65f16ca',
-            dateStart: '2023-11-10T00:00:00.000Z',
+            dateStart: '2023-11-01T00:00:00.000Z',
             dateEnd: '2028-07-09T00:00:00.000Z',
             status: 'Planned',
             color: '#256F3A14',
@@ -863,12 +863,12 @@ export const ferrovieTier: IGanttChartRow[] = [
         subRows: [
           {
             id: 'b439kyb47jwZkskhXJBaKW',
-            label: 'DB Server',
+            label: 'DB Server1',
             status: 'Contracted',
             tasks: [
               {
                 id: 'ac816ade-6dcc-469b-8c63-828248f94fee',
-                dateStart: '2023-12-15T00:00:00.000Z',
+                dateStart: '2023-11-01T00:00:00.000Z',
                 dateEnd: '2028-07-09T00:00:00.000Z',
                 status: 'Planned',
                 color: '#256F3A14',
@@ -901,13 +901,13 @@ export const ferrovieTier: IGanttChartRow[] = [
           },
           {
             id: 'k8C3RKdv7jssYzeTyJ7MhW',
-            label: 'DB Server',
+            label: 'DB Server2',
             status: 'Live',
             tasks: [
               {
                 id: '533e6bd3-506e-4d27-9c5c-5c7f5a64753a',
-                dateStart: '2023-11-10T00:00:00.000Z',
-                dateEnd: '2023-12-14T00:00:00.000Z',
+                dateStart: '2023-11-15T00:00:00.000Z',
+                dateEnd: '2028-12-14T00:00:00.000Z',
                 status: 'Planned',
                 color: '#256F3A14',
                 events: [
