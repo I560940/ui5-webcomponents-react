@@ -20,7 +20,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     dataset: ferrovieTier,
-    contractDuration: { dateStart: '2022-10-01T00:00:00.000Z', dateEnd: '2027-09-30T00:00:00.000Z' },
+    contractDuration: { dateStart: '2022-10-11T00:00:00.000Z', dateEnd: '2027-09-30T00:00:00.000Z' },
     showStatus: false,
     staticVerticalLinePosition: new Date().toISOString(),
     showStaticVerticalLine: true,
