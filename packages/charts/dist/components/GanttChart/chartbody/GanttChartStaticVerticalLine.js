@@ -4,6 +4,7 @@ import React from 'react';
  * Component that renders a vertical line in the Gantt chart. This line is static and does not move.
  */
 const GanttChartStaticVerticalLine = ({ GanttStart, totalDuration, time }) => {
+
   return React.createElement(
     'div',
     {
@@ -30,5 +31,6 @@ const GanttChartStaticVerticalLine = ({ GanttStart, totalDuration, time }) => {
       }
     })
   );
+
 };
 export { GanttChartStaticVerticalLine };

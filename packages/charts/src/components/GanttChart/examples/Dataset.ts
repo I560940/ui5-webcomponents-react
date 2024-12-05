@@ -1289,6 +1289,7 @@ export const dummyDataSet: IGanttChartRow[] = [
   {
     id: 'k8C3RUsu7jsG}DKFeQz4Pm',
     label: 'SAP NLS for SAP BW',
+    badge: 'DR',
     tasks: [
       {
         id: '2022-10-01T00:00:00.000Z2027-09-30T00:00:00.000Zk8C3RUsu7jsG}DKFeQz4Pm',
