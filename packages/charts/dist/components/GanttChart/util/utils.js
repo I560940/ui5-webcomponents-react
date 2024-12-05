@@ -80,6 +80,7 @@ export const countTaskDuration = (dateStart, dateEnd) => {
  */
 export const getStartTime = (contractStartDate, taskStartDate) => {
   const contractStart = new Date(contractStartDate);
+  contractStart.setDate(1);
   const taskStart = new Date(taskStartDate);
   const diffInMilliseconds = Math.abs(contractStart.getTime() - taskStart.getTime());
   return diffInMilliseconds / ONE_DAY - 1;
