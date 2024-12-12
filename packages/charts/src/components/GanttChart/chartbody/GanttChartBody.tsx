@@ -11,7 +11,7 @@ import type {
 } from '../types/GanttChartTypes.js';
 import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 import { GanttChartBodyCtx } from '../util/context.js';
-import { solidOutline, useStyles } from '../util/styles.js';
+import { useStyles } from '../util/styles.js';
 import { getStartTime } from '../util/utils.js';
 import { GanttChartHoverVerticalLine } from './GanttChartHoverVerticalLine.js';
 import { GanttChartLayer } from './GanttChartLayer.js';
@@ -41,6 +41,7 @@ export interface GanttChartBodyProps {
   shouldEventsBeGrouped: boolean;
 }
 
+
 const GanttChartBody = (props: GanttChartBodyProps) => {
   const {
     dataset,
@@ -68,8 +69,7 @@ const GanttChartBody = (props: GanttChartBodyProps) => {
 
   const style: CSSProperties = {
     width: `${width}px`,
-    height: `${numOfItems * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}px`,
-    borderBottom: solidOutline
+    height: `${numOfItems * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}px`
   };
 
   const showTooltipOnHover = (

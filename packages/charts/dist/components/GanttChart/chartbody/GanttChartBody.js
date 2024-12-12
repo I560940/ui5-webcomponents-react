@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { GanttChartRowGroup } from '../chartRow/GanttChartRowGroup.js';
 import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
 import { GanttChartBodyCtx } from '../util/context.js';
-import { solidOutline, useStyles } from '../util/styles.js';
+import { useStyles } from '../util/styles.js';
 import { getStartTime } from '../util/utils.js';
 import { GanttChartHoverVerticalLine } from './GanttChartHoverVerticalLine.js';
 import { GanttChartLayer } from './GanttChartLayer.js';
@@ -15,8 +15,7 @@ const GanttChartBody = (props) => {
     const [verticalLinePosition, setVerticalLinePosition] = useState(null);
     const style = {
         width: `${width}px`,
-        height: `${numOfItems * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}px`,
-        borderBottom: solidOutline
+        height: `${numOfItems * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}px`
     };
     const showTooltipOnHover = (mouseX, mouseY, label, startTime, duration, color, isMilestone) => {
         tooltipRef.current?.onHoverItem(mouseX, mouseY, label, startTime, duration, color, isMilestone);
