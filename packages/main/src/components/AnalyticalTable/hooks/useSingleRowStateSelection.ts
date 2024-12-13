@@ -38,7 +38,7 @@ const getRowProps = (rowProps, { row, instance }) => {
     }
 
     // deselect other rows
-    if (selectionMode === AnalyticalTableSelectionMode.SingleSelect) {
+    if (selectionMode === AnalyticalTableSelectionMode.Single) {
       for (const selectedRow of selectedFlatRows) {
         if (selectedRow.id !== row.id) {
           toggleRowSelected(selectedRow.id, false);
@@ -54,24 +54,40 @@ const getRowProps = (rowProps, { row, instance }) => {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if ((!e.target.hasAttribute('aria-expanded') || (e.shiftKey && e.code === 'Space')) && e.code === 'Enter') {
+      if (
+        !webComponentsReactProperties.tagNamesWhichShouldNotSelectARow.has(
+          getTagNameWithoutScopingSuffix(e.target.tagName)
+        )
+      ) {
+        e.preventDefault();
+      }
+      handleRowSelect(e);
+    }
+    if (e.code === 'Space') {
+      e.preventDefault();
+    }
+  };
+
+  const handleKeyUp = (e) => {
+    if (!e.target.hasAttribute('aria-expanded') && !e.shiftKey && e.code === 'Space') {
+      if (
+        !webComponentsReactProperties.tagNamesWhichShouldNotSelectARow.has(
+          getTagNameWithoutScopingSuffix(e.target.tagName)
+        )
+      ) {
+        e.preventDefault();
+      }
+      handleRowSelect(e);
+    }
+  };
+
   return [
     rowProps,
     {
-      onKeyDown: (e) => {
-        if (
-          (!e.target.hasAttribute('aria-expanded') || (e.shiftKey && e.code === 'Space')) &&
-          (e.key === 'Enter' || e.code === 'Space')
-        ) {
-          if (
-            !webComponentsReactProperties.tagNamesWhichShouldNotSelectARow.has(
-              getTagNameWithoutScopingSuffix(e.target.tagName)
-            )
-          ) {
-            e.preventDefault();
-          }
-          handleRowSelect(e);
-        }
-      },
+      onKeyDown: handleKeyDown,
+      onKeyUp: handleKeyUp,
       onClick: handleRowSelect
     }
   ];

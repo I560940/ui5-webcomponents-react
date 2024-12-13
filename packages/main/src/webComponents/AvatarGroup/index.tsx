@@ -1,7 +1,11 @@
 'use client';
 
 import '@ui5/webcomponents/dist/AvatarGroup.js';
-import type { AvatarGroupClickEventDetail, IAvatarGroupItem } from '@ui5/webcomponents/dist/AvatarGroup.js';
+import type {
+  AvatarGroupAccessibilityAttributes,
+  AvatarGroupClickEventDetail,
+  IAvatarGroupItem
+} from '@ui5/webcomponents/dist/AvatarGroup.js';
 import type AvatarColorScheme from '@ui5/webcomponents/dist/types/AvatarColorScheme.js';
 import type AvatarGroupType from '@ui5/webcomponents/dist/types/AvatarGroupType.js';
 import type { ReactNode } from 'react';
@@ -9,6 +13,18 @@ import { withWebComponent } from '../../internal/withWebComponent.js';
 import type { CommonProps, Ui5CustomEvent, Ui5DomRef, UI5WCSlotsNode } from '../../types/index.js';
 
 interface AvatarGroupAttributes {
+  /**
+   * Defines the additional accessibility attributes that will be applied to the component.
+   * The following field is supported:
+   *
+   * - **hasPopup**: Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by the button.
+   * Accepts the following string values: `dialog`, `grid`, `listbox`, `menu` or `tree`.
+   *
+   * **Note:** Available since [v2.0.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.0.0) of **@ui5/webcomponents**.
+   * @default {}
+   */
+  accessibilityAttributes?: AvatarGroupAccessibilityAttributes;
+
   /**
    * Defines the mode of the `AvatarGroup`.
    * @default "Group"
@@ -52,7 +68,7 @@ interface AvatarGroupPropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   overflowButton?: UI5WCSlotsNode;
   /**
@@ -82,13 +98,6 @@ interface AvatarGroupPropTypes
  * - `Individual` type: The avatars are displayed side-by-side and each
  * avatar has its own click/tap area.
  *
- * ### Responsive Behavior
- *
- * When the available space is less than the width required to display all avatars,
- * an overflow visualization appears as a button placed at the end with the same shape
- * and size as the avatars. The visualization displays the number of avatars that have overflowed
- * and are not currently visible.
- *
  * ### Usage
  *
  * Use the `AvatarGroup` if:
@@ -102,6 +111,13 @@ interface AvatarGroupPropTypes
  * - You want to display a gallery for simple images.
  * - You want to use it for other visual content than avatars.
  *
+ * ### Responsive Behavior
+ *
+ * When the available space is less than the width required to display all avatars,
+ * an overflow visualization appears as a button placed at the end with the same shape
+ * and size as the avatars. The visualization displays the number of avatars that have overflowed
+ * and are not currently visible.
+ *
  * ### Keyboard Handling
  * The component provides advanced keyboard handling.
  * When focused, the user can use the following keyboard
@@ -109,23 +125,23 @@ interface AvatarGroupPropTypes
  *
  * `type` Individual:
  *
- * - [TAB] - Move focus to the overflow button
- * - [LEFT] - Navigate one avatar to the left
- * - [RIGHT] - Navigate one avatar to the right
- * - [HOME] - Navigate to the first avatar
- * - [END] - Navigate to the last avatar
- * - [SPACE],[ENTER],[RETURN] - Trigger `ui5-click` event
+ * - [Tab] - Move focus to the overflow button
+ * - [Left] - Navigate one avatar to the left
+ * - [Right] - Navigate one avatar to the right
+ * - [Home] - Navigate to the first avatar
+ * - [End] - Navigate to the last avatar
+ * - [Space] / [Enter] or [Return] - Trigger `ui5-click` event
  *
  * `type` Group:
  *
- * - [TAB] - Move focus to the next interactive element after the component
- * - [SPACE],[ENTER],[RETURN] - Trigger `ui5-click` event
+ * - [Tab] - Move focus to the next interactive element after the component
+ * - [Space] / [Enter] or [Return] - Trigger `ui5-click` event
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const AvatarGroup = withWebComponent<AvatarGroupPropTypes, AvatarGroupDomRef>(
   'ui5-avatar-group',
-  ['type'],
+  ['accessibilityAttributes', 'type'],
   [],
   ['overflowButton'],
   ['click', 'overflow'],

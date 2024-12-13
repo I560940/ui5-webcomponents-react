@@ -13,8 +13,9 @@ interface FilterItemOptionAttributes {
 
   /**
    * Defines the text of the component.
+   * @default undefined
    */
-  text?: string;
+  text?: string | undefined;
 }
 
 interface FilterItemOptionDomRef extends Required<FilterItemOptionAttributes>, Ui5DomRef {}
@@ -29,8 +30,8 @@ interface FilterItemOptionPropTypes
  * For the `FilterItemOption`
  *
  *
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  * @abstract
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
  */
 const FilterItemOption = withWebComponent<FilterItemOptionPropTypes, FilterItemOptionDomRef>(
   'ui5-filter-item-option',

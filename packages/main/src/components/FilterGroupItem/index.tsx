@@ -1,29 +1,25 @@
 'use client';
 
+import BusyIndicatorSize from '@ui5/webcomponents/dist/types/BusyIndicatorSize.js';
+import ButtonDesign from '@ui5/webcomponents/dist/types/ButtonDesign.js';
 import { isMac as isMacFn } from '@ui5/webcomponents-base/dist/Device.js';
 import circleTask2Icon from '@ui5/webcomponents-icons/dist/circle-task-2.js';
 import moveToTopIcon from '@ui5/webcomponents-icons/dist/collapse-group.js';
 import moveToBottomIcon from '@ui5/webcomponents-icons/dist/expand-group.js';
 import moveDownIcon from '@ui5/webcomponents-icons/dist/navigation-down-arrow.js';
 import moveUpIcon from '@ui5/webcomponents-icons/dist/navigation-up-arrow.js';
-import { useI18nBundle } from '@ui5/webcomponents-react-base';
+import { useI18nBundle, useStylesheet } from '@ui5/webcomponents-react-base';
 import { clsx } from 'clsx';
-import React, { forwardRef, useContext, useEffect, useRef, useState } from 'react';
-import { createUseStyles } from 'react-jss';
+import { forwardRef, useContext, useEffect, useRef, useState } from 'react';
+import { FlexBoxAlignItems, FlexBoxDirection, FlexBoxJustifyContent } from '../../enums/index.js';
 import {
-  BusyIndicatorSize,
-  ButtonDesign,
-  FlexBoxAlignItems,
-  FlexBoxDirection,
-  FlexBoxJustifyContent
-} from '../../enums/index.js';
-import {
-  MOVE_TO_TOP,
-  MOVE_UP,
+  DOWN_ARROW,
+  FILTER_IS_ACTIVE,
+  FILTER_DIALOG_REORDER_FILTERS,
   MOVE_DOWN,
   MOVE_TO_BOTTOM,
-  FILTER_DIALOG_REORDER_FILTERS,
-  DOWN_ARROW,
+  MOVE_TO_TOP,
+  MOVE_UP,
   UP_ARROW
 } from '../../i18n/i18n-defaults.js';
 import { addCustomCSSWithScoping } from '../../internal/addCustomCSSWithScoping.js';
@@ -32,7 +28,7 @@ import { FilterBarDialogContext } from '../../internal/FilterBarDialogContext.js
 import type { ButtonPropTypes, TableRowDomRef } from '../../webComponents/index.js';
 import { BusyIndicator, Button, Icon, Label, TableCell, TableRow } from '../../webComponents/index.js';
 import { FlexBox } from '../FlexBox/index.js';
-import styles from './FilterGroupItem.jss.js';
+import { classNames, styleData } from './FilterGroupItem.module.css.js';
 import type { FilterGroupItemInternalProps, FilterGroupItemPropTypes } from './types.js';
 
 addCustomCSSWithScoping(
@@ -47,22 +43,20 @@ addCustomCSSWithScoping(
 
 const isMac = isMacFn();
 
-const useStyles = createUseStyles(styles, { name: 'FilterGroupItem' });
-
 /**
  * Represents a filter belonging to the `FilterBar`.
  */
 const FilterGroupItem = forwardRef<HTMLDivElement, FilterGroupItemPropTypes & FilterGroupItemInternalProps>(
   (props, ref) => {
-    const classes = useStyles();
+    useStylesheet(styleData, FilterGroupItem.displayName);
     const {
       groupName = 'default',
       considerGroupName,
       label = '',
       labelTooltip,
-      required = false,
-      visible = true,
-      visibleInFilterBar,
+      required,
+      hidden,
+      hiddenInFilterBar,
       children,
       loading,
       className,
@@ -74,7 +68,6 @@ const FilterGroupItem = forwardRef<HTMLDivElement, FilterGroupItemPropTypes & Fi
     const i18nBundle = useI18nBundle('@ui5/webcomponents-react');
     const tableRowRef = useRef<TableRowDomRef>(null);
 
-    const selected = props['data-selected'];
     const reactKey = props['data-react-key'];
     const index = props['data-index'];
     const isomporphicReorderKey = isMac ? 'CMD' : 'CTRL';
@@ -150,7 +143,7 @@ const FilterGroupItem = forwardRef<HTMLDivElement, FilterGroupItemPropTypes & Fi
       }
     }, [withReordering, currentReorderedItemOrderId, orderId, index]);
 
-    if (!required && (!visible || (inFB && !visibleInFilterBar))) return null;
+    if (!required && (hidden || (inFB && hiddenInFilterBar))) return null;
 
     if (!inFB) {
       return (
@@ -159,13 +152,13 @@ const FilterGroupItem = forwardRef<HTMLDivElement, FilterGroupItemPropTypes & Fi
           ref={tableRowRef}
           data-text={label}
           data-react-key={reactKey}
-          selected={selected}
+          key={reactKey as string}
           data-required={required}
           data-component-name="FilterBarDialogTableRow"
           className={clsx(
-            classes.dialogTableRow,
-            withReordering && classes.withReorderBtns,
-            withReordering && showBtnsOnHover && classes.withReorderHoverBtns
+            classNames.dialogTableRow,
+            withReordering && classNames.withReorderBtns,
+            withReordering && showBtnsOnHover && classNames.withReorderHoverBtns
           )}
           onFocus={withReordering ? handleFocus : undefined}
           onKeyDown={withReordering ? handleKeyDown : undefined}
@@ -176,9 +169,9 @@ const FilterGroupItem = forwardRef<HTMLDivElement, FilterGroupItemPropTypes & Fi
           }
         >
           <TableCell data-component-name="FilterBarDialogTableCellFilter">
-            <FlexBox direction={FlexBoxDirection.Column} className={clsx(classes.labelContainer)}>
+            <FlexBox direction={FlexBoxDirection.Column} className={clsx(classNames.labelContainer)}>
               <Label
-                className={classes.dialogCellLabel}
+                className={classNames.dialogCellLabel}
                 title={labelTooltip ?? label}
                 required={required}
                 showColon={!!label && withValues}
@@ -188,14 +181,14 @@ const FilterGroupItem = forwardRef<HTMLDivElement, FilterGroupItemPropTypes & Fi
               {withValues && children}
             </FlexBox>
           </TableCell>
-          {!withValues && isListView && (
-            <TableCell className={classes.dialogActiveCell} data-component-name="FilterBarDialogTableCellActive">
-              {withReordering && (
+          {!withValues && (
+            <TableCell className={classNames.dialogActiveCell} data-component-name="FilterBarDialogTableCellActive">
+              {isListView && withReordering && (
                 <FlexBox
                   fitContainer
                   justifyContent={FlexBoxJustifyContent.Center}
                   alignItems={FlexBoxAlignItems.Center}
-                  className={classes.reorderBtnsContainer}
+                  className={classNames.reorderBtnsContainer}
                   data-component-name="FilterBarDialogTableCellReorderBtns"
                 >
                   <Button
@@ -236,7 +229,12 @@ const FilterGroupItem = forwardRef<HTMLDivElement, FilterGroupItemPropTypes & Fi
                   />
                 </FlexBox>
               )}
-              {active && <Icon name={circleTask2Icon} className={classes.dialogActiveIcon} />}
+              {active && (
+                <>
+                  <Icon name={circleTask2Icon} className={classNames.dialogActiveIcon} aria-hidden />
+                  <span className={classNames.pseudoInvisibleText}>{i18nBundle.getText(FILTER_IS_ACTIVE)}</span>
+                </>
+              )}
             </TableCell>
           )}
         </TableRow>
@@ -246,15 +244,15 @@ const FilterGroupItem = forwardRef<HTMLDivElement, FilterGroupItemPropTypes & Fi
     const labelWithGroupName = considerGroupName && groupName !== 'default' ? `${label} (${groupName})` : label;
 
     return (
-      <div ref={ref} slot={slot} {...rest} data-order-id={orderId} className={clsx(classes.filterItem, className)}>
-        <div className={classes.innerFilterItemContainer}>
+      <div ref={ref} slot={slot} {...rest} data-order-id={orderId} className={clsx(classNames.filterItem, className)}>
+        <div className={classNames.innerFilterItemContainer}>
           <FlexBox>
             <Label title={labelTooltip ?? label} required={required} showColon={!!label}>
               {labelWithGroupName}
             </Label>
           </FlexBox>
           {loading ? (
-            <BusyIndicator className={classes.loadingContainer} active size={BusyIndicatorSize.Small} />
+            <BusyIndicator className={classNames.loadingContainer} active size={BusyIndicatorSize.S} />
           ) : (
             children
           )}
@@ -265,13 +263,6 @@ const FilterGroupItem = forwardRef<HTMLDivElement, FilterGroupItemPropTypes & Fi
 );
 
 FilterGroupItem.displayName = 'FilterGroupItem';
-
-FilterGroupItem.defaultProps = {
-  groupName: 'default',
-  visible: true,
-  required: false,
-  label: ''
-};
 
 export { FilterGroupItem };
 export type { FilterGroupItemPropTypes };

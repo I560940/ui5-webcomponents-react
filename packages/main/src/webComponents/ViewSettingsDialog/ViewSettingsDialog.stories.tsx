@@ -1,20 +1,21 @@
-import { isChromatic } from '@sb/utils';
+import { isChromatic } from '@sb/utils.js';
 import type { Meta, StoryObj } from '@storybook/react';
-import React, { forwardRef, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import type { ViewSettingsDialogPropTypes } from '../../index';
-import { Button, FilterItem, FilterItemOption, SortItem } from '../../index';
-import type { ViewSettingsDialogDomRef } from './index.js';
-import { ViewSettingsDialog as OriginalViewSettingsDialog } from './index.js';
+import { useState } from 'react';
+import { Button } from '../Button/index.js';
+import { FilterItem } from '../FilterItem/index.js';
+import { FilterItemOption } from '../FilterItemOption/index.js';
+import { SortItem } from '../SortItem/index.js';
+import { ViewSettingsDialog } from './index.js';
 
 const meta = {
   title: 'Modals & Popovers / ViewSettingsDialog',
-  component: OriginalViewSettingsDialog,
+  component: ViewSettingsDialog,
   argTypes: {
     filterItems: { control: { disable: true } },
     sortItems: { control: { disable: true } }
   },
   args: {
+    open: isChromatic,
     filterItems: (
       <>
         <FilterItem
@@ -52,34 +53,31 @@ const meta = {
     chromatic: { delay: 999 }
   },
   tags: ['package:@ui5/webcomponents-fiori']
-} satisfies Meta<typeof OriginalViewSettingsDialog>;
+} satisfies Meta<typeof ViewSettingsDialog>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const ViewSettingsDialog = forwardRef<ViewSettingsDialogDomRef, ViewSettingsDialogPropTypes>((args, ref) =>
-  createPortal(<OriginalViewSettingsDialog {...args} ref={ref} />, document.body)
-);
-ViewSettingsDialog.displayName = 'ViewSettingsDialog';
-
 export const Default: Story = {
   render: (args) => {
-    const ref = useRef<ViewSettingsDialogDomRef>(null);
-    useEffect(() => {
-      if (isChromatic) {
-        ref.current.show();
-      }
-    }, []);
+    const [open, setOpen] = useState(args.open);
     return (
       <>
         <Button
           onClick={() => {
-            ref.current.show();
+            setOpen(true);
           }}
         >
           Show ViewSettingsDialog
         </Button>
-        <ViewSettingsDialog ref={ref} {...args} />
+        <ViewSettingsDialog
+          {...args}
+          open={open}
+          onClose={(e) => {
+            setOpen(false);
+            args.onClose(e);
+          }}
+        />
       </>
     );
   }

@@ -1,29 +1,22 @@
+import BarDesign from '@ui5/webcomponents/dist/types/BarDesign.js';
+import ButtonDesign from '@ui5/webcomponents/dist/types/ButtonDesign.js';
+import TableSelectionMode from '@ui5/webcomponents/dist/types/TableSelectionMode.js';
+import TitleLevel from '@ui5/webcomponents/dist/types/TitleLevel.js';
 import group2Icon from '@ui5/webcomponents-icons/dist/group-2.js';
 import listIcon from '@ui5/webcomponents-icons/dist/list.js';
 import searchIcon from '@ui5/webcomponents-icons/dist/search.js';
-import { enrichEventWithDetails, useI18nBundle, useIsomorphicId } from '@ui5/webcomponents-react-base';
-import type { Dispatch, MutableRefObject, ReactElement, SetStateAction } from 'react';
-import React, { Children, cloneElement, useEffect, useReducer, useRef, useState } from 'react';
+import { enrichEventWithDetails, useI18nBundle, useStylesheet } from '@ui5/webcomponents-react-base';
+import type { Dispatch, ReactElement, RefObject, SetStateAction } from 'react';
+import { Children, cloneElement, useEffect, useId, useReducer, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { createUseStyles } from 'react-jss';
-import {
-  BarDesign,
-  ButtonDesign,
-  FlexBoxDirection,
-  FlexBoxJustifyContent,
-  MessageBoxActions,
-  MessageBoxTypes,
-  TableMode,
-  TitleLevel,
-  ToolbarStyle
-} from '../../enums/index.js';
+import { FlexBoxDirection, FlexBoxJustifyContent, MessageBoxAction, MessageBoxType } from '../../enums/index.js';
 import {
   ACTIVE,
   ALL,
   BASIC,
   CANCEL,
-  FIELD,
   FIELDS_BY_ATTRIBUTE,
+  FILTER,
   FILTER_DIALOG_RESET_WARNING,
   FILTERS,
   GROUP_VIEW,
@@ -43,7 +36,7 @@ import { FilterBarDialogContext } from '../../internal/FilterBarDialogContext.js
 import { useCanRenderPortal } from '../../internal/ssr.js';
 import { stopPropagation } from '../../internal/stopPropagation.js';
 import type { Ui5CustomEvent } from '../../types/index.js';
-import type { DialogDomRef, SegmentedButtonPropTypes, TableDomRef, TableRowDomRef } from '../../webComponents/index.js';
+import type { DialogDomRef, SegmentedButtonPropTypes, TableRowDomRef } from '../../webComponents/index.js';
 import {
   Bar,
   Button,
@@ -56,7 +49,9 @@ import {
   SegmentedButtonItem,
   Select,
   Table,
-  TableColumn,
+  TableHeaderCell,
+  TableHeaderRow,
+  TableSelection,
   Title
 } from '../../webComponents/index.js';
 import type { FilterGroupItemInternalProps } from '../FilterGroupItem/types.js';
@@ -64,41 +59,26 @@ import { FlexBox } from '../FlexBox/index.js';
 import { MessageBox } from '../MessageBox/index.js';
 import { Toolbar } from '../Toolbar/index.js';
 import { ToolbarSpacer } from '../ToolbarSpacer/index.js';
-import styles from './FilterBarDialog.jss.js';
+import { classNames, styleData } from './FilterBarDialog.module.css.js';
 import type { FilterBarPropTypes } from './types.js';
 import { filterValue, syncRef } from './utils.js';
 
 addCustomCSSWithScoping(
   'ui5-table',
   `
-/* hide table header of panel table */
-:host([data-component-name="FilterBarDialogPanelTable"]) thead {
-  visibility: collapse;
+:host([data-component-name="FilterBarDialogTable"][data-is-grouped]) #nodata-row {
+  display: none;
 }
-/* don't display border of panel table */
-:host([data-component-name="FilterBarDialogPanelTable"]) table {
-  border-collapse: unset;
-}
+`
+);
 
-/* don't allow table cells to grow
-todo: FilterBarDialogPanelTable
-*/
-:host([data-component-name="FilterBarDialogTable"]) table{
-  table-layout: fixed;
+addCustomCSSWithScoping(
+  'ui5-table-header-row',
+  `
+:host([data-component-name="FilterBarDialogTableHeaderRow"]) :first-child {
+  visibility: hidden;
 }
-
-:host([data-component-name="FilterBarDialogPanelTable"]) .ui5-table-root {
-  border-bottom: none;
-}
-/* don't display select all checkbox */
-:host([data-component-name="FilterBarDialogTable"]) thead th.ui5-table-select-all-column [ui5-checkbox] {
- visibility: hidden;
-}
-
-:host([data-component-name="FilterBarDialogPanelTable"]) thead th.ui5-table-select-all-column {
- display: none;
-}
- `
+`
 );
 
 type ActiveFilterAttributes = 'all' | 'visible' | 'active' | 'visibleAndActive' | 'mandatory';
@@ -110,11 +90,11 @@ const getActiveFilters = (
     case 'all':
       return true;
     case 'visible':
-      return filter.props?.visibleInFilterBar;
+      return filter.props?.hiddenInFilterBar !== true;
     case 'active':
       return filter.props?.active;
     case 'visibleAndActive':
-      return filter.props?.visibleInFilterBar && filter.props?.active;
+      return filter.props?.hiddenInFilterBar !== true && filter.props?.active;
     case 'mandatory':
       return filter.props?.required;
     default:
@@ -127,8 +107,6 @@ const compareObjects = (firstObj, secondObj) =>
     Object.keys(secondObj).every((second) => firstObj[second] !== secondObj[first])
   );
 
-const useStyles = createUseStyles(styles, { name: 'FilterBarDialog' });
-
 interface FilterDialogPropTypes {
   filterBarRefs: any;
   open: boolean;
@@ -138,18 +116,14 @@ interface FilterDialogPropTypes {
   handleRestoreFilters: (e, source, filterElements) => void;
   handleDialogSave: (e, newRefs, updatedToggledFilters, orderedChildren) => void;
   handleSearchValueChange: Dispatch<SetStateAction<string>>;
-  handleSelectionChange?: (
-    event: Ui5CustomEvent<
-      TableDomRef,
-      { element: TableRowDomRef; checked: boolean; selectedRows: unknown[]; previouslySelectedRows: unknown[] }
-    >
-  ) => void;
+  handleSelectionChange?: FilterBarPropTypes['onFiltersDialogSelectionChange'];
   handleDialogSearch?: (event: CustomEvent<{ value: string; element: HTMLElement }>) => void;
   handleDialogCancel?: (event: Ui5CustomEvent<HTMLElement>) => void;
   portalContainer: Element;
   onAfterFiltersDialogOpen: (event: Ui5CustomEvent<DialogDomRef>) => void;
-  dialogRef: MutableRefObject<DialogDomRef>;
+  dialogRef: RefObject<DialogDomRef>;
   enableReordering?: FilterBarPropTypes['enableReordering'];
+  isPhone?: boolean;
 }
 
 export const FilterDialog = (props: FilterDialogPropTypes) => {
@@ -167,10 +141,11 @@ export const FilterDialog = (props: FilterDialogPropTypes) => {
     onAfterFiltersDialogOpen,
     portalContainer,
     dialogRef,
-    enableReordering
+    enableReordering,
+    isPhone
   } = props;
-  const classes = useStyles();
-  const uniqueId = useIsomorphicId();
+  useStylesheet(styleData, 'FilterBarDialog');
+  const uniqueId = useId();
   const [searchString, setSearchString] = useState('');
   const [toggledFilters, setToggledFilters] = useState({});
   const dialogRefs = useRef({});
@@ -221,12 +196,12 @@ export const FilterDialog = (props: FilterDialogPropTypes) => {
   const groupViewText = i18nBundle.getText(GROUP_VIEW);
   const showValuesText = i18nBundle.getText(SHOW_VALUES);
   const hideValuesText = i18nBundle.getText(HIDE_VALUES);
-  const fieldText = i18nBundle.getText(FIELD);
+  const filterText = i18nBundle.getText(FILTER);
   const fieldsByAttributeText = i18nBundle.getText(FIELDS_BY_ATTRIBUTE);
 
   const visibleChildren = () =>
     children.filter((item) => {
-      return !!item?.props && item.props?.visible;
+      return !!item?.props && !item?.props?.hidden;
     });
 
   const [orderedChildren, setOrderedChildren] = useState([]);
@@ -251,7 +226,7 @@ export const FilterDialog = (props: FilterDialogPropTypes) => {
     return filteredChildren.map((child, index) => {
       const filterBarItemRef = filterBarRefs.current[child.key];
       let isSelected =
-        child.props.visibleInFilterBar || child.props.required || child.type.displayName !== 'FilterGroupItem';
+        child.props.hiddenInFilterBar !== true || child.props.required || child.type.displayName !== 'FilterGroupItem';
       if (toggledFilters.hasOwnProperty(child.key)) {
         isSelected = toggledFilters[child.key];
       }
@@ -280,7 +255,7 @@ export const FilterDialog = (props: FilterDialogPropTypes) => {
   };
 
   const handleSearch = (e) => {
-    if (handleDialogSearch) {
+    if (typeof handleDialogSearch === 'function') {
       handleDialogSearch(enrichEventWithDetails(e, { value: e.target.value, element: e.target }));
     }
     setSearchString(e.target.value);
@@ -293,7 +268,7 @@ export const FilterDialog = (props: FilterDialogPropTypes) => {
   const handleClose = (e) => {
     setToggledFilters({});
     stopPropagation(e);
-    if (handleDialogCancel) {
+    if (typeof handleDialogCancel === 'function') {
       handleDialogCancel(e);
     }
     handleDialogClose(e);
@@ -310,7 +285,8 @@ export const FilterDialog = (props: FilterDialogPropTypes) => {
     setMessageBoxOpen(true);
   };
   const handleViewChange: SegmentedButtonPropTypes['onSelectionChange'] = (e) => {
-    setIsListView(e.detail.selectedItem.dataset.id === 'list');
+    const selectedItem = e.detail.selectedItems.at(0);
+    setIsListView(selectedItem.dataset.id === 'list');
   };
 
   const handleMessageBoxClose = (e) => {
@@ -439,16 +415,29 @@ export const FilterDialog = (props: FilterDialogPropTypes) => {
     const filterGroups = Object.keys(groups)
       .sort((x, y) => (x === 'default' ? -1 : y === 'role' ? 1 : 0))
       .map((item, index) => {
+        const selectedRows = groups[item].map((child) => child.props['data-react-key']).join(' ');
         return (
           <Panel
             headerText={item === 'default' ? basicText : item}
-            className={classes.groupPanel}
+            className={classNames.groupPanel}
             key={`${item === 'default' ? basicText : item}${index}`}
           >
             <Table
-              mode={TableMode.MultiSelect}
+              className={classNames.tableInGroup}
               data-component-name="FilterBarDialogPanelTable"
-              onSelectionChange={handleCheckBoxChange}
+              features={
+                <TableSelection
+                  mode={TableSelectionMode.Multiple}
+                  selected={selectedRows}
+                  onChange={handleCheckBoxChange}
+                />
+              }
+              headerRow={
+                <TableHeaderRow className={classNames.groupedTableHeader}>
+                  <TableHeaderCell>{filterText}</TableHeaderCell>
+                  {!showValues && <TableHeaderCell className={classNames.tHactive}>{activeText}</TableHeaderCell>}
+                </TableHeaderRow>
+              }
             >
               {groups[item]}
             </Table>
@@ -479,11 +468,12 @@ export const FilterDialog = (props: FilterDialogPropTypes) => {
           open={open}
           ref={dialogRef}
           data-component-name="FilterBarDialog"
-          onAfterClose={handleClose}
-          onAfterOpen={onAfterFiltersDialogOpen}
+          data-is-phone={isPhone}
+          onClose={handleClose}
+          onOpen={onAfterFiltersDialogOpen}
           resizable
           draggable
-          className={classes.dialogComponent}
+          className={classNames.dialogComponent}
           preventFocusRestore
           initialFocus={`${uniqueId}-fb-dialog-search`}
           header={
@@ -507,7 +497,7 @@ export const FilterDialog = (props: FilterDialogPropTypes) => {
             <Bar
               design={BarDesign.Footer}
               endContent={
-                <FlexBox justifyContent={FlexBoxJustifyContent.End} className={classes.footer}>
+                <FlexBox justifyContent={FlexBoxJustifyContent.End} className={classNames.footer}>
                   <Button
                     ref={okBtnRef}
                     onClick={handleSave}
@@ -528,8 +518,8 @@ export const FilterDialog = (props: FilterDialogPropTypes) => {
             />
           }
         >
-          <FlexBox direction={FlexBoxDirection.Column} className={classes.subheaderContainer}>
-            <Toolbar className={classes.subheader} toolbarStyle={ToolbarStyle.Clear}>
+          <FlexBox direction={FlexBoxDirection.Column} className={classNames.subheaderContainer}>
+            <Toolbar className={classNames.subheader} toolbarStyle="Clear">
               <Select
                 onChange={handleAttributeFilterChange}
                 title={fieldsByAttributeText}
@@ -559,18 +549,18 @@ export const FilterDialog = (props: FilterDialogPropTypes) => {
                 <SegmentedButtonItem
                   icon={listIcon}
                   data-id="list"
-                  pressed={isListView}
+                  selected={isListView}
                   accessibleName={listViewText}
                 />
                 <SegmentedButtonItem
                   icon={group2Icon}
                   data-id="group"
-                  pressed={!isListView}
+                  selected={!isListView}
                   accessibleName={groupViewText}
                 />
               </SegmentedButton>
             </Toolbar>
-            <FlexBox className={classes.searchInputContainer}>
+            <FlexBox className={classNames.searchInputContainer}>
               <Input
                 id={`${uniqueId}-fb-dialog-search`}
                 noTypeahead
@@ -579,7 +569,7 @@ export const FilterDialog = (props: FilterDialogPropTypes) => {
                 showClearIcon
                 icon={<Icon name={searchIcon} />}
                 ref={dialogSearchRef}
-                className={classes.searchInput}
+                className={classNames.searchInput}
                 data-component-name="FilterBarDialogSearchInput"
               />
             </FlexBox>
@@ -587,14 +577,19 @@ export const FilterDialog = (props: FilterDialogPropTypes) => {
           <Table
             ref={tableRef}
             data-component-name="FilterBarDialogTable"
-            hideNoData={!isListView}
-            mode={TableMode.MultiSelect}
-            onSelectionChange={handleCheckBoxChange}
-            columns={
+            data-is-grouped={!isListView}
+            nodata={!isListView ? <span /> : undefined}
+            tabIndex={!isListView ? -1 : undefined}
+            features={
               <>
-                <TableColumn>{fieldText}</TableColumn>
-                {!showValues && <TableColumn className={classes.tHactive}>{activeText}</TableColumn>}
+                <TableSelection mode={TableSelectionMode.Multiple} onChange={handleCheckBoxChange} />
               </>
+            }
+            headerRow={
+              <TableHeaderRow data-component-name="FilterBarDialogTableHeaderRow">
+                <TableHeaderCell>{filterText}</TableHeaderCell>
+                {!showValues && <TableHeaderCell className={classNames.tHactive}>{activeText}</TableHeaderCell>}
+              </TableHeaderRow>
             }
           >
             {isListView && renderChildren()}
@@ -608,14 +603,14 @@ export const FilterDialog = (props: FilterDialogPropTypes) => {
         createPortal(
           <MessageBox
             open
-            type={MessageBoxTypes.Warning}
-            actions={[MessageBoxActions.OK, MessageBoxActions.Cancel]}
+            type={MessageBoxType.Warning}
+            actions={[MessageBoxAction.OK, MessageBoxAction.Cancel]}
             onClose={handleMessageBoxClose}
             data-component-name="FilterBarDialogResetMessageBox"
           >
             {i18nBundle.getText(FILTER_DIALOG_RESET_WARNING)}
           </MessageBox>,
-          document.body
+          portalContainer ?? document.body
         )}
     </FilterBarDialogContext.Provider>
   );

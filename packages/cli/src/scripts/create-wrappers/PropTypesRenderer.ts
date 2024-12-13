@@ -1,6 +1,11 @@
 import type * as CEM from '@ui5/webcomponents-tools/lib/cem/types-internal.d.ts';
 import dedent from 'dedent';
-import { capitalizeFirstLetter, propDescriptionFormatter, snakeCaseToCamelCase } from '../../util/formatters.js';
+import {
+  capitalizeFirstLetter,
+  propDescriptionFormatter,
+  sinceFilter,
+  snakeCaseToCamelCase
+} from '../../util/formatters.js';
 import { resolveReferenceImports } from '../../util/referenceResolver.js';
 import { AbstractRenderer, RenderingPhase } from './AbstractRenderer.js';
 import { WebComponentWrapper } from './WebComponentWrapper.js';
@@ -36,7 +41,7 @@ export class PropTypesRenderer extends AbstractRenderer {
     return Array.isArray(event.type.references) && event.type.references.length > 0;
   }
 
-  private getSlots() {
+  private getSlots(context: WebComponentWrapper) {
     return this._slots
       .map((slot) => {
         const isDefaultSlot = slot.name === 'children' || slot.name === '';
@@ -56,7 +61,14 @@ export class PropTypesRenderer extends AbstractRenderer {
             ' * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.'
           );
           descriptionParts.push(
-            `* Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).`
+            `* Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).`
+          );
+        }
+
+        if (sinceFilter(slot._ui5since)) {
+          descriptionParts.push(` *`);
+          descriptionParts.push(
+            ` * **Note:** Available since [v${slot._ui5since}](https://github.com/SAP/ui5-webcomponents/releases/tag/v${slot._ui5since}) of **${context.packageName}**.`
           );
         }
 
@@ -82,6 +94,18 @@ export class PropTypesRenderer extends AbstractRenderer {
         const descriptionParts = [];
 
         descriptionParts.push(` * ${propDescriptionFormatter(event.description ?? '')}`);
+        if (event._ui5allowPreventDefault) {
+          descriptionParts.push(` *`);
+          descriptionParts.push(
+            ` * **Note:** Call \`event.preventDefault()\` inside the handler of this event to prevent its default action/s.`
+          );
+        }
+        if (sinceFilter(event._ui5since)) {
+          descriptionParts.push(` *`);
+          descriptionParts.push(
+            ` * **Note:** Available since [v${event._ui5since}](https://github.com/SAP/ui5-webcomponents/releases/tag/v${event._ui5since}) of **${context.packageName}**.`
+          );
+        }
         if (event.deprecated) {
           descriptionParts.push(` *`);
           if (typeof event.deprecated === 'string') {
@@ -173,7 +197,7 @@ export class PropTypesRenderer extends AbstractRenderer {
 
     return dedent`
     interface ${context.componentName}PropTypes extends ${context.componentName}Attributes, ${CommonProps} {
-      ${this.getSlots()}
+      ${this.getSlots(context)}
       ${this.getEvents(context)}
     }
     `;

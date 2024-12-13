@@ -10,6 +10,7 @@
     [
       "@babel/preset-react",
       {
+        "runtime": "automatic",
         "useSpread": true
       }
     ],
@@ -47,5 +48,5 @@
       ]
     }
   },
-  "ignore": ["**/*.cy.ts", "**/*.cy.tsx", "**/CodeGen.tsx", "**/*.stories.tsx"]
+  "ignore": ["dist", "**/*.cy.ts", "**/*.cy.tsx", "**/CodeGen.tsx", "**/*.stories.tsx"]
 }

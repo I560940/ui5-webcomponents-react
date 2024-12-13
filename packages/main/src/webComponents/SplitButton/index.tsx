@@ -15,14 +15,11 @@ interface SplitButtonAttributes {
 
   /**
    * Defines whether the arrow button should have the active state styles or not.
+   *
+   * **Note:** Available since [v1.21.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.21.0) of **@ui5/webcomponents**.
    * @default false
    */
   activeArrowButton?: boolean;
-
-  /**
-   * Defines the icon to be displayed in active state as graphical element within the component.
-   */
-  activeIcon?: string;
 
   /**
    * Defines the component design.
@@ -45,8 +42,9 @@ interface SplitButtonAttributes {
    * Example:
    *
    * See all the available icons in the [Icon Explorer](https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html).
+   * @default undefined
    */
-  icon?: string;
+  icon?: string | undefined;
 }
 
 interface SplitButtonDomRef extends Required<SplitButtonAttributes>, Ui5DomRef {}
@@ -82,7 +80,6 @@ interface SplitButtonPropTypes
  * `SplitButton` consists two separate buttons:
  *
  * - for the first one (default action) you can define some `text` or an `icon`, or both.
- * Also, it is possible to define different icon for active state of this button - `activeIcon`.
  * - the second one (arrow action) contains only `slim-arrow-down` icon.
  *
  * You can choose a `design` from a set of predefined types (the same as for ui5-button) that offer
@@ -106,11 +103,13 @@ interface SplitButtonPropTypes
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
+ *
+ * @since [1.1.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.1.0) of __@ui5/webcomponents__.
  */
 const SplitButton = withWebComponent<SplitButtonPropTypes, SplitButtonDomRef>(
   'ui5-split-button',
-  ['accessibleName', 'activeIcon', 'design', 'icon'],
+  ['accessibleName', 'design', 'icon'],
   ['activeArrowButton', 'disabled'],
   [],
   ['arrow-click', 'click'],

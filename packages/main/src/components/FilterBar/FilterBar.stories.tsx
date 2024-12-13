@@ -1,11 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React, { useId, useReducer, useRef, useState } from 'react';
+import { useId, useReducer, useRef, useState } from 'react';
 import { FlexBoxDirection } from '../../enums/index.js';
 import {
   ComboBox,
   ComboBoxItem,
   DatePicker,
   DateRangePicker,
+  DynamicPage,
+  DynamicPageHeader,
+  DynamicPageTitle,
   Input,
   Label,
   MultiComboBox,
@@ -19,12 +22,9 @@ import {
   Title,
   Token
 } from '../../webComponents/index.js';
-import { DynamicPage } from '../DynamicPage/index.js';
-import { DynamicPageHeader } from '../DynamicPageHeader/index.js';
-import { DynamicPageTitle } from '../DynamicPageTitle/index.js';
+import { Text } from '../../webComponents/Text/index.js';
 import { FilterGroupItem } from '../FilterGroupItem/index.js';
 import { FlexBox } from '../FlexBox/index.js';
-import { Text } from '../Text/index.js';
 import { VariantManagement } from '../VariantManagement/index.js';
 import { VariantItem } from '../VariantManagement/VariantItem.js';
 import { FilterBar } from './index.js';
@@ -80,7 +80,7 @@ export const Default: Story = {
         <FilterGroupItem label="Switch">
           <Switch />
         </FilterGroupItem>
-        <FilterGroupItem label="SELECT w/ initial selected" visibleInFilterBar={false}>
+        <FilterGroupItem label="SELECT w/ initial selected" hiddenInFilterBar>
           <Select>
             <Option>Option 1</Option>
             <Option selected>Option 2</Option>
@@ -165,7 +165,7 @@ export const WithLogic: Story = {
   render: (args) => {
     const [state, dispatch] = useReducer(reducer, initialState);
     const { age, countries, currency, date, dateRange, search } = state;
-    const prevDialogOpenState = useRef();
+    const prevDialogOpenState = useRef(undefined);
 
     const handleSearch = (e) => {
       dispatch({ type: 'SET_SEARCH', payload: e.target.value });
@@ -248,10 +248,10 @@ export const WithLogic: Story = {
             </Select>
           </FilterGroupItem>
           <FilterGroupItem label="Date" active={!!date}>
-            <DatePicker value={date} onChange={handleDateChange} style={{ minWidth: 'auto' }} on />
+            <DatePicker value={date} onChange={handleDateChange} style={{ minWidth: 'auto' }} />
           </FilterGroupItem>
-          <FilterGroupItem label="Date Range" active={!!dateRange} visibleInFilterBar={false}>
-            <DateRangePicker value={dateRange} onChange={handleDateRangeChange} style={{ minWidth: 'auto' }} on />
+          <FilterGroupItem label="Date Range" active={!!dateRange} hiddenInFilterBar>
+            <DateRangePicker value={dateRange} onChange={handleDateRangeChange} style={{ minWidth: 'auto' }} />
           </FilterGroupItem>
         </FilterBar>
         <FlexBox direction={FlexBoxDirection.Column}>
@@ -285,14 +285,17 @@ export const WithLogic: Story = {
   }
 };
 
+//TODO: check implementation, with rc5 it looks strange
 export const InDynamicPage: Story = {
   name: 'In DynamicPage',
   render: (args) => {
     return (
       <DynamicPage
-        headerTitle={
+        style={{ height: '800px' }}
+        titleArea={
           <DynamicPageTitle
-            header={
+            style={{ minHeight: '0' }}
+            heading={
               <VariantManagement
                 onClick={(e) => {
                   e.stopPropagation();
@@ -304,7 +307,7 @@ export const InDynamicPage: Story = {
             }
           />
         }
-        headerContent={
+        headerArea={
           <DynamicPageHeader>
             <FilterBar {...args} hideToolbar>
               <FilterGroupItem label="StepInput">
@@ -326,10 +329,10 @@ export const InDynamicPage: Story = {
               <FilterGroupItem label="Input">
                 <Input placeholder="Placeholder" />
               </FilterGroupItem>
-              <FilterGroupItem label="Switch" visibleInFilterBar={false}>
+              <FilterGroupItem label="Switch" hiddenInFilterBar>
                 <Switch />
               </FilterGroupItem>
-              <FilterGroupItem label="SELECT w/ initial selected" visibleInFilterBar={false}>
+              <FilterGroupItem label="SELECT w/ initial selected" hiddenInFilterBar>
                 <Select>
                   <Option>Option 1</Option>
                   <Option selected>Option 2</Option>
@@ -337,7 +340,7 @@ export const InDynamicPage: Story = {
                   <Option>Option 4</Option>
                 </Select>
               </FilterGroupItem>
-              <FilterGroupItem label="SELECT w/o initial selected" visibleInFilterBar={false}>
+              <FilterGroupItem label="SELECT w/o initial selected" hiddenInFilterBar>
                 <Select>
                   <Option data-key="Test 1" selected icon="add">
                     Test 1
@@ -356,7 +359,7 @@ export const InDynamicPage: Story = {
                   </Option>
                 </Select>
               </FilterGroupItem>
-              <FilterGroupItem label="MultBox w/ initial selected" groupName="Group 1" visibleInFilterBar={false}>
+              <FilterGroupItem label="MultBox w/ initial selected" groupName="Group 1" hiddenInFilterBar>
                 <MultiComboBox>
                   <MultiComboBoxItem text="MultiComboBoxItem 1" />
                   <MultiComboBoxItem selected text="MultiComboBoxItem 2" />
@@ -364,7 +367,7 @@ export const InDynamicPage: Story = {
                   <MultiComboBoxItem selected text="MultiComboBoxItem 4" />
                 </MultiComboBox>
               </FilterGroupItem>
-              <FilterGroupItem label="ComboBox w/o initial selected" groupName="Group 2" visibleInFilterBar={false}>
+              <FilterGroupItem label="ComboBox w/o initial selected" groupName="Group 2" hiddenInFilterBar>
                 <ComboBox>
                   <ComboBoxItem text="ComboBoxItem 1" />
                   <ComboBoxItem text="ComboBoxItem 2" />
@@ -426,7 +429,7 @@ export const WithReordering: Story = {
       <FilterGroupItem
         key={`${uniqueId}-5`}
         label="SELECT w/ initial selected"
-        visibleInFilterBar={false}
+        hiddenInFilterBar
         orderId={`${uniqueId}-5`}
       >
         <Select>

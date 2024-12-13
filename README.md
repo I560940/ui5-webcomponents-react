@@ -34,8 +34,7 @@
 You can find our documentation under the following links:
 
 - [Stable Release Documentation](https://sap.github.io/ui5-webcomponents-react/)
-- [Next Release Documentation](https://sap.github.io/ui5-webcomponents-react/main/)
-- [Migration Guide](https://sap.github.io/ui5-webcomponents-react/?path=/docs/migration-guide--page)
+- [Nightly Release Documentation](https://sap.github.io/ui5-webcomponents-react/nightly/)
 
 ## Package Overview
 
@@ -57,7 +56,7 @@ You can find our documentation under the following links:
 
 ## Requirements
 
-- [React](https://www.npmjs.com/package/react) and [React-DOM](https://www.npmjs.com/package/react-dom) (**16.14.0 or higher**)
+- [React](https://www.npmjs.com/package/react) and [React-DOM](https://www.npmjs.com/package/react-dom) (**18.0.0 or higher**)
 - [Node.js](https://nodejs.org/) (**LTS version**)
 - If you're using [TypeScript](https://www.typescriptlang.org/) we recommend version **4.7** or later.
 
@@ -91,7 +90,7 @@ For the main part, we show how you could create a simple Movie Database UI, firs
 
 ### Examples & Templates
 
-You can find a curated list of project templates and examples on our [Project Templates & Examples page](https://sap.github.io/ui5-webcomponents-react/main/?path=/docs/project-templates-examples--docs).
+You can find a curated list of project templates and examples on our [Project Templates & Examples page](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/project-templates-examples--docs).
 
 ### Add `@ui5/webcomponents-react` to an existing app
 

@@ -1,25 +1,27 @@
 import '@ui5/webcomponents-icons/dist/AllIcons.js';
 import '@ui5/webcomponents-fiori/dist/illustrations/NoData.js';
+import BarDesign from '@ui5/webcomponents/dist/types/BarDesign.js';
+import ButtonDesign from '@ui5/webcomponents/dist/types/ButtonDesign.js';
+import TitleLevel from '@ui5/webcomponents/dist/types/TitleLevel.js';
+import ValueState from '@ui5/webcomponents-base/dist/types/ValueState.js';
+import IllustrationMessageType from '@ui5/webcomponents-fiori/dist/types/IllustrationMessageType.js';
 import type { CSSProperties } from 'react';
 import { useEffect, useReducer, useRef, useState } from 'react';
 import type { ObjectPagePropTypes } from '../..';
 import {
   Avatar,
   Bar,
-  BarDesign,
   Breadcrumbs,
   BreadcrumbsItem,
   Button,
-  ButtonDesign,
-  DynamicPageHeader,
-  DynamicPageTitle,
+  ObjectPageHeader,
+  ObjectPageTitle,
   FlexBox,
   FlexBoxAlignItems,
   FlexBoxDirection,
   FlexBoxWrap,
   Icon,
   IllustratedMessage,
-  IllustrationMessageType,
   Label,
   Link,
   MessageStrip,
@@ -30,8 +32,8 @@ import {
   ObjectStatus,
   Text,
   Title,
-  TitleLevel,
-  ValueState
+  Toolbar,
+  ToolbarButton
 } from '../..';
 import { cypressPassThroughTestsFactory } from '@/cypress/support/utils';
 
@@ -40,11 +42,10 @@ describe('ObjectPage', () => {
     const toggle = cy.spy().as('toggleSpy');
     cy.mount(
       <ObjectPage
-        headerTitle={<DynamicPageTitle header="Heading" subHeader="SubHeading" />}
-        headerContent={<DynamicPageHeader>ObjectPageHeader</DynamicPageHeader>}
-        onToggleHeaderContent={toggle}
-        headerContentPinnable={false}
-        showHideHeaderButton
+        titleArea={<ObjectPageTitle header="Heading" subHeader="SubHeading" />}
+        headerArea={<ObjectPageHeader>ObjectPageHeader</ObjectPageHeader>}
+        onToggleHeaderArea={toggle}
+        hidePinButton
       >
         <ObjectPageSection id="section" titleText="Section">
           Content
@@ -53,24 +54,46 @@ describe('ObjectPage', () => {
     );
     cy.findByText('ObjectPageHeader').should('be.visible');
 
-    cy.get('[data-component-name="DynamicPageAnchorBar"] > [ui5-button]').click();
+    cy.get('[data-component-name="ObjectPageAnchorBar"] > [ui5-button]').click();
     cy.findByText('ObjectPageHeader').should('not.be.visible');
     cy.get('@toggleSpy').should('have.been.calledOnce');
     cy.get('@toggleSpy').should('have.been.calledWith', false);
 
-    cy.get('[data-component-name="DynamicPageAnchorBar"] > [ui5-button]').click();
+    cy.get('[data-component-name="ObjectPageAnchorBar"] > [ui5-button]').click();
     cy.findByText('ObjectPageHeader').should('be.visible');
     cy.get('@toggleSpy').should('have.been.calledWith', true);
     cy.get('@toggleSpy').should('have.been.calledTwice');
 
-    cy.findByText('Heading').click();
+    cy.findByText('Heading').click({ force: true });
     cy.findByText('ObjectPageHeader').should('not.be.visible');
     cy.get('@toggleSpy').should('have.been.calledThrice');
     cy.get('@toggleSpy').should('have.been.calledWith', false);
 
-    cy.get('[data-component-name="DynamicPageTitle"]').click();
+    cy.get('[data-component-name="ObjectPageTitle"]').click();
     cy.findByText('ObjectPageHeader').should('be.visible');
     cy.get('@toggleSpy').should('have.been.calledWith', true);
+    cy.get('@toggleSpy').should('have.callCount', 4);
+
+    cy.mount(
+      <ObjectPage
+        titleArea={<ObjectPageTitle header="Heading" subHeader="SubHeading" />}
+        headerArea={<ObjectPageHeader>ObjectPageHeader</ObjectPageHeader>}
+        onToggleHeaderArea={toggle}
+        hidePinButton
+        preserveHeaderStateOnClick
+      >
+        <ObjectPageSection id="section" titleText="Section">
+          Content
+        </ObjectPageSection>
+      </ObjectPage>
+    );
+
+    cy.findByText('Heading').click({ force: true });
+    cy.findByText('ObjectPageHeader').should('be.visible');
+    cy.get('@toggleSpy').should('have.callCount', 4);
+
+    cy.get('[data-component-name="ObjectPageTitle"]').click();
+    cy.findByText('ObjectPageHeader').should('be.visible');
     cy.get('@toggleSpy').should('have.callCount', 4);
   });
 
@@ -79,11 +102,9 @@ describe('ObjectPage', () => {
     cy.mount(
       <ObjectPage
         style={{ height: '100vh' }}
-        headerTitle={<DynamicPageTitle header="Heading" subHeader="SubHeading" />}
-        headerContent={<DynamicPageHeader>ObjectPageHeader</DynamicPageHeader>}
-        headerContentPinnable
-        showHideHeaderButton
-        onPinnedStateChange={pin}
+        titleArea={<ObjectPageTitle header="Heading" subHeader="SubHeading" />}
+        headerArea={<ObjectPageHeader>ObjectPageHeader</ObjectPageHeader>}
+        onPinButtonToggle={pin}
         data-testid="op"
       >
         <ObjectPageSection id="section" titleText="Section">
@@ -98,25 +119,25 @@ describe('ObjectPage', () => {
 
     cy.findByTestId('op').scrollTo('top');
 
-    cy.get('[data-component-name="DynamicPageAnchorBarPinBtn"]').click();
+    cy.get('[data-component-name="ObjectPageAnchorBarPinBtn"]').click();
     cy.get('@onPinSpy').should('have.been.calledOnce');
     cy.get('@onPinSpy').should('have.been.calledWith', true);
 
     cy.findByTestId('op').scrollTo(0, 500);
     cy.findByText('ObjectPageHeader').should('be.visible');
 
-    cy.get('[data-component-name="DynamicPageAnchorBarPinBtn"]').click();
+    cy.get('[data-component-name="ObjectPageAnchorBarPinBtn"]').click();
     cy.get('@onPinSpy').should('have.been.calledTwice');
     cy.get('@onPinSpy').should('have.been.calledWith', false);
     cy.findByText('ObjectPageHeader').should('not.be.visible');
   });
 
-  it('programmatically pin header (`alwaysShowContentHeader`)', () => {
+  it('programmatically pin header (`headerPinned`)', () => {
     document.body.style.margin = '0px';
-    const TestComp = ({ onPinnedStateChange }: ObjectPagePropTypes) => {
+    const TestComp = ({ onPinButtonToggle }: ObjectPagePropTypes) => {
       const [pinned, setPinned] = useState(false);
       const handlePinChange = (pinned) => {
-        onPinnedStateChange(pinned);
+        onPinButtonToggle(pinned);
         setPinned(pinned);
       };
       return (
@@ -131,12 +152,10 @@ describe('ObjectPage', () => {
           </Button>
           <ObjectPage
             style={{ height: '95vh' }}
-            headerTitle={<DynamicPageTitle header="Heading" subHeader="SubHeading" />}
-            headerContent={<DynamicPageHeader>ObjectPageHeader</DynamicPageHeader>}
-            headerContentPinnable
-            showHideHeaderButton
-            alwaysShowContentHeader={pinned}
-            onPinnedStateChange={handlePinChange}
+            titleArea={<ObjectPageTitle header="Heading" subHeader="SubHeading" />}
+            headerArea={<ObjectPageHeader>ObjectPageHeader</ObjectPageHeader>}
+            headerPinned={pinned}
+            onPinButtonToggle={handlePinChange}
             data-testid="op"
           >
             <ObjectPageSection id="section" titleText="Section">
@@ -147,7 +166,7 @@ describe('ObjectPage', () => {
       );
     };
     const pin = cy.spy().as('onPinSpy');
-    cy.mount(<TestComp onPinnedStateChange={pin} />);
+    cy.mount(<TestComp onPinButtonToggle={pin} />);
     cy.wait(50);
 
     cy.findByTestId('op').scrollTo(0, 500);
@@ -176,7 +195,7 @@ describe('ObjectPage', () => {
     cy.findByTestId('btn').click();
     cy.findByText('ObjectPageHeader').should('not.be.visible');
 
-    cy.get('[data-component-name="DynamicPageAnchorBarExpandBtn"]').click();
+    cy.get('[data-component-name="ObjectPageAnchorBarExpandBtn"]').click();
     cy.findByText('ObjectPageHeader').should('be.visible');
 
     // wait for timeout of expand click
@@ -186,7 +205,7 @@ describe('ObjectPage', () => {
     cy.findByText('ObjectPageHeader').should('not.be.visible');
 
     cy.findByTestId('op').scrollTo(0, 30);
-    cy.get('[data-component-name="DynamicPageAnchorBarPinBtn"]').click();
+    cy.get('[data-component-name="ObjectPageAnchorBarPinBtn"]').click();
     cy.get('@onPinSpy').should('have.callCount', 5);
     cy.findByTestId('btn').should('have.text', 'toggle false');
     cy.findByText('ObjectPageHeader').should('be.visible');
@@ -206,14 +225,12 @@ describe('ObjectPage', () => {
     cy.mount(
       <ObjectPage
         style={{ height: '100vh' }}
-        headerTitle={<DynamicPageTitle header="Heading" subHeader="SubHeading" />}
-        headerContent={
-          <DynamicPageHeader>
+        titleArea={<ObjectPageTitle header="Heading" subHeader="SubHeading" />}
+        headerArea={
+          <ObjectPageHeader>
             <div style={{ height: '400px', width: '100%', background: 'lightyellow' }}>ObjectPageHeader</div>
-          </DynamicPageHeader>
+          </ObjectPageHeader>
         }
-        headerContentPinnable
-        showHideHeaderButton
         data-testid="op"
       >
         <ObjectPageSection id="section" titleText="Section">
@@ -224,25 +241,25 @@ describe('ObjectPage', () => {
     cy.wait(50);
 
     cy.findByTestId('op').scrollTo(0, 400);
-    cy.get('[data-component-name="DynamicPageAnchorBarExpandBtn"]').click();
-    cy.get('[data-component-name="DynamicPageAnchorBarPinBtn"]').should('not.exist');
+    cy.get('[data-component-name="ObjectPageAnchorBarExpandBtn"]').click();
+    cy.get('[data-component-name="ObjectPageAnchorBarPinBtn"]').should('not.exist');
     cy.findByText('ObjectPageHeader').should('not.be.visible');
 
     // wait for timeout of expand click
     cy.wait(500);
 
     cy.findByTestId('op').scrollTo(0, 1);
-    cy.get('[data-component-name="DynamicPageAnchorBarPinBtn"]').should('not.exist');
+    cy.get('[data-component-name="ObjectPageAnchorBarPinBtn"]').should('not.exist');
     cy.wait(50);
     cy.findByTestId('op').scrollTo(0, 0);
-    cy.get('[data-component-name="DynamicPageAnchorBarPinBtn"]').should('be.visible');
+    cy.get('[data-component-name="ObjectPageAnchorBarPinBtn"]').should('be.visible');
     cy.findByText('ObjectPageHeader').should('be.visible');
   });
 
   it('scroll to sections - default mode', () => {
     document.body.style.margin = '0px';
     cy.mount(
-      <ObjectPage headerTitle={DPTitle} headerContent={DPContent}>
+      <ObjectPage titleArea={DPTitle} headerArea={DPContent}>
         {OPContent}
       </ObjectPage>
     );
@@ -251,7 +268,10 @@ describe('ObjectPage', () => {
     cy.findByText('Employment').should('not.be.visible');
     cy.findByText('Test').should('be.visible');
 
-    cy.get('[ui5-tabcontainer]').findUi5TabByText('Employment').click();
+    cy.get('[ui5-tabcontainer]').findUi5TabByText('Employment').realClick();
+    //fallback
+    cy.wait(50);
+    cy.get('[ui5-tabcontainer]').findUi5TabByText('Employment').realClick();
     cy.findByText('Employment').should('be.visible');
     cy.get('[ui5-tabcontainer]').findUi5TabByText('Goals').click();
     cy.findByText('Test').should('be.visible');
@@ -267,7 +287,7 @@ describe('ObjectPage', () => {
     cy.findByText('Job Relationship').should('be.visible');
 
     cy.mount(
-      <ObjectPage headerTitle={DPTitle} headerContent={DPContent} footer={Footer}>
+      <ObjectPage titleArea={DPTitle} headerArea={DPContent} footerArea={Footer}>
         {OPContent}
       </ObjectPage>
     );
@@ -308,8 +328,8 @@ describe('ObjectPage', () => {
     document.body.style.margin = '0px';
     cy.mount(
       <ObjectPage
-        headerTitle={DPTitle}
-        headerContent={DPContent}
+        titleArea={DPTitle}
+        headerArea={DPContent}
         mode={ObjectPageMode.IconTabBar}
         style={{ height: '100vh' }}
       >
@@ -337,9 +357,9 @@ describe('ObjectPage', () => {
 
     cy.mount(
       <ObjectPage
-        headerTitle={DPTitle}
-        headerContent={DPContent}
-        footer={Footer}
+        titleArea={DPTitle}
+        headerArea={DPContent}
+        footerArea={Footer}
         mode={ObjectPageMode.IconTabBar}
         style={{ height: '100vh' }}
       >
@@ -364,8 +384,9 @@ describe('ObjectPage', () => {
     cy.findByTestId('footer').should('be.visible');
 
     cy.get('[ui5-tabcontainer]').findUi5TabOpenPopoverButtonByText('Employment').click();
+    cy.wait(500);
 
-    cy.get('[ui5-static-area-item]').shadow().get('[ui5-list]').findByText('Job Relationship').click({ force: true });
+    cy.get('[ui5-tabcontainer]').contains('Job Relationship').click({ force: true });
     cy.findByText('Job Information').should('not.be.visible');
     cy.findByText('Job Relationship').should('be.visible');
     cy.findByTestId('footer').should('be.visible');
@@ -387,12 +408,11 @@ describe('ObjectPage', () => {
       return (
         <ObjectPage
           style={{ height: '100vh' }}
-          headerTitle={DPTitle}
-          headerContent={DPContent}
+          titleArea={DPTitle}
+          headerArea={DPContent}
           data-testid="op"
-          showHideHeaderButton
           ref={ref}
-          footer={withFooter && Footer}
+          footerArea={withFooter && Footer}
           mode={mode}
         >
           <ObjectPageSection key="0" titleText="Goals" id="goals" aria-label="Goals">
@@ -416,19 +436,19 @@ describe('ObjectPage', () => {
     };
     cy.mount(<TestComp height="2000px" mode={ObjectPageMode.Default} />);
     cy.findByText('Update Heights').click();
-    cy.findByText('{"offset":1080,"scroll":2250}').should('exist');
+    cy.findByText('{"offset":1080,"scroll":2260}').should('exist');
 
     cy.findByTestId('op').scrollTo('bottom');
     cy.findByText('Update Heights').click({ force: true });
-    cy.findByText('{"offset":1080,"scroll":2250}').should('exist');
+    cy.findByText('{"offset":1080,"scroll":2260}').should('exist');
 
     cy.mount(<TestComp height="2000px" withFooter mode={ObjectPageMode.Default} />);
     cy.findByText('Update Heights').click();
-    cy.findByText('{"offset":1080,"scroll":2300}').should('exist');
+    cy.findByText('{"offset":1080,"scroll":2310}').should('exist');
 
     cy.findByTestId('op').scrollTo('bottom');
     cy.findByText('Update Heights').click({ force: true });
-    cy.findByText('{"offset":1080,"scroll":2300}').should('exist');
+    cy.findByText('{"offset":1080,"scroll":2310}').should('exist');
 
     cy.mount(<TestComp height="400px" mode={ObjectPageMode.Default} />);
     cy.findByText('Update Heights').click();
@@ -438,7 +458,7 @@ describe('ObjectPage', () => {
     cy.findByText('Update Heights').click({ force: true });
     cy.findByText('{"offset":1080,"scroll":1080}').should('exist');
 
-    cy.get('[data-component-name="DynamicPageAnchorBarExpandBtn"]').click();
+    cy.get('[data-component-name="ObjectPageAnchorBarExpandBtn"]').click();
     cy.findByText('Update Heights').click({ force: true });
     cy.findByText('{"offset":1080,"scroll":1080}').should('exist');
 
@@ -450,7 +470,7 @@ describe('ObjectPage', () => {
     cy.findByText('Update Heights').click({ force: true });
     cy.findByText('{"offset":1080,"scroll":1080}').should('exist');
 
-    cy.get('[data-component-name="DynamicPageAnchorBarExpandBtn"]').click();
+    cy.get('[data-component-name="ObjectPageAnchorBarExpandBtn"]').click();
     cy.findByText('Update Heights').click({ force: true });
     cy.findByText('{"offset":1080,"scroll":1080}').should('exist');
 
@@ -460,12 +480,12 @@ describe('ObjectPage', () => {
     cy.wait(50);
     cy.findByTestId('op').scrollTo('bottom');
     cy.findByText('https://github.com/SAP/ui5-webcomponents-react').should('not.be.visible');
-    cy.get('[data-component-name="DynamicPageAnchorBarExpandBtn"]').should('have.attr', 'icon', 'slim-arrow-down');
+    cy.get('[data-component-name="ObjectPageAnchorBarExpandBtn"]').should('have.attr', 'icon', 'slim-arrow-down');
 
-    cy.get('[data-component-name="DynamicPageAnchorBarExpandBtn"]').click();
+    cy.get('[data-component-name="ObjectPageAnchorBarExpandBtn"]').click();
     cy.findByText('https://github.com/SAP/ui5-webcomponents-react').should('be.visible');
 
-    cy.get('[data-component-name="DynamicPageAnchorBarExpandBtn"]').click();
+    cy.get('[data-component-name="ObjectPageAnchorBarExpandBtn"]').click();
     cy.findByText('https://github.com/SAP/ui5-webcomponents-react').should('not.be.visible');
   });
 
@@ -485,12 +505,11 @@ describe('ObjectPage', () => {
       return (
         <ObjectPage
           style={{ height: '100vh' }}
-          headerTitle={DPTitle}
-          headerContent={DPContent}
+          titleArea={DPTitle}
+          headerArea={DPContent}
           data-testid="op"
-          showHideHeaderButton
           ref={ref}
-          footer={withFooter && Footer}
+          footerArea={withFooter && Footer}
           mode={mode}
         >
           <ObjectPageSection key="0" titleText="Goals" id="goals" aria-label="Goals">
@@ -514,19 +533,19 @@ describe('ObjectPage', () => {
     };
     cy.mount(<TestComp height="2000px" mode={ObjectPageMode.IconTabBar} />);
     cy.findByText('Update Heights').click();
-    cy.findByText('{"offset":1080,"scroll":2250}').should('exist');
+    cy.findByText('{"offset":1080,"scroll":2260}').should('exist');
 
     cy.findByTestId('op').scrollTo('bottom');
     cy.findByText('Update Heights').click({ force: true });
-    cy.findByText('{"offset":1080,"scroll":2250}').should('exist');
+    cy.findByText('{"offset":1080,"scroll":2260}').should('exist');
 
     cy.mount(<TestComp height="2000px" withFooter mode={ObjectPageMode.IconTabBar} />);
     cy.findByText('Update Heights').click();
-    cy.findByText('{"offset":1080,"scroll":2310}').should('exist');
+    cy.findByText('{"offset":1080,"scroll":2320}').should('exist');
 
     cy.findByTestId('op').scrollTo('bottom');
     cy.findByText('Update Heights').click({ force: true });
-    cy.findByText('{"offset":1080,"scroll":2310}').should('exist');
+    cy.findByText('{"offset":1080,"scroll":2320}').should('exist');
 
     cy.mount(<TestComp height="400px" mode={ObjectPageMode.IconTabBar} />);
     cy.findByText('Update Heights').click();
@@ -536,7 +555,7 @@ describe('ObjectPage', () => {
     cy.findByText('Update Heights').click({ force: true });
     cy.findByText('{"offset":1080,"scroll":1080}').should('exist');
 
-    cy.get('[data-component-name="DynamicPageAnchorBarExpandBtn"]').click();
+    cy.get('[data-component-name="ObjectPageAnchorBarExpandBtn"]').click();
     cy.findByText('Update Heights').click({ force: true });
     cy.findByText('{"offset":1080,"scroll":1080}').should('exist');
 
@@ -548,7 +567,7 @@ describe('ObjectPage', () => {
     cy.findByText('Update Heights').click({ force: true });
     cy.findByText('{"offset":1080,"scroll":1080}').should('exist');
 
-    cy.get('[data-component-name="DynamicPageAnchorBarExpandBtn"]').click();
+    cy.get('[data-component-name="ObjectPageAnchorBarExpandBtn"]').click();
     cy.findByText('Update Heights').click({ force: true });
     cy.findByText('{"offset":1080,"scroll":1080}').should('exist');
 
@@ -558,12 +577,12 @@ describe('ObjectPage', () => {
     cy.wait(50);
     cy.findByTestId('op').scrollTo('bottom');
     cy.findByText('https://github.com/SAP/ui5-webcomponents-react').should('not.be.visible');
-    cy.get('[data-component-name="DynamicPageAnchorBarExpandBtn"]').should('have.attr', 'icon', 'slim-arrow-down');
+    cy.get('[data-component-name="ObjectPageAnchorBarExpandBtn"]').should('have.attr', 'icon', 'slim-arrow-down');
 
-    cy.get('[data-component-name="DynamicPageAnchorBarExpandBtn"]').click();
+    cy.get('[data-component-name="ObjectPageAnchorBarExpandBtn"]').click();
     cy.findByText('https://github.com/SAP/ui5-webcomponents-react').should('be.visible');
 
-    cy.get('[data-component-name="DynamicPageAnchorBarExpandBtn"]').click();
+    cy.get('[data-component-name="ObjectPageAnchorBarExpandBtn"]').click();
     cy.findByText('https://github.com/SAP/ui5-webcomponents-react').should('not.be.visible');
   });
   it('ObjectPageSection/SubSection: Custom header & hideTitleText', () => {
@@ -573,7 +592,7 @@ describe('ObjectPage', () => {
       const [hideTitleText2, toggleTitleText2] = useReducer((prev) => !prev, true);
       const [hideTitleTextSub, toggleTitleTextSub] = useReducer((prev) => !prev, true);
       return (
-        <ObjectPage headerTitle={DPTitle} headerContent={DPContent} mode={mode}>
+        <ObjectPage titleArea={DPTitle} headerArea={DPContent} mode={mode}>
           <ObjectPageSection
             titleText="Goals"
             hideTitleText={hideTitleText1}
@@ -643,7 +662,8 @@ describe('ObjectPage', () => {
       cy.findByText('Custom Header Section Two').should('be.visible');
 
       cy.get('[ui5-tabcontainer]').findUi5TabOpenPopoverButtonByText('Goals').click();
-      cy.get('[ui5-static-area-item]').shadow().get('[ui5-list]').findByText('Goals 2').click({ force: true });
+      cy.wait(500);
+      cy.get('[ui5-tabcontainer]').contains('Goals 2').click({ force: true });
       cy.findByText('Goals 2').should('not.exist');
       cy.findByText('toggle titleTextSub').click({ scrollBehavior: false, force: true });
       cy.findByText('Goals 2').should('be.visible');
@@ -654,7 +674,7 @@ describe('ObjectPage', () => {
     const TestComp = () => {
       const [wrapTitle, toggleWrap] = useReducer((prev) => !prev, false);
       return (
-        <ObjectPage headerTitle={DPTitle} headerContent={DPContent}>
+        <ObjectPage titleArea={DPTitle} headerArea={DPContent}>
           <ObjectPageSection id="placeholder" titleText="Placeholder">
             <span />
           </ObjectPageSection>
@@ -702,7 +722,7 @@ describe('ObjectPage', () => {
       const [uppercase, toggleUppercase] = useReducer((prev) => !prev, undefined);
       const [uppercaseSub, toggleUppercaseSub] = useReducer((prev) => !prev, undefined);
       return (
-        <ObjectPage headerTitle={DPTitle} headerContent={DPContent}>
+        <ObjectPage titleArea={DPTitle} headerArea={DPContent}>
           <ObjectPageSection id="placeholder" titleText="Placeholder">
             <span />
           </ObjectPageSection>
@@ -724,7 +744,7 @@ describe('ObjectPage', () => {
     };
     cy.mount(<TestComp />);
 
-    cy.findByText('Lorem ipsum dolor sit amet').should('have.css', 'text-transform', 'uppercase');
+    cy.findByText('Lorem ipsum dolor sit amet').should('have.css', 'text-transform', 'none');
     cy.findByText('Etiam pellentesque').should('have.css', 'text-transform', 'none');
 
     cy.findByText('toggle uppercase').click();
@@ -741,7 +761,7 @@ describe('ObjectPage', () => {
       const [level, setLevel] = useState<undefined | TitleLevel>(undefined);
       const [levelSub, setLevelSub] = useState<undefined | TitleLevel>(undefined);
       return (
-        <ObjectPage headerTitle={DPTitle} headerContent={DPContent}>
+        <ObjectPage titleArea={DPTitle} headerArea={DPContent}>
           <ObjectPageSection id="placeholder" titleText="Placeholder">
             <span />
           </ObjectPageSection>
@@ -788,20 +808,18 @@ describe('ObjectPage', () => {
   it('empty content', () => {
     cy.mount(<ObjectPage data-testid="op" />);
     cy.findByTestId('op').should('be.visible');
-    cy.mount(<ObjectPage data-testid="op" headerTitle={DPTitle} headerContent={DPContent} />);
+    cy.mount(<ObjectPage data-testid="op" titleArea={DPTitle} headerArea={DPContent} />);
     cy.findByTestId('op').should('be.visible');
   });
 
   it('w/ image', () => {
-    cy.mount(
-      <ObjectPage data-testid="op" headerTitle={DPTitle} headerContent={DPContent} image="not_a_real_path.orly" />
-    );
+    cy.mount(<ObjectPage data-testid="op" titleArea={DPTitle} headerArea={DPContent} image="not_a_real_path.orly" />);
     cy.findByAltText('Company Logo').should('be.visible');
     cy.mount(
       <ObjectPage
         data-testid="op"
-        headerTitle={DPTitle}
-        headerContent={DPContent}
+        titleArea={DPTitle}
+        headerArea={DPContent}
         image="not_a_real_path.orly"
         imageShapeCircle
       />
@@ -811,7 +829,7 @@ describe('ObjectPage', () => {
       .parent()
       .should('have.css', 'border-radius', '50%')
       .should('have.css', 'overflow', 'hidden');
-    cy.mount(<ObjectPage data-testid="op" headerTitle={DPTitle} headerContent={DPContent} image={<Avatar />} />);
+    cy.mount(<ObjectPage data-testid="op" titleArea={DPTitle} headerArea={DPContent} image={<Avatar />} />);
     cy.get('[ui5-avatar]').should('have.attr', 'size', 'L').should('be.visible');
   });
 
@@ -819,8 +837,8 @@ describe('ObjectPage', () => {
     cy.mount(
       <ObjectPage
         data-testid="op"
-        headerTitle={DPTitle}
-        headerContent={DPContent}
+        titleArea={DPTitle}
+        headerArea={DPContent}
         placeholder={<IllustratedMessage data-testid="no-data" name={IllustrationMessageType.NoData} />}
       />
     );
@@ -830,8 +848,8 @@ describe('ObjectPage', () => {
     cy.mount(
       <ObjectPage
         data-testid="op"
-        headerTitle={DPTitle}
-        headerContent={DPContent}
+        titleArea={DPTitle}
+        headerArea={DPContent}
         placeholder={<IllustratedMessage data-testid="no-data" name={IllustrationMessageType.NoData} />}
       >
         {OPContent}
@@ -854,8 +872,8 @@ describe('ObjectPage', () => {
     cy.mount(
       <ObjectPage
         data-testid="op"
-        headerTitle={DPTitle}
-        headerContent={DPContent}
+        titleArea={DPTitle}
+        headerArea={DPContent}
         onBeforeNavigate={beforeNavigate}
         onSelectedSectionChange={sectionChange}
       >
@@ -872,10 +890,11 @@ describe('ObjectPage', () => {
     cy.get('[ui5-tabcontainer]').findUi5TabOpenPopoverButtonByText('Employment').click();
     cy.wait(500);
     cy.realPress('Enter');
-    cy.get('@beforeNavigateSpy')
-      .should('have.been.calledTwice')
-      .its('secondCall.args[0].detail')
-      .should('deep.equal', { sectionIndex: 3, sectionId: 'employment', subSectionId: 'employment-job-information' });
+    cy.get('@beforeNavigateSpy').should('have.been.calledTwice').its('secondCall.args[0].detail').should('deep.equal', {
+      sectionIndex: 3,
+      sectionId: `~\`!1@#$%^&*()-_+={}[]:;"'z,<.>/?|♥`,
+      subSectionId: 'employment-job-information'
+    });
     cy.get('@sectionChangeSpy').should('not.have.been.called');
   });
 
@@ -903,16 +922,14 @@ describe('ObjectPage', () => {
 });
 
 const DPTitle = (
-  <DynamicPageTitle
+  <ObjectPageTitle
     header="Denise Smith"
     subHeader="Senior UI Developer"
-    actions={
-      <>
-        <Button key="1" design={ButtonDesign.Emphasized}>
-          Primary Action
-        </Button>
-        <Button key="2">Action</Button>
-      </>
+    actionsBar={
+      <Toolbar>
+        <ToolbarButton design={ButtonDesign.Emphasized} text="Primary Action" />
+        <ToolbarButton text="Action" />
+      </Toolbar>
     }
     breadcrumbs={
       <Breadcrumbs>
@@ -922,12 +939,12 @@ const DPTitle = (
       </Breadcrumbs>
     }
   >
-    <ObjectStatus state={ValueState.Success}>employed</ObjectStatus>
-  </DynamicPageTitle>
+    <ObjectStatus state={ValueState.Positive}>employed</ObjectStatus>
+  </ObjectPageTitle>
 );
 
 const DPContent = (
-  <DynamicPageHeader>
+  <ObjectPageHeader>
     <FlexBox wrap={FlexBoxWrap.Wrap} alignItems={FlexBoxAlignItems.Center}>
       <FlexBox direction={FlexBoxDirection.Column}>
         <Link>+33 6 4512 5158</Link>
@@ -941,7 +958,7 @@ const DPContent = (
         <Label>California, USA</Label>
       </FlexBox>
     </FlexBox>
-  </DynamicPageHeader>
+  </ObjectPageHeader>
 );
 
 const OPContent = [
@@ -976,7 +993,7 @@ const OPContent = [
       <div style={{ height: '400px', width: '100%', background: 'blue' }} />
     </ObjectPageSubSection>
   </ObjectPageSection>,
-  <ObjectPageSection key="3" titleText="Employment" id="employment" aria-label="Employment">
+  <ObjectPageSection key="3" titleText="Employment" id={`~\`!1@#$%^&*()-_+={}[]:;"'z,<.>/?|♥`} aria-label="Employment">
     <ObjectPageSubSection titleText="Job Information" id="employment-job-information" aria-label="Job Information">
       <div style={{ height: '100px', width: '100%', background: 'orange' }}></div>
     </ObjectPageSubSection>

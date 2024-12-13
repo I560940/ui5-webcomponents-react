@@ -10,14 +10,15 @@ interface BreadcrumbsItemAttributes {
    * Defines the accessible ARIA name of the item.
    * @default undefined
    */
-  accessibleName?: string;
+  accessibleName?: string | undefined;
 
   /**
    * Defines the link href.
    *
    * **Note:** Standard hyperlink behavior is supported.
+   * @default undefined
    */
-  href?: string;
+  href?: string | undefined;
 
   /**
    * Defines the link target.
@@ -52,8 +53,8 @@ interface BreadcrumbsItemPropTypes
 /**
  * The `BreadcrumbsItem` component defines the content of an item in `Breadcrumbs`.
  *
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  * @abstract
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
  */
 const BreadcrumbsItem = withWebComponent<BreadcrumbsItemPropTypes, BreadcrumbsItemDomRef>(
   'ui5-breadcrumbs-item',

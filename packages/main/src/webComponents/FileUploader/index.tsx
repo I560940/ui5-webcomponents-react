@@ -12,8 +12,9 @@ interface FileUploaderAttributes {
    * Comma-separated list of file types that the component should accept.
    *
    * **Note:** Please make sure you are adding the `.` in front on the file type, e.g. `.png` in case you want to accept png's only.
+   * @default undefined
    */
-  accept?: string;
+  accept?: string | undefined;
 
   /**
    * Defines whether the component is in disabled state.
@@ -36,21 +37,18 @@ interface FileUploaderAttributes {
   multiple?: boolean;
 
   /**
-   * Determines the name with which the component will be submitted in an HTML form.
+   * Determines the name by which the component will be identified upon submission in an HTML form.
    *
-   * **Important:** For the `name` property to have effect, you must add the following import to your project:
-   * `import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`
-   *
-   * **Note:** When set, a native `input` HTML element
-   * will be created inside the component so that it can be submitted as
-   * part of an HTML form. Do not use this property unless you need to submit a form.
+   * **Note:** This property is only applicable within the context of an HTML Form element.
+   * @default undefined
    */
-  name?: string;
+  name?: string | undefined;
 
   /**
    * Defines a short hint intended to aid the user with data entry when the component has no value.
+   * @default undefined
    */
-  placeholder?: string;
+  placeholder?: string | undefined;
 
   /**
    * Defines the name/names of the file/files to upload.
@@ -88,13 +86,13 @@ interface FileUploaderPropTypes
    * **Note:** If not specified, a default text (in the respective language) will be displayed.
    *
    * **Note:** The `valueStateMessage` would be displayed,
-   * when the component is in `Information`, `Warning` or `Error` value state.
+   * when the component is in `Information`, `Critical` or `Negative` value state.
    *
    * __Note:__ The content of the prop will be rendered into a [&lt;slot&gt;](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot) by assigning the respective [slot](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/slot) attribute (`slot="valueStateMessage"`).
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   valueStateMessage?: UI5WCSlotsNode;
   /**
@@ -119,7 +117,7 @@ interface FileUploaderPropTypes
  * For the `FileUploader`
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const FileUploader = withWebComponent<FileUploaderPropTypes, FileUploaderDomRef>(
   'ui5-file-uploader',

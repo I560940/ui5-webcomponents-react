@@ -1,10 +1,8 @@
-// @ts-expect-error: png's are not typed
 import image from '@sb/demoImages/Person.png';
 import type { Meta, StoryObj } from '@storybook/react';
 import addIcon from '@ui5/webcomponents-icons/dist/add.js';
 import searchIcon from '@ui5/webcomponents-icons/dist/search.js';
-import React from 'react';
-import { Avatar, Icon, Input, ShellBarItem, StandardListItem } from '../index';
+import { Avatar, Icon, Input, ListItemStandard, ShellBarItem } from '../index';
 import { ShellBar } from './index';
 
 const meta = {
@@ -19,7 +17,7 @@ const meta = {
     startButton: { control: { disable: true } }
   },
   args: {
-    logo: <img src="https://sap.github.io/ui5-webcomponents/assets/images/sap-logo-svg.svg" alt="SAP Logo" />,
+    logo: <img src="https://sap.github.io/ui5-webcomponents/images/sap-logo-svg.svg" alt="SAP Logo" />,
     profile: (
       <Avatar>
         <img src={image} />
@@ -27,16 +25,15 @@ const meta = {
     ),
     menuItems: (
       <>
-        <StandardListItem data-key="1">Menu Item 1</StandardListItem>
-        <StandardListItem data-key="2">Menu Item 2</StandardListItem>
-        <StandardListItem data-key="3">Menu Item 3</StandardListItem>
+        <ListItemStandard data-key="1">Menu Item 1</ListItemStandard>
+        <ListItemStandard data-key="2">Menu Item 2</ListItemStandard>
+        <ListItemStandard data-key="3">Menu Item 3</ListItemStandard>
       </>
     ),
-    searchField: <Input showClearIcon icon={<Icon name={searchIcon} interactive />} />,
+    searchField: <Input showClearIcon icon={<Icon name={searchIcon} />} />,
     notificationsCount: '10',
     primaryTitle: 'Shell Bar',
-    secondaryTitle: 'Fiori 3 Shell Bar',
-    showCoPilot: true,
+    secondaryTitle: 'Secondary Title',
     showNotifications: true,
     showProductSwitch: true,
     children: <ShellBarItem count="3" text={'ShellBarItem'} icon={addIcon} />

@@ -11,16 +11,22 @@ interface SwitchAttributes {
    *
    * **Note**: We recommend that you set an accessibleNameRef pointing to an external label or at least an `accessibleName`.
    * Providing an `accessibleNameRef` or an `accessibleName` is mandatory in the cases when `textOn` and `textOff` properties aren't set.
+   *
+   * **Note:** Available since [v1.2.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.2.0) of **@ui5/webcomponents**.
+   * @default undefined
    */
-  accessibleName?: string;
+  accessibleName?: string | undefined;
 
   /**
    * Receives id(or many ids) of the elements that label the component.
    *
    * **Note**: We recommend that you set an accessibleNameRef pointing to an external label or at least an `accessibleName`.
    * Providing an `accessibleNameRef` or an `accessibleName` is mandatory in the cases when `textOn` and `textOff` properties aren't set.
+   *
+   * **Note:** Available since [v1.1.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.1.0) of **@ui5/webcomponents**.
+   * @default undefined
    */
-  accessibleNameRef?: string;
+  accessibleNameRef?: string | undefined;
 
   /**
    * Defines if the component is checked.
@@ -49,19 +55,19 @@ interface SwitchAttributes {
   disabled?: boolean;
 
   /**
-   * Determines the name with which the component will be submitted in an HTML form.
+   * Determines the name by which the component will be identified upon submission in an HTML form.
    *
-   * **Important:** For the `name` property to have effect, you must add the following import to your project:
-   * `import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`
+   * **Note:** This property is only applicable within the context of an HTML Form element.
    *
-   * **Note:** When set, a native `input` HTML element
-   * will be created inside the component so that it can be submitted as
-   * part of an HTML form. Do not use this property unless you need to submit a form.
+   * **Note:** Available since [v1.16.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.16.0) of **@ui5/webcomponents**.
+   * @default undefined
    */
-  name?: string;
+  name?: string | undefined;
 
   /**
    * Defines whether the component is required.
+   *
+   * **Note:** Available since [v1.16.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.16.0) of **@ui5/webcomponents**.
    * @default false
    */
   required?: boolean;
@@ -70,22 +76,27 @@ interface SwitchAttributes {
    * Defines the text, displayed when the component is not checked.
    *
    * **Note:** We recommend using short texts, up to 3 letters (larger texts would be cut off).
+   * @default undefined
    */
-  textOff?: string;
+  textOff?: string | undefined;
 
   /**
    * Defines the text, displayed when the component is checked.
    *
    * **Note:** We recommend using short texts, up to 3 letters (larger texts would be cut off).
+   * @default undefined
    */
-  textOn?: string;
+  textOn?: string | undefined;
 
   /**
    * Defines the tooltip of the component.
    *
    * **Note:** If applicable an external label reference should always be the preferred option to provide context to the `Switch` component over a tooltip.
+   *
+   * **Note:** Available since [v1.9.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.9.0) of **@ui5/webcomponents**.
+   * @default undefined
    */
-  tooltip?: string;
+  tooltip?: string | undefined;
 }
 
 interface SwitchDomRef extends Required<SwitchAttributes>, Ui5DomRef {}
@@ -93,6 +104,8 @@ interface SwitchDomRef extends Required<SwitchAttributes>, Ui5DomRef {}
 interface SwitchPropTypes extends SwitchAttributes, Omit<CommonProps, keyof SwitchAttributes | 'onChange'> {
   /**
    * Fired when the component checked state changes.
+   *
+   * **Note:** Call `event.preventDefault()` inside the handler of this event to prevent its default action/s.
    */
   onChange?: (event: Ui5CustomEvent<SwitchDomRef>) => void;
 }
@@ -112,7 +125,7 @@ interface SwitchPropTypes extends SwitchAttributes, Omit<CommonProps, keyof Swit
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const Switch = withWebComponent<SwitchPropTypes, SwitchDomRef>(
   'ui5-switch',

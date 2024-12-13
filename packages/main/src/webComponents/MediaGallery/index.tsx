@@ -100,16 +100,18 @@ interface MediaGalleryPropTypes
  * When the thumbnails menu is focused the following keyboard
  * shortcuts allow the user to navigate through the thumbnail items:
  *
- * - [UP/DOWN] - Navigates up and down the items
- * - [HOME] - Navigates to first item
- * - [END] - Navigates to the last item
- * - [SPACE/ENTER] - Select an item
+ * - [Up] or [Down] - Navigates up and down the items
+ * - [Home] - Navigates to first item
+ * - [End] - Navigates to the last item
+ * - [Space], [Enter] - Selects an item
  *
  *
  *
  * `import "@ui5/webcomponents-fiori/dist/MediaGalleryItem.js";`
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
+ *
+ * @since [1.1.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.1.0) of __@ui5/webcomponents-fiori__.
  */
 const MediaGallery = withWebComponent<MediaGalleryPropTypes, MediaGalleryDomRef>(
   'ui5-media-gallery',

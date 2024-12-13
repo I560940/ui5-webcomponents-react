@@ -2,6 +2,7 @@
 
 import '@ui5/webcomponents/dist/Icon.js';
 import type IconDesign from '@ui5/webcomponents/dist/types/IconDesign.js';
+import type IconMode from '@ui5/webcomponents/dist/types/IconMode.js';
 import { withWebComponent } from '../../internal/withWebComponent.js';
 import type { CommonProps, Ui5DomRef } from '../../types/index.js';
 
@@ -12,25 +13,25 @@ interface IconAttributes {
    *
    * **Note:** Every icon should have a text alternative in order to
    * calculate its accessible name.
+   * @default undefined
    */
-  accessibleName?: string;
-
-  /**
-   * Defines the accessibility role of the component.
-   */
-  accessibleRole?: string;
+  accessibleName?: string | undefined;
 
   /**
    * Defines the component semantic design.
+   *
+   * **Note:** Available since [v1.9.2](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.9.2) of **@ui5/webcomponents**.
    * @default "Default"
    */
   design?: IconDesign | keyof typeof IconDesign;
 
   /**
-   * Defines if the icon is interactive (focusable and pressable)
-   * @default false
+   * Defines the mode of the component.
+   *
+   * **Note:** Available since [v2.0.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.0.0) of **@ui5/webcomponents**.
+   * @default "Image"
    */
-  interactive?: boolean;
+  mode?: IconMode | keyof typeof IconMode;
 
   /**
    * Defines the unique identifier (icon name) of the component.
@@ -54,8 +55,9 @@ interface IconAttributes {
    *
    * Example:
    * `name='business-suite/3d'`, `name='business-suite/1x2-grid-layout'`, `name='business-suite/4x4-grid-layout'`.
+   * @default undefined
    */
-  name?: string;
+  name?: string | undefined;
 
   /**
    * Defines whether the component should have a tooltip.
@@ -125,17 +127,17 @@ interface IconPropTypes extends IconAttributes, Omit<CommonProps, keyof IconAttr
  *
  * ### Keyboard Handling
  *
- * - [SPACE, ENTER, RETURN] - Fires the `click` event if the `interactive` property is set to true.
- * - [SHIFT] - If [SPACE] or [ENTER],[RETURN] is pressed, pressing [SHIFT] releases the ui5-icon without triggering the click event.
+ * - [Space] / [Enter] or [Return] - Fires the `click` event if the `mode` property is set to `Interactive`.
+ * - [Shift] - If [Space] / [Enter] or [Return] is pressed, pressing [Shift] releases the ui5-icon without triggering the click event.
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const Icon = withWebComponent<IconPropTypes, IconDomRef>(
   'ui5-icon',
-  ['accessibleName', 'accessibleRole', 'design', 'name'],
-  ['interactive', 'showTooltip'],
+  ['accessibleName', 'design', 'mode', 'name'],
+  ['showTooltip'],
   [],
   [],
   () => import('@ui5/webcomponents/dist/Icon.js')

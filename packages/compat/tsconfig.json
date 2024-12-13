@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "isolatedModules": true
+  },
+  "references": [
+    {
+      "path": "../base/tsconfig.json"
+    },
+    {
+      "path": "../main/tsconfig.json"
+    }
+  ],
+  "include": ["src/**/*"]
+}

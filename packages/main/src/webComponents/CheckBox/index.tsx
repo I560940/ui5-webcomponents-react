@@ -9,13 +9,19 @@ import type { CommonProps, Ui5CustomEvent, Ui5DomRef } from '../../types/index.j
 interface CheckBoxAttributes {
   /**
    * Defines the accessible ARIA name of the component.
+   *
+   * **Note:** Available since [v1.1.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.1.0) of **@ui5/webcomponents**.
+   * @default undefined
    */
-  accessibleName?: string;
+  accessibleName?: string | undefined;
 
   /**
    * Receives id(or many ids) of the elements that label the component
+   *
+   * **Note:** Available since [v1.1.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.1.0) of **@ui5/webcomponents**.
+   * @default undefined
    */
-  accessibleNameRef?: string;
+  accessibleNameRef?: string | undefined;
 
   /**
    * Defines if the component is checked.
@@ -42,6 +48,8 @@ interface CheckBoxAttributes {
    * and not in the tab chain. This setting is used for forms in review mode.
    *
    * **Note:** When the property `disabled` is set to `true` this property has no effect.
+   *
+   * **Note:** Available since [v1.22.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.22.0) of **@ui5/webcomponents**.
    * @default false
    */
   displayOnly?: boolean;
@@ -61,16 +69,12 @@ interface CheckBoxAttributes {
   indeterminate?: boolean;
 
   /**
-   * Determines the name with which the component will be submitted in an HTML form.
+   * Determines the name by which the component will be identified upon submission in an HTML form.
    *
-   * **Important:** For the `name` property to have effect, you must add the following import to your project:
-   * `import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`
-   *
-   * **Note:** When set, a native `input` HTML element
-   * will be created inside the component so that it can be submitted as
-   * part of an HTML form. Do not use this property unless you need to submit a form.
+   * **Note:** This property is only applicable within the context of an HTML Form element.
+   * @default undefined
    */
-  name?: string;
+  name?: string | undefined;
 
   /**
    * Defines whether the component is read-only.
@@ -83,14 +87,17 @@ interface CheckBoxAttributes {
 
   /**
    * Defines whether the component is required.
+   *
+   * **Note:** Available since [v1.3.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.3.0) of **@ui5/webcomponents**.
    * @default false
    */
   required?: boolean;
 
   /**
    * Defines the text of the component.
+   * @default undefined
    */
-  text?: string;
+  text?: string | undefined;
 
   /**
    * Defines the value state of the component.
@@ -102,7 +109,8 @@ interface CheckBoxAttributes {
    * Defines whether the component text wraps when there is not enough space.
    *
    * **Note:** for option "Normal" the text will wrap and the words will not be broken based on hyphenation.
-   * @default "None"
+   * **Note:** for option "None" the text will be truncated with an ellipsis.
+   * @default "Normal"
    */
   wrappingType?: WrappingType | keyof typeof WrappingType;
 }
@@ -112,6 +120,8 @@ interface CheckBoxDomRef extends Required<CheckBoxAttributes>, Ui5DomRef {}
 interface CheckBoxPropTypes extends CheckBoxAttributes, Omit<CommonProps, keyof CheckBoxAttributes | 'onChange'> {
   /**
    * Fired when the component checked state changes.
+   *
+   * **Note:** Call `event.preventDefault()` inside the handler of this event to prevent its default action/s.
    */
   onChange?: (event: Ui5CustomEvent<CheckBoxDomRef>) => void;
 }
@@ -130,7 +140,7 @@ interface CheckBoxPropTypes extends CheckBoxAttributes, Omit<CommonProps, keyof 
  * ### Usage
  *
  * You can define the checkbox text with via the `text` property. If the text exceeds the available width, it is truncated by default.
- * In case you prefer text to wrap, set the `wrappingType` property to "Normal".
+ * In case you prefer text to truncate, set the `wrappingType` property to "None".
  * The touchable area for toggling the `CheckBox` ends where the text ends.
  *
  * You can disable the `CheckBox` by setting the `disabled` property to
@@ -142,11 +152,11 @@ interface CheckBoxPropTypes extends CheckBoxAttributes, Omit<CommonProps, keyof 
  *
  * The user can use the following keyboard shortcuts to toggle the checked state of the `CheckBox`.
  *
- * - [SPACE, ENTER] - Toggles between different states: checked, not checked.
+ * - [Space],[Enter] - Toggles between different states: checked, not checked.
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const CheckBox = withWebComponent<CheckBoxPropTypes, CheckBoxDomRef>(
   'ui5-checkbox',

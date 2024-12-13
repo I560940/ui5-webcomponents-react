@@ -55,6 +55,23 @@
     padding: 0;
   }
 
+  .pseudoInvisibleText {
+    font-size: 0;
+    left: 0;
+    position: absolute;
+    top: 0;
+    user-select: none;
+  }
+
+  .formAlignLabelStart::part(label) {
+    padding-block-start: 0.25rem;
+    align-self: start;
+  }
+
+  .dynamicPageStickyContent::part(fit-content) {
+      position: static;
+  }
+
   /* TODO remove this workaround as soon as https://github.com/storybookjs/storybook/issues/20497 is fixed */
   .docs-story > div > div[scale] {
     min-height: 20px;

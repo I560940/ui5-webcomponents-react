@@ -1,17 +1,30 @@
 'use client';
 
 import '@ui5/webcomponents/dist/TimePicker.js';
-import type {
-  TimePickerBaseChangeEventDetail,
-  TimePickerBaseInputEventDetail
-} from '@ui5/webcomponents/dist/TimePickerBase.js';
+import type { TimePickerChangeEventDetail, TimePickerInputEventDetail } from '@ui5/webcomponents/dist/TimePicker.js';
 import type ValueState from '@ui5/webcomponents-base/dist/types/ValueState.js';
 import { withWebComponent } from '../../internal/withWebComponent.js';
 import type { CommonProps, Ui5CustomEvent, Ui5DomRef, UI5WCSlotsNode } from '../../types/index.js';
 
 interface TimePickerAttributes {
   /**
-   * Determines whether the `TimePicker` is displayed as disabled.
+   * Defines the aria-label attribute for the component.
+   *
+   * **Note:** Available since [v2.1.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.1.0) of **@ui5/webcomponents**.
+   * @default undefined
+   */
+  accessibleName?: string | undefined;
+
+  /**
+   * Receives id (or many ids) of the elements that label the component.
+   *
+   * **Note:** Available since [v2.1.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.1.0) of **@ui5/webcomponents**.
+   * @default undefined
+   */
+  accessibleNameRef?: string | undefined;
+
+  /**
+   * Defines the disabled state of the comonent.
    * @default false
    */
   disabled?: boolean;
@@ -23,8 +36,27 @@ interface TimePickerAttributes {
    * HH:mm:ss -> 11:42:35
    * hh:mm:ss a -> 2:23:15 PM
    * mm:ss -> 12:04 (only minutes and seconds)
+   * @default undefined
    */
-  formatPattern?: string;
+  formatPattern?: string | undefined;
+
+  /**
+   * Determines the name by which the component will be identified upon submission in an HTML form.
+   *
+   * **Note:** This property is only applicable within the context of an HTML Form element.
+   *
+   * **Note:** Available since [v2.0.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.0.0) of **@ui5/webcomponents**.
+   * @default undefined
+   */
+  name?: string | undefined;
+
+  /**
+   * Defines the open or closed state of the popover.
+   *
+   * **Note:** Available since [v2.0.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.0.0) of **@ui5/webcomponents**.
+   * @default false
+   */
+  open?: boolean;
 
   /**
    * Defines a short hint, intended to aid the user with data entry when the
@@ -37,19 +69,26 @@ interface TimePickerAttributes {
   placeholder?: string | undefined;
 
   /**
-   * Determines whether the `TimePicker` is displayed as readonly.
+   * Defines the readonly state of the comonent.
    * @default false
    */
   readonly?: boolean;
 
   /**
-   * Defines a formatted time value.
-   * @default undefined
+   * Defines whether the component is required.
+   *
+   * **Note:** Available since [v2.1.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.1.0) of **@ui5/webcomponents**.
+   * @default false
    */
-  value?: string | undefined;
+  required?: boolean;
 
   /**
-   * Defines the value state of the `TimePicker`.
+   * Defines a formatted time value.
+   */
+  value?: string;
+
+  /**
+   * Defines the value state of the component.
    * @default "None"
    */
   valueState?: ValueState | keyof typeof ValueState;
@@ -57,15 +96,9 @@ interface TimePickerAttributes {
 
 interface TimePickerDomRef extends Required<TimePickerAttributes>, Ui5DomRef {
   /**
-   * Closes the picker
-   * @returns {Promise<void>} - Resolves when the picker is closed
-   */
-  closePicker: () => Promise<void>;
-
-  /**
    * Currently selected time represented as JavaScript Date instance
    */
-  readonly dateValue: Date | Array<Date> | null;
+  readonly dateValue: Date | null;
 
   /**
    * Formats a Java Script date object into a string representing a locale date and time
@@ -76,12 +109,6 @@ interface TimePickerDomRef extends Required<TimePickerAttributes>, Ui5DomRef {
   formatValue: (date: Date) => string;
 
   /**
-   * Checks if the picker is open
-   * @returns {boolean}
-   */
-  isOpen: () => boolean;
-
-  /**
    * Checks if a value is valid against the current `formatPattern` value.
    *
    * **Note:** an empty string is considered as valid value.
@@ -89,42 +116,53 @@ interface TimePickerDomRef extends Required<TimePickerAttributes>, Ui5DomRef {
    * @returns {boolean}
    */
   isValid: (value: string | undefined) => boolean;
-
-  /**
-   * Opens the picker.
-   * @returns {Promise<void>} - Resolves when the picker is open
-   */
-  openPicker: () => Promise<void>;
 }
 
 interface TimePickerPropTypes
   extends TimePickerAttributes,
-    Omit<CommonProps, keyof TimePickerAttributes | 'valueStateMessage' | 'onChange' | 'onInput'> {
+    Omit<
+      CommonProps,
+      keyof TimePickerAttributes | 'valueStateMessage' | 'onChange' | 'onClose' | 'onInput' | 'onOpen'
+    > {
   /**
    * Defines the value state message that will be displayed as pop up under the `TimePicker`.
    *
    * **Note:** If not specified, a default text (in the respective language) will be displayed.
    *
    * **Note:** The `valueStateMessage` would be displayed,
-   * when the `TimePicker` is in `Information`, `Warning` or `Error` value state.
+   * when the `TimePicker` is in `Information`, `Critical` or `Negative` value state.
    *
    * __Note:__ The content of the prop will be rendered into a [&lt;slot&gt;](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot) by assigning the respective [slot](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/slot) attribute (`slot="valueStateMessage"`).
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   valueStateMessage?: UI5WCSlotsNode;
   /**
    * Fired when the input operation has finished by clicking the "OK" button or
    * when the text in the input field has changed and the focus leaves the input field.
    */
-  onChange?: (event: Ui5CustomEvent<TimePickerDomRef, TimePickerBaseChangeEventDetail>) => void;
+  onChange?: (event: Ui5CustomEvent<TimePickerDomRef, TimePickerChangeEventDetail>) => void;
+
+  /**
+   * Fired after the value-help dialog of the component is closed.
+   *
+   * **Note:** Available since [v2.0.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.0.0) of **@ui5/webcomponents**.
+   */
+  onClose?: (event: Ui5CustomEvent<TimePickerDomRef>) => void;
 
   /**
    * Fired when the value of the `TimePicker` is changed at each key stroke.
    */
-  onInput?: (event: Ui5CustomEvent<TimePickerDomRef, TimePickerBaseInputEventDetail>) => void;
+  onInput?: (event: Ui5CustomEvent<TimePickerDomRef, TimePickerInputEventDetail>) => void;
+
+  /**
+   * Fired after the value-help dialog of the component is opened.
+   *
+   * **Note:** Available since [v2.0.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.0.0) of **@ui5/webcomponents**.
+   */
+  onOpen?: (event: Ui5CustomEvent<TimePickerDomRef>) => void;
 }
 
 /**
@@ -154,40 +192,40 @@ interface TimePickerPropTypes
  * a valid value string is "11:42:35" and the same is displayed in the input.
  *
  * ### Keyboard handling
- * [F4], [ALT]+[UP], [ALT]+[DOWN] Open/Close picker dialog and move focus to it.
+ * [F4], [Alt]+[Up], [Alt]+[Down] Open/Close picker dialog and move focus to it.
  *
  * When closed:
  *
- * - [PAGEUP] - Increments hours by 1. If 12 am is reached, increment hours to 1 pm and vice versa.
- * - [PAGEDOWN] - Decrements the corresponding field by 1. If 1 pm is reached, decrement hours to 12 am and vice versa.
- * - [SHIFT]+[PAGEUP] - Increments minutes by 1.
- * - [SHIFT]+[PAGEDOWN] - Decrements minutes by 1.
- * - [SHIFT]+[CTRL]+[PAGEUP] - Increments seconds by 1.
- * - [SHIFT]+[CTRL]+[PAGEDOWN] - Decrements seconds by 1.
+ * - [Page Up] - Increments hours by 1. If 12 am is reached, increment hours to 1 pm and vice versa.
+ * - [Page Down] - Decrements the corresponding field by 1. If 1 pm is reached, decrement hours to 12 am and vice versa.
+ * - [Shift]+[Page Up] - Increments minutes by 1.
+ * - [Shift]+[Page Down] - Decrements minutes by 1.
+ * - [Shift]+[Ctrl]+[Page Up] - Increments seconds by 1.
+ * - [Shift]+[Ctrl]+[Page Down] - Decrements seconds by 1.
  * -
  *
  * When opened:
  *
- * - [PAGEUP] - Increments hours by 1. If 12 am is reached, increment hours to 1 pm and vice versa.
- * - [PAGEDOWN] - Decrements the corresponding field by 1. If 1 pm is reached, decrement hours to 12 am and vice versa.
- * - [SHIFT]+[PAGEUP] - Increments minutes by 1.
- * - [SHIFT]+[PAGEDOWN] - Decrements minutes by 1.
- * - [SHIFT]+[CTRL]+[PAGEUP] - Increments seconds by 1.
- * - [SHIFT]+[CTRL]+[PAGEDOWN] - Decrements seconds by 1.
+ * - [Page Up] - Increments hours by 1. If 12 am is reached, increment hours to 1 pm and vice versa.
+ * - [Page Down] - Decrements the corresponding field by 1. If 1 pm is reached, decrement hours to 12 am and vice versa.
+ * - [Shift]+[Page Up] - Increments minutes by 1.
+ * - [Shift]+[Page Down] - Decrements minutes by 1.
+ * - [Shift]+[Ctrl]+[Page Up] - Increments seconds by 1.
+ * - [Shift]+[Ctrl]+[Page Down] - Decrements seconds by 1.
  * - [A] or [P] - Selects AM or PM respectively.
  * - [0]-[9] - Allows direct time selecting (hours/minutes/seconds).
  * - [:] - Allows switching between hours/minutes/seconds clocks. If the last clock is displayed and [:] is pressed, the first clock is beind displayed.
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const TimePicker = withWebComponent<TimePickerPropTypes, TimePickerDomRef>(
   'ui5-time-picker',
-  ['formatPattern', 'placeholder', 'value', 'valueState'],
-  ['disabled', 'readonly'],
+  ['accessibleName', 'accessibleNameRef', 'formatPattern', 'name', 'placeholder', 'value', 'valueState'],
+  ['disabled', 'open', 'readonly', 'required'],
   ['valueStateMessage'],
-  ['change', 'input'],
+  ['change', 'close', 'input', 'open'],
   () => import('@ui5/webcomponents/dist/TimePicker.js')
 );
 

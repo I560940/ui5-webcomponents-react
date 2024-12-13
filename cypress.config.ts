@@ -1,4 +1,4 @@
-import codeCoverageTask from '@cypress/code-coverage/task';
+import codeCoverageTask from '@cypress/code-coverage/task.js';
 import { defineConfig } from 'cypress';
 
 export default defineConfig({
@@ -9,7 +9,6 @@ export default defineConfig({
         '**/src/interfaces/*',
         '**/src/enums/*',
         '**/*.stories.tsx',
-        '**/*.jss.ts',
         '**/*.test.{ts,tsx}',
         '**/node_modules/**',
         'packages/*/src/index.ts',

@@ -1,34 +1,16 @@
-import { ThemingParameters } from '@ui5/webcomponents-react-base';
-import React from 'react';
-import { createUseStyles } from 'react-jss';
+import { useStylesheet } from '@ui5/webcomponents-react-base';
 import { makeRenderer } from 'react-table';
 import { FlexBoxAlignItems, FlexBoxDirection, FlexBoxWrap } from '../../../../enums/index.js';
+import { Text } from '../../../../webComponents/Text/index.js';
 import { FlexBox } from '../../../FlexBox/index.js';
-import { Text } from '../../../Text/index.js';
-
-const PopInStyles = {
-  container: {
-    width: '100%'
-  },
-  defaultCell: {
-    fontFamily: `${ThemingParameters.sapFontBoldFamily}`,
-    '& *': {
-      fontFamily: `${ThemingParameters.sapFontBoldFamily}`
-    }
-  },
-  header: {
-    height: '16px'
-  }
-};
-
-const useStyles = createUseStyles(PopInStyles, { name: 'PopIn' });
+import { classNames, styleData } from './PopIn.module.css.js';
 
 export const PopIn = (instance) => {
   const { state, contentToRender, cell, row, internalRowHeight } = instance;
 
-  const classes = useStyles();
+  useStylesheet(styleData, PopIn.displayName);
   return (
-    <FlexBox direction={FlexBoxDirection.Column} className={classes.container}>
+    <FlexBox direction={FlexBoxDirection.Column} className={classNames.container}>
       <FlexBox
         alignItems={
           contentToRender !== 'Grouped' && contentToRender !== 'Expandable'
@@ -36,7 +18,7 @@ export const PopIn = (instance) => {
             : FlexBoxAlignItems.Center
         }
         wrap={FlexBoxWrap.NoWrap}
-        className={classes.defaultCell}
+        className={classNames.defaultCell}
         style={{
           height: internalRowHeight
         }}
@@ -61,7 +43,7 @@ export const PopIn = (instance) => {
               const cell = item.column.Cell;
               if (typeof cell === 'string') {
                 return (
-                  <Text wrapping={false} title={cell}>
+                  <Text maxLines={1} title={cell}>
                     {cell}
                   </Text>
                 );
@@ -69,14 +51,14 @@ export const PopIn = (instance) => {
               return makeRenderer({ ...instance, ...popInInstanceProps, isPopIn: true }, item.column)(item.column.Cell);
             }
             return popInInstanceProps?.value ? (
-              <Text wrapping={false} title={popInInstanceProps.value}>
+              <Text maxLines={1} title={popInInstanceProps.value}>
                 {popInInstanceProps.value}
               </Text>
             ) : null;
           };
           return (
             <FlexBox direction={FlexBoxDirection.Column} key={item.id}>
-              {item.column?.Header && <div className={classes.header}>{renderHeader()}:</div>}
+              {item.column?.Header && <div className={classNames.header}>{renderHeader()}:</div>}
               <div style={{ height: internalRowHeight }}>{popInInstanceProps && renderCell()}</div>
             </FlexBox>
           );
@@ -84,3 +66,5 @@ export const PopIn = (instance) => {
     </FlexBox>
   );
 };
+
+PopIn.displayName = 'PopIn';

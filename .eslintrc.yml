@@ -10,6 +10,7 @@ env:
   es2022: true
 extends:
   - plugin:react/recommended
+  - plugin:react/jsx-runtime
   - plugin:react-hooks/recommended
   - plugin:import/recommended
   - plugin:prettier/recommended
@@ -40,17 +41,16 @@ rules:
         order: asc
         caseInsensitive: true
   import/no-duplicates: 'error'
-  import/no-unresolved: 'error'
+  import/no-unresolved: 'off'
 overrides:
   # add config for all TypeScript files
   - files:
       - '*.ts'
       - '*.tsx'
     parserOptions:
-      project:
-        - './tsconfig.spec.json'
-        - './tsconfig.node.json'
-        - './packages/*/tsconfig.json'
+      EXPERIMENTAL_useProjectService:
+        # TODO https://github.com/typescript-eslint/typescript-eslint/issues/9450
+        maximumDefaultProjectFileMatchCount_THIS_WILL_SLOW_DOWN_LINTING: 1000
     plugins:
       - '@typescript-eslint'
     extends:
@@ -112,8 +112,6 @@ overrides:
 
   - files:
       - 'cypress/**/*'
-    extends:
-      - 'plugin:react/jsx-runtime'
     rules:
       '@typescript-eslint/no-namespace': 'off'
 
@@ -124,9 +122,7 @@ overrides:
       - no-only-tests
     rules:
       '@typescript-eslint/no-empty-function': 'off'
-      'react/react-in-jsx-scope': 'off'
       'import/order': 'warn'
-      'import/no-unresolved': 'off'
       'react/no-unescaped-entities': 'off'
       '@typescript-eslint/unbound-method': 'warn'
       'react/display-name': 'off'
@@ -135,7 +131,6 @@ overrides:
   - files:
       - '*.stories.tsx'
     extends:
-      - 'plugin:react/jsx-runtime'
       - 'plugin:storybook/recommended'
     rules:
       'react/prop-types': 'off' # inline custom components within stories don't need prop types

@@ -1,5 +1,4 @@
 import { enrichEventWithDetails } from '@ui5/webcomponents-react-base';
-import React from 'react';
 import { AnalyticalTableSelectionBehavior, AnalyticalTableSelectionMode } from '../../../enums/index.js';
 import { CheckBox } from '../../../webComponents/CheckBox/index.js';
 import type { ReactTableHooks } from '../types/index.js';
@@ -21,10 +20,10 @@ const headerProps = (
 ) => {
   if (
     props.key === 'header___ui5wcr__internal_selection_column' &&
-    selectionMode === AnalyticalTableSelectionMode.MultiSelect
+    selectionMode === AnalyticalTableSelectionMode.Multiple
   ) {
     const style = { ...props.style, cursor: 'auto' };
-    return [props, { onClick: undefined, onKeyDown: undefined, style }];
+    return [props, { onClick: undefined, onKeyDown: undefined, title: undefined, style }];
   }
   return props;
 };
@@ -37,13 +36,10 @@ const columns = (columns) => {
         Cell: (instance) => {
           const { webComponentsReactProperties, row } = instance;
           if (row.disableSelect === true) {
-            if (
-              row.isGrouped &&
-              webComponentsReactProperties.selectionMode === AnalyticalTableSelectionMode.SingleSelect
-            ) {
+            if (row.isGrouped && webComponentsReactProperties.selectionMode === AnalyticalTableSelectionMode.Single) {
               return null;
             }
-            if (webComponentsReactProperties.selectionMode === AnalyticalTableSelectionMode.SingleSelect) {
+            if (webComponentsReactProperties.selectionMode === AnalyticalTableSelectionMode.Single) {
               return <div onClick={undefined} data-name="internal_selection_column" />;
             }
             return (
@@ -67,9 +63,16 @@ const columns = (columns) => {
 
 /**
  * A plugin hook for disabling row selection of specific rows.
+ *
  * __Note:__ The "Select All" checkbox is not available with this hook.
  *
  * @param disableRowSelection - Can be either a `string` or a `function`. `string:` Defines the key in the dataset for disabling rows. If the value of the key is `true`, then the row will not be selectable. `function:` Programmatically disable rows for selection. The function receives the current row as parameter.
+ *
+ * @deprecated It is not recommended to disable table rows, mainly because of the following reasons:
+ *
+ * * Users are not informed why items cannot be selected.
+ * * ARIA lacks built-in support for selective item selection, complicating accessibility.
+ * * Consistency to other applications which do not offer disabled items.
  */
 export const useRowDisableSelection = (disableRowSelection: DisableRowSelectionType) => {
   const disableRowAccessor =
@@ -87,14 +90,28 @@ export const useRowDisableSelection = (disableRowSelection: DisableRowSelectionT
         }
       };
       const onKeyDown = (e) => {
-        if (e.code === 'Space' || e.code === 'Enter') {
+        if (e.code === 'Enter' || e.code === 'Space') {
+          e.preventDefault();
+          if (e.code === 'Enter' && typeof webComponentsReactProperties.onRowClick === 'function') {
+            webComponentsReactProperties.onRowClick(enrichEventWithDetails(e, { row }));
+          }
+        }
+      };
+      const onKeyUp = (e) => {
+        if (e.code === 'Space') {
           e.preventDefault();
           if (typeof webComponentsReactProperties.onRowClick === 'function') {
             webComponentsReactProperties.onRowClick(enrichEventWithDetails(e, { row }));
           }
         }
       };
-      return { ...rowProps, onClick: handleClick, onKeyDown, className: webComponentsReactProperties.classes.tr };
+      return {
+        ...rowProps,
+        onClick: handleClick,
+        onKeyDown,
+        onKeyUp,
+        className: webComponentsReactProperties.classes.tr
+      };
     }
     return rowProps;
   };

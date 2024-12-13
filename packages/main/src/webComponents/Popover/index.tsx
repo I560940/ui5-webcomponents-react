@@ -3,7 +3,7 @@
 import '@ui5/webcomponents/dist/Popover.js';
 import type { PopupBeforeCloseEventDetail } from '@ui5/webcomponents/dist/Popup.js';
 import type PopoverHorizontalAlign from '@ui5/webcomponents/dist/types/PopoverHorizontalAlign.js';
-import type PopoverPlacementType from '@ui5/webcomponents/dist/types/PopoverPlacementType.js';
+import type PopoverPlacement from '@ui5/webcomponents/dist/types/PopoverPlacement.js';
 import type PopoverVerticalAlign from '@ui5/webcomponents/dist/types/PopoverVerticalAlign.js';
 import type PopupAccessibleRole from '@ui5/webcomponents/dist/types/PopupAccessibleRole.js';
 import type { ReactNode } from 'react';
@@ -19,11 +19,16 @@ interface PopoverAttributes {
 
   /**
    * Defines the IDs of the elements that label the component.
+   *
+   * **Note:** Available since [v1.1.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.1.0) of **@ui5/webcomponents**.
+   * @default undefined
    */
-  accessibleNameRef?: string;
+  accessibleNameRef?: string | undefined;
 
   /**
    * Allows setting a custom role.
+   *
+   * **Note:** Available since [v1.10.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.10.0) of **@ui5/webcomponents**.
    * @default "Dialog"
    */
   accessibleRole?: PopupAccessibleRole | keyof typeof PopupAccessibleRole;
@@ -39,20 +44,15 @@ interface PopoverAttributes {
    * Defines the header text.
    *
    * **Note:** If `header` slot is provided, the `headerText` is ignored.
+   * @default undefined
    */
-  headerText?: string;
+  headerText?: string | undefined;
 
   /**
    * Determines whether the component arrow is hidden.
    * @default false
    */
   hideArrow?: boolean;
-
-  /**
-   * Defines whether the block layer will be shown if modal property is set to true.
-   * @default false
-   */
-  hideBackdrop?: boolean;
 
   /**
    * Determines the horizontal alignment of the component.
@@ -62,8 +62,12 @@ interface PopoverAttributes {
 
   /**
    * Defines the ID of the HTML Element, which will get the initial focus.
+   *
+   * **Note:** If an element with `autofocus` attribute is added inside the component,
+   * `initialFocus` won't take effect.
+   * @default undefined
    */
-  initialFocus?: string;
+  initialFocus?: string | undefined;
 
   /**
    * Defines whether the component should close when
@@ -75,21 +79,27 @@ interface PopoverAttributes {
 
   /**
    * Indicates if the element is open
+   *
+   * **Note:** Available since [v1.2.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.2.0) of **@ui5/webcomponents**.
    * @default false
    */
   open?: boolean;
 
   /**
-   * Defines the ID or DOM Reference of the element that the popover is shown at
+   * Defines the ID or DOM Reference of the element at which the popover is shown.
+   * When using this attribute in a declarative way, you must only use the `id` (as a string) of the element at which you want to show the popover.
+   * You can only set the `opener` attribute to a DOM Reference when using JavaScript.
+   *
+   * **Note:** Available since [v1.2.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.2.0) of **@ui5/webcomponents**.
    * @default undefined
    */
-  opener?: string;
+  opener?: HTMLElement | string | undefined;
 
   /**
    * Determines on which side the component is placed at.
-   * @default "Right"
+   * @default "End"
    */
-  placementType?: PopoverPlacementType | keyof typeof PopoverPlacementType;
+  placement?: PopoverPlacement | keyof typeof PopoverPlacement;
 
   /**
    * Defines if the focus should be returned to the previously focused element,
@@ -99,44 +109,27 @@ interface PopoverAttributes {
   preventFocusRestore?: boolean;
 
   /**
+   * Indicates whether initial focus should be prevented.
+   *
+   * **Note:** Available since [v2.0.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.0.0) of **@ui5/webcomponents**.
+   * @default false
+   */
+  preventInitialFocus?: boolean;
+
+  /**
    * Determines the vertical alignment of the component.
    * @default "Center"
    */
   verticalAlign?: PopoverVerticalAlign | keyof typeof PopoverVerticalAlign;
 }
 
-interface PopoverDomRef extends Omit<Required<PopoverAttributes>, 'opener'>, Ui5DomRef {
+interface PopoverDomRef extends Required<PopoverAttributes>, Ui5DomRef {
   /**
    * Focuses the element denoted by `initialFocus`, if provided,
    * or the first focusable element otherwise.
    * @returns {Promise<void>} - Promise that resolves when the focus is applied
    */
   applyFocus: () => Promise<void>;
-
-  /**
-   * Closes the popup.
-   * @returns {void}
-   */
-  close: () => void;
-
-  /**
-   * Tells if the component is opened
-   * @returns {boolean}
-   */
-  isOpen: () => boolean;
-
-  /**
-   * Defines the ID or DOM Reference of the element that the popover is shown at
-   */
-  opener: HTMLElement | string | undefined;
-
-  /**
-   * Shows the popover.
-   * @param {HTMLElement | EventTarget} opener - the element that the popover is shown at
-   * @param {boolean} [preventInitialFocus] - prevents applying the focus inside the popover
-   * @returns {Promise<void>} - Resolved when the popover is open
-   */
-  showAt: (opener: HTMLElement | EventTarget, preventInitialFocus?: boolean) => Promise<void>;
 }
 
 interface PopoverPropTypes
@@ -147,10 +140,10 @@ interface PopoverPropTypes
       | 'children'
       | 'footer'
       | 'header'
-      | 'onAfterClose'
-      | 'onAfterOpen'
       | 'onBeforeClose'
       | 'onBeforeOpen'
+      | 'onClose'
+      | 'onOpen'
     > {
   /**
    * Defines the content of the Popup.
@@ -164,7 +157,7 @@ interface PopoverPropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   footer?: UI5WCSlotsNode;
 
@@ -175,28 +168,32 @@ interface PopoverPropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   header?: UI5WCSlotsNode;
   /**
-   * Fired after the component is closed. **This event does not bubble.**
-   */
-  onAfterClose?: (event: Ui5CustomEvent<PopoverDomRef>) => void;
-
-  /**
-   * Fired after the component is opened. **This event does not bubble.**
-   */
-  onAfterOpen?: (event: Ui5CustomEvent<PopoverDomRef>) => void;
-
-  /**
    * Fired before the component is closed. This event can be cancelled, which will prevent the popup from closing. **This event does not bubble.**
+   *
+   * **Note:** Call `event.preventDefault()` inside the handler of this event to prevent its default action/s.
    */
   onBeforeClose?: (event: Ui5CustomEvent<PopoverDomRef, PopupBeforeCloseEventDetail>) => void;
 
   /**
    * Fired before the component is opened. This event can be cancelled, which will prevent the popup from opening. **This event does not bubble.**
+   *
+   * **Note:** Call `event.preventDefault()` inside the handler of this event to prevent its default action/s.
    */
   onBeforeOpen?: (event: Ui5CustomEvent<PopoverDomRef>) => void;
+
+  /**
+   * Fired after the component is closed. **This event does not bubble.**
+   */
+  onClose?: (event: Ui5CustomEvent<PopoverDomRef>) => void;
+
+  /**
+   * Fired after the component is opened. **This event does not bubble.**
+   */
+  onOpen?: (event: Ui5CustomEvent<PopoverDomRef>) => void;
 }
 
 /**
@@ -220,14 +217,7 @@ interface PopoverPropTypes
  *
  *
  *
- * **Note: ** We recommend placing popup-like components (`Dialog` and `Popover`)
- * outside any other components. Preferably, the popup-like components should be placed
- * in an upper level HTML element. Otherwise, in some cases the parent HTML elements can break
- * the position and/or z-index management of the popup-like components.
- *
- * **Note:** We don't recommend nesting popup-like components (`Dialog`, `Popover`).
- *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const Popover = withWebComponent<PopoverPropTypes, PopoverDomRef>(
   'ui5-popover',
@@ -239,12 +229,12 @@ const Popover = withWebComponent<PopoverPropTypes, PopoverDomRef>(
     'horizontalAlign',
     'initialFocus',
     'opener',
-    'placementType',
+    'placement',
     'verticalAlign'
   ],
-  ['allowTargetOverlap', 'hideArrow', 'hideBackdrop', 'modal', 'open', 'preventFocusRestore'],
+  ['allowTargetOverlap', 'hideArrow', 'modal', 'open', 'preventFocusRestore', 'preventInitialFocus'],
   ['footer', 'header'],
-  ['after-close', 'after-open', 'before-close', 'before-open'],
+  ['before-close', 'before-open', 'close', 'open'],
   () => import('@ui5/webcomponents/dist/Popover.js')
 );
 

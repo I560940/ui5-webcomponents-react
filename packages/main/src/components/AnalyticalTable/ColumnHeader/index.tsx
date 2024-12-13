@@ -3,7 +3,7 @@ import iconFilter from '@ui5/webcomponents-icons/dist/filter.js';
 import iconGroup from '@ui5/webcomponents-icons/dist/group-2.js';
 import iconSortAscending from '@ui5/webcomponents-icons/dist/sort-ascending.js';
 import iconSortDescending from '@ui5/webcomponents-icons/dist/sort-descending.js';
-import { ThemingParameters } from '@ui5/webcomponents-react-base';
+import { ThemingParameters, useStylesheet } from '@ui5/webcomponents-react-base';
 import { clsx } from 'clsx';
 import type {
   AriaAttributes,
@@ -13,13 +13,12 @@ import type {
   MouseEventHandler,
   ReactNode
 } from 'react';
-import React, { useRef, useState } from 'react';
-import { createUseStyles } from 'react-jss';
-import { CustomThemingParameters } from '../../../themes/CustomVariables.js';
+import { useRef, useState } from 'react';
 import { Icon } from '../../../webComponents/Icon/index.js';
-import { Text } from '../../Text/index.js';
+import { Text } from '../../../webComponents/Text/index.js';
 import type { ColumnType } from '../types/ColumnType.js';
 import type { DivWithCustomScrollProp } from '../types/index.js';
+import { classNames, styleData } from './ColumnHeader.module.css.js';
 import { ColumnHeaderModal } from './ColumnHeaderModal.js';
 
 export interface ColumnHeaderProps {
@@ -34,11 +33,10 @@ export interface ColumnHeaderProps {
   dragOver: boolean;
   isDraggable: boolean;
   headerTooltip: string;
-  virtualColumn: VirtualItem;
+  virtualColumn: VirtualItem<HTMLDivElement>;
   columnVirtualizer: Virtualizer<DivWithCustomScrollProp, Element>;
   isRtl: boolean;
   children: ReactNode | ReactNode[];
-  portalContainer: Element;
   columnId?: string;
   showVerticalEndBorder: boolean;
 
@@ -56,66 +54,8 @@ export interface ColumnHeaderProps {
   ['aria-label']?: AriaAttributes['aria-label'];
 }
 
-const styles = {
-  thContainer: {
-    '&:first-child': {
-      '& > [role="columnheader"]': {
-        borderInlineStart: CustomThemingParameters.AnalyticalTableOuterCellBorder
-      }
-    },
-    '&:last-child': {
-      '& > [role="columnheader"]': {
-        borderInlineEnd: CustomThemingParameters.AnalyticalTableOuterCellBorder
-      }
-    }
-  },
-  verticalEndBorder: {
-    '&:last-child': {
-      '& > [role="columnheader"]': {
-        borderInlineEnd: `1px solid ${ThemingParameters.sapList_BorderColor}`
-      }
-    }
-  },
-  header: {
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    textAlign: 'start',
-    fontFamily: CustomThemingParameters.AnalyticalTableHeaderFontFamily,
-    fontSize: ThemingParameters.sapFontSize,
-    fontWeight: 'normal',
-    color: 'inherit',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    maxWidth: '100%',
-    position: 'relative',
-    width: '100%',
-    overflowX: 'hidden',
-    overflowY: 'hidden',
-    boxSizing: 'border-box'
-  },
-  text: {
-    color: 'inherit',
-    fontFamily: 'inherit',
-    width: '100%',
-    textAlign: 'start'
-  },
-  iconContainer: {
-    display: 'flex',
-    position: 'absolute',
-    color: ThemingParameters.sapContent_IconColor,
-    insetInlineEnd: '0.5rem'
-  },
-  selectAllCheckBoxContainer: {
-    display: 'flex',
-    justifyContent: 'center'
-  }
-};
-
-const useStyles = createUseStyles(styles, { name: 'TableColumnHeader' });
-
 export const ColumnHeader = (props: ColumnHeaderProps) => {
-  const classes = useStyles();
+  useStylesheet(styleData, ColumnHeader.displayName);
   const {
     id,
     children,
@@ -140,7 +80,6 @@ export const ColumnHeader = (props: ColumnHeaderProps) => {
     visibleColumnIndex,
     onClick,
     onKeyDown,
-    portalContainer,
     isFiltered,
     title,
     'aria-label': ariaLabel,
@@ -153,11 +92,12 @@ export const ColumnHeader = (props: ColumnHeaderProps) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const columnHeaderRef = useRef<HTMLDivElement>(null);
 
+  const childIsString = typeof children === 'string';
   const tooltip = (() => {
     if (headerTooltip) {
       return headerTooltip;
     }
-    if (typeof children === 'string') {
+    if (childIsString) {
       return children;
     }
     return null;
@@ -179,7 +119,9 @@ export const ColumnHeader = (props: ColumnHeaderProps) => {
       return style;
     }
 
-    if (margin > 0) margin += 0.5;
+    if (margin > 0) {
+      margin += 0.625;
+    }
 
     style.marginInlineEnd = `${margin}rem`;
 
@@ -219,10 +161,10 @@ export const ColumnHeader = (props: ColumnHeaderProps) => {
   return (
     <div
       ref={columnHeaderRef}
-      className={clsx(classes.thContainer, showVerticalEndBorder && classes.verticalEndBorder)}
+      className={clsx(classNames.thContainer, showVerticalEndBorder && classNames.verticalEndBorder)}
       style={{
         position: 'absolute',
-        top: 0,
+        insetBlockStart: 0,
         width: `${virtualColumn.size}px`,
         ...directionStyles
       }}
@@ -256,21 +198,36 @@ export const ColumnHeader = (props: ColumnHeaderProps) => {
         aria-sort={ariaSort}
         title={title}
       >
-        <div className={classes.header} data-h-align={column.hAlign}>
-          <Text
-            title={tooltip}
-            wrapping={false}
-            style={textStyle}
-            className={clsx(
-              classes.text,
-              columnId === '__ui5wcr__internal_selection_column' && classes.selectAllCheckBoxContainer
-            )}
-            data-component-name={`AnalyticalTableHeaderHeaderContentContainer-${columnId}`}
-          >
-            {children}
-          </Text>
+        <div
+          className={clsx(
+            classNames.header,
+            columnId === '__ui5wcr__internal_selection_column' && classNames.selectAllCheckBoxContainer
+          )}
+          data-h-align={column.hAlign}
+          data-component-name={`AnalyticalTableHeaderContentContainer-${columnId}`}
+        >
+          {childIsString ? (
+            <Text
+              title={tooltip}
+              maxLines={1}
+              style={textStyle}
+              className={classNames.text}
+              data-component-name={`AnalyticalTableHeaderTextContentContainer-${columnId}`}
+            >
+              {children}
+            </Text>
+          ) : (
+            <span
+              title={tooltip}
+              style={textStyle}
+              className={classNames.text}
+              data-component-name={`AnalyticalTableHeaderContentContainer-${columnId}`}
+            >
+              {children}
+            </span>
+          )}
           <div
-            className={classes.iconContainer}
+            className={classNames.iconContainer}
             data-component-name={`AnalyticalTableHeaderIconsContainer-${columnId}`}
           >
             {isFiltered && <Icon name={iconFilter} aria-hidden />}
@@ -289,10 +246,11 @@ export const ColumnHeader = (props: ColumnHeaderProps) => {
             openerRef={columnHeaderRef}
             open={popoverOpen}
             setPopoverOpen={setPopoverOpen}
-            portalContainer={portalContainer}
           />
         )}
       </div>
     </div>
   );
 };
+
+ColumnHeader.displayName = 'ColumnHeader';

@@ -1,5 +1,3 @@
-import type { UIEvent } from 'react';
-
 export const deprecationNotice = (component: string, message: string) => {
   if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
     const value = `*** ui5-webcomponents-react Deprecation Notice - ${component} ***\n`;
@@ -11,28 +9,42 @@ export const deprecationNotice = (component: string, message: string) => {
   }
 };
 
-export const enrichEventWithDetails = <T extends Record<string, unknown>, ReturnType = CustomEvent<T>>(
-  event: UIEvent,
-  payload: T | null = null
-) => {
-  // safeguard
+// Define EnrichedEventType to extend Event with specific detail structure
+type EnrichedEventType<Event, Detail> = Event & {
+  detail: Detail & { nativeDetail?: number };
+};
+
+export const enrichEventWithDetails = <
+  Event extends { detail?: number | Record<string, unknown> | null },
+  Detail extends Record<string, unknown>
+>(
+  event: Event,
+  payload: Detail
+): EnrichedEventType<Event, Detail> => {
   if (!event) {
     return event;
   }
-  if (event.hasOwnProperty('persist')) {
-    // if there is a persist method, it's an SyntheticEvent so we need to persist it
-    event.persist();
-  }
 
+  // Determine if we need to create a new details object
   const shouldCreateNewDetails =
     event.detail === null || event.detail === undefined || typeof event.detail !== 'object';
-  Object.defineProperty(event, 'detail', {
+
+  // native detail is always number (if available)
+  const nativeDetail = typeof event.detail === 'number' ? event.detail : null;
+
+  // defineProperty is necessary here as event.detail needs to be editable
+  Object.defineProperty<Event>(event, 'detail', {
     value: shouldCreateNewDetails ? {} : event.detail,
     writable: true,
     configurable: true
   });
-  Object.assign(event.detail, payload);
-  return event as unknown as ReturnType;
+
+  if (nativeDetail) {
+    Object.assign(event.detail!, { nativeDetail });
+  }
+  Object.assign(event.detail!, payload);
+
+  return event as EnrichedEventType<Event, Detail>;
 };
 
 export { debounce } from './debounce.js';

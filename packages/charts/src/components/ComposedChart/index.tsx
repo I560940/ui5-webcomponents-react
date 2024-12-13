@@ -2,7 +2,7 @@
 
 import { enrichEventWithDetails, ThemingParameters, useIsRTL, useSyncRef } from '@ui5/webcomponents-react-base';
 import type { CSSProperties, FC } from 'react';
-import React, { forwardRef, useCallback } from 'react';
+import { forwardRef, useCallback } from 'react';
 import {
   Area,
   Bar,
@@ -18,6 +18,7 @@ import {
   XAxis,
   YAxis
 } from 'recharts';
+import type { YAxisProps } from 'recharts';
 import { getValueByDataKey } from 'recharts/lib/util/ChartUtils.js';
 import { useChartMargin } from '../../hooks/useChartMargin.js';
 import { useLabelFormatter } from '../../hooks/useLabelFormatter.js';
@@ -77,7 +78,7 @@ interface MeasureConfig extends IChartMeasure {
 }
 
 interface DimensionConfig extends IChartDimension {
-  interval?: number;
+  interval?: YAxisProps['interval'];
 }
 
 export interface ComposedChartProps extends IChartBaseProps {
@@ -120,6 +121,8 @@ export interface ComposedChartProps extends IChartBaseProps {
   /**
    * layout for showing measures. `horizontal` bars would equal the column chart, `vertical` would be a bar chart.
    * Default Value: `horizontal`
+   *
+   * @default `"horizontal"`
    */
   layout?: 'horizontal' | 'vertical';
 }
@@ -139,6 +142,7 @@ type AvailableChartTypes = 'line' | 'bar' | 'area' | string;
 const ComposedChart = forwardRef<HTMLDivElement, ComposedChartProps>((props, ref) => {
   const {
     loading,
+    loadingDelay,
     dataset,
     onDataPointClick,
     noLegend,
@@ -146,7 +150,7 @@ const ComposedChart = forwardRef<HTMLDivElement, ComposedChartProps>((props, ref
     tooltipConfig,
     onLegendClick,
     onClick,
-    layout,
+    layout = 'horizontal',
     style,
     className,
     slot,
@@ -158,7 +162,7 @@ const ComposedChart = forwardRef<HTMLDivElement, ComposedChartProps>((props, ref
 
   const [componentRef, chartRef] = useSyncRef<any>(ref);
 
-  const chartConfig = {
+  const chartConfig: ComposedChartProps['chartConfig'] = {
     yAxisLabelsVisible: true,
     yAxisVisible: false,
     xAxisVisible: true,
@@ -220,8 +224,8 @@ const ComposedChart = forwardRef<HTMLDivElement, ComposedChartProps>((props, ref
                     ? payload[key] === payload.value[1] - payload.value[0]
                     : payload[key] === payload.value && key !== 'value'
                 )[0]
-              : payload.dataKey ??
-                Object.keys(payload).find((key) => payload[key] && payload[key] === payload.value && key !== 'value'),
+              : (payload.dataKey ??
+                Object.keys(payload).find((key) => payload[key] && payload[key] === payload.value && key !== 'value')),
             payload: payload.payload
           })
         );
@@ -243,7 +247,7 @@ const ComposedChart = forwardRef<HTMLDivElement, ComposedChartProps>((props, ref
   const onItemLegendClick = useLegendItemClick(onLegendClick);
   const onClickInternal = useOnClickInternal(onClick);
 
-  const isBigDataSet = dataset?.length > 30 ?? false;
+  const isBigDataSet = dataset?.length > 30;
   const primaryDimensionAccessor = primaryDimension?.accessor;
 
   const [yAxisWidth, legendPosition] = useLongestYAxisLabel(
@@ -273,6 +277,7 @@ const ComposedChart = forwardRef<HTMLDivElement, ComposedChartProps>((props, ref
     <ChartContainer
       ref={componentRef}
       loading={loading}
+      loadingDelay={loadingDelay}
       dataset={dataset}
       Placeholder={ChartPlaceholder ?? Placeholder}
       style={style}
@@ -281,6 +286,7 @@ const ComposedChart = forwardRef<HTMLDivElement, ComposedChartProps>((props, ref
       resizeDebounce={chartConfig.resizeDebounce}
       {...propsWithoutOmitted}
     >
+      {/*@ts-expect-error: todo not yet compatible with React19*/}
       <ComposedChartLib
         syncId={syncId}
         onClick={onClickInternal}
@@ -326,7 +332,7 @@ const ComposedChart = forwardRef<HTMLDivElement, ComposedChartProps>((props, ref
             axisProps.reversed = isRTL;
           }
 
-          return <AxisComponent key={dimension.accessor} {...axisProps} />;
+          return <AxisComponent key={dimension.reactKey} {...axisProps} />;
         })}
         {layout === 'horizontal' && (
           <YAxis
@@ -413,8 +419,8 @@ const ComposedChart = forwardRef<HTMLDivElement, ComposedChartProps>((props, ref
             stroke={referenceLine?.color ?? referenceLine?.stroke}
             y={referenceLine?.value ? (layout === 'horizontal' ? referenceLine?.value : undefined) : referenceLine?.y}
             x={referenceLine?.value ? (layout === 'vertical' ? referenceLine?.value : undefined) : referenceLine?.x}
-            yAxisId={referenceLine?.yAxisId ?? layout === 'horizontal' ? 'primary' : undefined}
-            xAxisId={referenceLine?.xAxisId ?? layout === 'vertical' ? 'primary' : undefined}
+            yAxisId={(referenceLine?.yAxisId ?? layout === 'horizontal') ? 'primary' : undefined}
+            xAxisId={(referenceLine?.xAxisId ?? layout === 'vertical') ? 'primary' : undefined}
             label={referenceLine?.label}
           />
         )}
@@ -442,7 +448,7 @@ const ComposedChart = forwardRef<HTMLDivElement, ComposedChartProps>((props, ref
           const ChartElement = ChartTypes[element.type] as any as FC<any>;
 
           const chartElementProps: any = {
-            isAnimationActive: noAnimation === false
+            isAnimationActive: !noAnimation
           };
           let labelPosition = 'top';
 
@@ -487,7 +493,7 @@ const ComposedChart = forwardRef<HTMLDivElement, ComposedChartProps>((props, ref
           }
           return (
             <ChartElement
-              key={element.accessor}
+              key={element.reactKey}
               name={element.label ?? element.accessor}
               label={
                 element.type === 'bar' || isBigDataSet ? undefined : (
@@ -536,12 +542,6 @@ const ComposedChart = forwardRef<HTMLDivElement, ComposedChartProps>((props, ref
     </ChartContainer>
   );
 });
-
-ComposedChart.defaultProps = {
-  noLegend: false,
-  noAnimation: false,
-  layout: 'horizontal'
-};
 
 ComposedChart.displayName = 'ComposedChart';
 

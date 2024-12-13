@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import '@ui5/webcomponents-icons/dist/delete.js';
 import '@ui5/webcomponents-icons/dist/edit.js';
 import '@ui5/webcomponents-icons/dist/settings.js';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AnalyticalTableScaleWidthMode,
   AnalyticalTableSelectionBehavior,
@@ -15,9 +15,8 @@ import {
   FlexBoxJustifyContent,
   TextAlign
 } from '../../enums/index.js';
-import { Badge, Button, MultiComboBox, MultiComboBoxItem, Option, Select } from '../../webComponents/index.js';
+import { Button, MultiComboBox, MultiComboBoxItem, Option, Select, Tag, Text } from '../../webComponents/index.js';
 import { FlexBox } from '../FlexBox';
-import { Text } from '../Text';
 import { AnalyticalTable } from './index.js';
 
 const meta = {
@@ -32,11 +31,13 @@ const meta = {
       {
         Header: 'Name',
         headerTooltip: 'Full Name', // A more extensive description!
-        accessor: 'name' // String-based value accessors!
+        accessor: 'name', // String-based value accessors!
+        autoResizable: true // Double clicking the resize bar auto resizes the column!
       },
       {
         Header: 'Age',
         accessor: 'age',
+        autoResizable: true,
         hAlign: TextAlign.End,
         disableGroupBy: true,
         disableSortBy: false,
@@ -45,12 +46,14 @@ const meta = {
       },
       {
         Header: 'Friend Name',
-        accessor: 'friend.name'
+        accessor: 'friend.name',
+        autoResizable: true
       },
       {
         Header: () => <span>Friend Age</span>,
         headerLabel: 'Friend Age',
         accessor: 'friend.age',
+        autoResizable: true,
         hAlign: TextAlign.End,
         filter: (rows, accessor, filterValue) => {
           if (filterValue === 'all') {
@@ -66,7 +69,7 @@ const meta = {
             // set filter
             column.setFilter(event.detail.selectedOption.getAttribute('value'));
             // close popover
-            popoverRef.current.close();
+            popoverRef.current.open = false;
           };
           return (
             <Select onChange={handleChange} style={{ width: '100%' }}>
@@ -118,10 +121,11 @@ const meta = {
     subRowsKey: 'subRows',
     isTreeTable: false,
     scaleWidthMode: AnalyticalTableScaleWidthMode.Default,
-    selectionMode: AnalyticalTableSelectionMode.SingleSelect,
+    selectionMode: AnalyticalTableSelectionMode.Single,
     selectionBehavior: AnalyticalTableSelectionBehavior.Row,
     overscanCountHorizontal: 5,
-    visibleRowCountMode: AnalyticalTableVisibleRowCountMode.Fixed
+    visibleRowCountMode: AnalyticalTableVisibleRowCountMode.Fixed,
+    loadingDelay: 1000
   },
   argTypes: {
     data: { control: { disable: true } },
@@ -133,10 +137,8 @@ const meta = {
     reactTableOptions: { control: { disable: true } },
     tableHooks: { control: { disable: true } },
     NoDataComponent: { control: { disable: true } },
-    LoadingComponent: { control: { disable: true } },
     extension: { control: { disable: true } },
-    tableInstance: { control: { disable: true } },
-    portalContainer: { control: { disable: true } }
+    tableInstance: { control: { disable: true } }
   }
 } satisfies Meta<typeof AnalyticalTable>;
 export default meta;
@@ -192,7 +194,7 @@ export const Subcomponents: Story = {
             alignItems={FlexBoxAlignItems.Center}
             direction={FlexBoxDirection.Column}
           >
-            <Badge>height: 300px</Badge>
+            <Tag>height: 300px</Tag>
             <Text>This subcomponent will only be displayed below the first row.</Text>
             <hr />
             <Text>
@@ -211,7 +213,7 @@ export const Subcomponents: Story = {
             alignItems={FlexBoxAlignItems.Center}
             direction={FlexBoxDirection.Column}
           >
-            <Badge>height: 100px</Badge>
+            <Tag>height: 100px</Tag>
             <Text>This subcomponent will only be displayed below the second row.</Text>
           </FlexBox>
         );
@@ -226,7 +228,7 @@ export const Subcomponents: Story = {
           alignItems={FlexBoxAlignItems.Center}
           direction={FlexBoxDirection.Column}
         >
-          <Badge>height: 50px</Badge>
+          <Tag>height: 50px</Tag>
           <Text>This subcomponent will be displayed below all rows except the first, second and third.</Text>
         </FlexBox>
       );
@@ -262,7 +264,7 @@ export const DynamicRowCount = {
       <>
         <Button onClick={handleClick}>Toggle Number of Rows</Button>
         <br />
-        <Text>Number of visible rows: {args.data.length}</Text>
+        <Text>Number of visible rows: {data.length}</Text>
         <hr />
         <div style={{ height: `${args.containerHeight}px` }}>
           <AnalyticalTable
@@ -357,7 +359,7 @@ export const ResponsiveColumns: Story = {
 };
 
 export const NavigationIndicator: Story = {
-  args: { withNavigationHighlight: true, selectionMode: AnalyticalTableSelectionMode.MultiSelect, data: dataLarge },
+  args: { withNavigationHighlight: true, selectionMode: AnalyticalTableSelectionMode.Multiple, data: dataLarge },
   render: (args) => {
     const [selectedRow, setSelectedRow] = useState();
     const onRowSelect = (e) => {

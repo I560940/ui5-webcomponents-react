@@ -9,13 +9,19 @@ import type { CommonProps, Ui5CustomEvent, Ui5DomRef } from '../../types/index.j
 interface RadioButtonAttributes {
   /**
    * Defines the accessible ARIA name of the component.
+   *
+   * **Note:** Available since [v1.6.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.6.0) of **@ui5/webcomponents**.
+   * @default undefined
    */
-  accessibleName?: string;
+  accessibleName?: string | undefined;
 
   /**
    * Defines the IDs of the elements that label the component.
+   *
+   * **Note:** Available since [v1.1.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.1.0) of **@ui5/webcomponents**.
+   * @default undefined
    */
-  accessibleNameRef?: string;
+  accessibleNameRef?: string | undefined;
 
   /**
    * Defines whether the component is checked or not.
@@ -36,23 +42,18 @@ interface RadioButtonAttributes {
   disabled?: boolean;
 
   /**
-   * Defines the name of the component.
+   * Determines the name by which the component will be identified upon submission in an HTML form.
+   *
    * Radio buttons with the same `name` will form a radio button group.
    *
-   * **Note:**
-   * The selection can be changed with `ARROW_UP/DOWN` and `ARROW_LEFT/RIGHT` keys between radio buttons in same group.
+   * **Note:** By this name the component will be identified upon submission in an HTML form.
    *
-   * **Note:**
-   * Only one radio button can be selected per group.
+   * **Note:** The selection can be changed with `ARROW_UP/DOWN` and `ARROW_LEFT/RIGHT` keys between radio buttons in same group.
    *
-   * **Important:** For the `name` property to have effect when submitting forms, you must add the following import to your project:
-   * `import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`
-   *
-   * **Note:** When set, a native `input` HTML element
-   * will be created inside the component so that it can be submitted as
-   * part of an HTML form.
+   * **Note:** Only one radio button can be selected per group.
+   * @default undefined
    */
-  name?: string;
+  name?: string | undefined;
 
   /**
    * Defines whether the component is read-only.
@@ -65,22 +66,22 @@ interface RadioButtonAttributes {
 
   /**
    * Defines whether the component is required.
+   *
+   * **Note:** Available since [v1.9.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.9.0) of **@ui5/webcomponents**.
    * @default false
    */
   required?: boolean;
 
   /**
    * Defines the text of the component.
+   * @default undefined
    */
-  text?: string;
+  text?: string | undefined;
 
   /**
    * Defines the form value of the component.
    * When a form with a radio button group is submitted, the group's value
    * will be the value of the currently selected radio button.
-   *
-   * **Important:** For the `value` property to have effect, you must add the following import to your project:
-   * `import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`
    */
   value?: string;
 
@@ -94,7 +95,7 @@ interface RadioButtonAttributes {
    * Defines whether the component text wraps when there is not enough space.
    *
    * **Note:** for option "Normal" the text will wrap and the words will not be broken based on hyphenation.
-   * @default "None"
+   * @default "Normal"
    */
   wrappingType?: WrappingType | keyof typeof WrappingType;
 }
@@ -130,7 +131,7 @@ interface RadioButtonPropTypes
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const RadioButton = withWebComponent<RadioButtonPropTypes, RadioButtonDomRef>(
   'ui5-radio-button',

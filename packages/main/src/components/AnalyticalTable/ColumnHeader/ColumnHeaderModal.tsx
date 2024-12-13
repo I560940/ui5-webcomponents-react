@@ -1,32 +1,29 @@
+import ListItemType from '@ui5/webcomponents/dist/types/ListItemType.js';
+import PopoverHorizontalAlign from '@ui5/webcomponents/dist/types/PopoverHorizontalAlign.js';
+import PopoverPlacement from '@ui5/webcomponents/dist/types/PopoverPlacement.js';
+import { getScopedVarName } from '@ui5/webcomponents-base/CustomElementsScope.js';
 import iconDecline from '@ui5/webcomponents-icons/dist/decline.js';
 import iconFilter from '@ui5/webcomponents-icons/dist/filter.js';
 import iconGroup from '@ui5/webcomponents-icons/dist/group-2.js';
 import iconSortAscending from '@ui5/webcomponents-icons/dist/sort-ascending.js';
 import iconSortDescending from '@ui5/webcomponents-icons/dist/sort-descending.js';
-import { enrichEventWithDetails, ThemingParameters, useI18nBundle } from '@ui5/webcomponents-react-base';
+import { enrichEventWithDetails, useI18nBundle, useStylesheet } from '@ui5/webcomponents-react-base';
 import type { MutableRefObject } from 'react';
-import React, { useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import { createUseStyles } from 'react-jss';
-import {
-  FlexBoxAlignItems,
-  ListItemType,
-  PopoverHorizontalAlign,
-  PopoverPlacementType,
-  TextAlign
-} from '../../../enums/index.js';
-import { CLEAR_SORTING, GROUP, SORT_ASCENDING, SORT_DESCENDING, UNGROUP } from '../../../i18n/i18n-defaults.js';
-import { useCanRenderPortal } from '../../../internal/ssr.js';
+import { useEffect, useMemo, useRef } from 'react';
+import { FlexBoxAlignItems, TextAlign } from '../../../enums/index.js';
+import { CLEAR_SORTING, FILTER, GROUP, SORT_ASCENDING, SORT_DESCENDING, UNGROUP } from '../../../i18n/i18n-defaults.js';
 import { stopPropagation } from '../../../internal/stopPropagation.js';
 import { getUi5TagWithSuffix } from '../../../internal/utils.js';
-import { CustomListItem } from '../../../webComponents/CustomListItem/index.js';
 import { Icon } from '../../../webComponents/Icon/index.js';
 import { List } from '../../../webComponents/List/index.js';
+import { ListItemCustom } from '../../../webComponents/ListItemCustom/index.js';
+import { ListItemStandard } from '../../../webComponents/ListItemStandard/index.js';
 import type { PopoverDomRef } from '../../../webComponents/Popover/index.js';
 import { Popover } from '../../../webComponents/Popover/index.js';
-import { StandardListItem } from '../../../webComponents/StandardListItem/index.js';
+import { Text } from '../../../webComponents/Text/index.js';
 import { FlexBox } from '../../FlexBox/index.js';
 import type { AnalyticalTableColumnDefinition } from '../types/index.js';
+import { classNames, styleData } from './ColumnHeaderModal.module.css.js';
 
 export interface ColumnHeaderModalProperties {
   column: AnalyticalTableColumnDefinition;
@@ -34,30 +31,13 @@ export interface ColumnHeaderModalProperties {
   onGroupBy?: (e: CustomEvent<{ column: unknown; isGrouped: boolean }>) => void;
   open: boolean;
   setPopoverOpen: (open: boolean) => void;
-  portalContainer: Element;
   isRtl: boolean;
   openerRef: MutableRefObject<HTMLDivElement>;
 }
 
-const styles = {
-  popover: {
-    fontWeight: 'normal',
-    '&::part(content)': {
-      padding: 0
-    }
-  },
-  filterIcon: {
-    paddingInlineEnd: '0.5rem',
-    minWidth: '1rem',
-    minHeight: '1rem',
-    color: ThemingParameters.sapContent_NonInteractiveIconColor
-  }
-};
-const useStyles = createUseStyles(styles, { name: 'ColumnHeaderModal' });
-
 export const ColumnHeaderModal = (props: ColumnHeaderModalProperties) => {
-  const { column, onSort, onGroupBy, open, setPopoverOpen, portalContainer, isRtl, openerRef } = props;
-  const classes = useStyles();
+  const { column, onSort, onGroupBy, open, setPopoverOpen, isRtl, openerRef } = props;
+  useStylesheet(styleData, ColumnHeaderModal.displayName);
   const showFilter = column.canFilter;
   const showGroup = column.canGroupBy;
   const showSort = column.canSort;
@@ -74,6 +54,16 @@ export const ColumnHeaderModal = (props: ColumnHeaderModalProperties) => {
   const sortDescendingText = i18nBundle.getText(SORT_DESCENDING);
   const groupText = i18nBundle.getText(GROUP);
   const ungroupText = i18nBundle.getText(UNGROUP);
+  const filterText = i18nBundle.getText(FILTER);
+
+  const filterStyles = useMemo(() => {
+    if (showFilter) {
+      return {
+        iconDimensions: `var(${getScopedVarName('--_ui5_list_item_icon_size')})`,
+        fontSize: `var(${getScopedVarName('--_ui5_list_item_title_size')})`
+      };
+    }
+  }, [showFilter]);
 
   const handleSort = (e) => {
     const sortType = e.detail.item.getAttribute('data-sort');
@@ -141,19 +131,19 @@ export const ColumnHeaderModal = (props: ColumnHeaderModalProperties) => {
   };
 
   const horizontalAlign = (() => {
-    switch (column.hAlign as AnalyticalTableColumnDefinition['hAlign']) {
+    switch (column.hAlign) {
       case TextAlign.Begin:
-        return isRtl ? PopoverHorizontalAlign.Right : PopoverHorizontalAlign.Left;
+        return isRtl ? PopoverHorizontalAlign.End : PopoverHorizontalAlign.Start;
       case TextAlign.End:
-        return isRtl ? PopoverHorizontalAlign.Left : PopoverHorizontalAlign.Right;
+        return isRtl ? PopoverHorizontalAlign.Start : PopoverHorizontalAlign.End;
       case TextAlign.Left:
-        return PopoverHorizontalAlign.Left;
+        return PopoverHorizontalAlign.Start;
       case TextAlign.Right:
-        return PopoverHorizontalAlign.Right;
+        return PopoverHorizontalAlign.End;
       case TextAlign.Center:
         return PopoverHorizontalAlign.Center;
       default:
-        return isRtl ? PopoverHorizontalAlign.Right : PopoverHorizontalAlign.Left;
+        return isRtl ? PopoverHorizontalAlign.End : PopoverHorizontalAlign.Start;
     }
   })();
 
@@ -169,77 +159,85 @@ export const ColumnHeaderModal = (props: ColumnHeaderModalProperties) => {
     }
   };
 
-  const canRenderPortal = useCanRenderPortal();
-
   useEffect(() => {
     if (open && ref.current && openerRef.current) {
-      customElements
-        .whenDefined(getUi5TagWithSuffix('ui5-popover'))
-        .then(() => {
-          ref.current.opener = openerRef.current;
-          if (canRenderPortal && open) {
-            ref.current.showAt(openerRef.current);
-          }
-        })
-        .catch(() => {
-          // silently catch
-        });
+      void customElements.whenDefined(getUi5TagWithSuffix('ui5-popover')).then(() => {
+        ref.current.opener = openerRef.current;
+      });
     }
-  }, [open, canRenderPortal]);
+  }, [open]);
 
-  if (!canRenderPortal) {
-    return null;
-  }
-
-  return createPortal(
+  return (
     <Popover
+      open={open}
       hideArrow
       horizontalAlign={horizontalAlign}
-      placementType={PopoverPlacementType.Bottom}
+      placement={PopoverPlacement.Bottom}
       ref={ref}
-      className={classes.popover}
+      className={classNames.popover}
       onClick={stopPropagation}
-      onAfterClose={onAfterClose}
-      onAfterOpen={onAfterOpen}
+      onClose={onAfterClose}
+      onOpen={onAfterOpen}
+      data-component-name="ATHeaderPopover"
     >
-      <List onItemClick={handleSort} ref={listRef} onKeyDown={handleListKeyDown}>
+      <List
+        onItemClick={handleSort}
+        ref={listRef}
+        onKeyDown={handleListKeyDown}
+        data-component-name="ATHeaderPopoverList"
+      >
         {isSortedAscending && (
-          <StandardListItem type={ListItemType.Active} icon={iconDecline} data-sort="clear">
+          <ListItemStandard type={ListItemType.Active} icon={iconDecline} data-sort="clear">
             {clearSortingText}
-          </StandardListItem>
+          </ListItemStandard>
         )}
         {showSort && !isSortedAscending && (
-          <StandardListItem type={ListItemType.Active} icon={iconSortAscending} data-sort="asc">
+          <ListItemStandard type={ListItemType.Active} icon={iconSortAscending} data-sort="asc">
             {sortAscendingText}
-          </StandardListItem>
+          </ListItemStandard>
         )}
         {showSort && !isSortedDescending && (
-          <StandardListItem type={ListItemType.Active} icon={iconSortDescending} data-sort="desc">
+          <ListItemStandard type={ListItemType.Active} icon={iconSortDescending} data-sort="desc">
             {sortDescendingText}
-          </StandardListItem>
+          </ListItemStandard>
         )}
         {isSortedDescending && (
-          <StandardListItem type={ListItemType.Active} icon={iconDecline} data-sort="clear">
+          <ListItemStandard type={ListItemType.Active} icon={iconDecline} data-sort="clear">
             {clearSortingText}
-          </StandardListItem>
+          </ListItemStandard>
         )}
         {showFilter && (
-          //todo maybe need to enhance Input selection after ui5-webcomponents issue has been fixed (undefined is displayed as val)
-          <CustomListItem type={ListItemType.Inactive} onKeyDown={handleCustomLiKeyDown}>
+          <ListItemCustom type={ListItemType.Inactive} onKeyDown={handleCustomLiKeyDown} accessibleName={filterText}>
             <FlexBox alignItems={FlexBoxAlignItems.Center}>
-              <Icon name={iconFilter} className={classes.filterIcon} aria-hidden />
+              <Icon
+                name={iconFilter}
+                className={classNames.filterIcon}
+                aria-hidden
+                style={{
+                  minWidth: filterStyles.iconDimensions,
+                  minHeight: filterStyles.iconDimensions
+                }}
+              />
+              <Text
+                maxLines={1}
+                className={classNames.filterText}
+                style={{
+                  fontSize: filterStyles.fontSize
+                }}
+              >
+                {filterText}
+              </Text>
               <Filter column={column} popoverRef={ref} />
             </FlexBox>
-          </CustomListItem>
+          </ListItemCustom>
         )}
         {showGroup && (
-          <StandardListItem type={ListItemType.Active} icon={iconGroup} data-sort={'group'}>
+          <ListItemStandard type={ListItemType.Active} icon={iconGroup} data-sort={'group'}>
             {column.isGrouped ? ungroupText : groupText}
-          </StandardListItem>
+          </ListItemStandard>
         )}
       </List>
-    </Popover>,
-    portalContainer ?? document.body
+    </Popover>
   );
 };
 ColumnHeaderModal.displayName = 'ColumnHeaderModal';

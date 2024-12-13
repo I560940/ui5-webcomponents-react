@@ -8,14 +8,11 @@ import type { CommonProps, Ui5DomRef } from '../../types/index.js';
 interface ProgressIndicatorAttributes {
   /**
    * Defines the accessible ARIA name of the component.
+   *
+   * **Note:** Available since [v1.16.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.16.0) of **@ui5/webcomponents**.
+   * @default undefined
    */
-  accessibleName?: string;
-
-  /**
-   * Defines whether component is in disabled state.
-   * @default false
-   */
-  disabled?: boolean;
+  accessibleName?: string | undefined;
 
   /**
    * Specifies the text value to be displayed in the bar.
@@ -24,9 +21,9 @@ interface ProgressIndicatorAttributes {
    *
    * - If there is no value provided or the value is empty, the default percentage value is shown.
    * - If `hideValue` property is `true` both the `displayValue` and `value` property values are not shown.
-   * @default null
+   * @default undefined
    */
-  displayValue?: string | null | undefined;
+  displayValue?: string | undefined;
 
   /**
    * Defines whether the component value is shown.
@@ -65,12 +62,12 @@ interface ProgressIndicatorPropTypes
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const ProgressIndicator = withWebComponent<ProgressIndicatorPropTypes, ProgressIndicatorDomRef>(
   'ui5-progress-indicator',
   ['accessibleName', 'displayValue', 'value', 'valueState'],
-  ['disabled', 'hideValue'],
+  ['hideValue'],
   [],
   [],
   () => import('@ui5/webcomponents/dist/ProgressIndicator.js')

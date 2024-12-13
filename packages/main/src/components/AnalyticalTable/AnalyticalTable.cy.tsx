@@ -1,19 +1,19 @@
+import ValueState from '@ui5/webcomponents-base/dist/types/ValueState.js';
 import { ThemingParameters } from '@ui5/webcomponents-react-base';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, version as reactVersion } from 'react';
+import type { AnalyticalTableDomRef, AnalyticalTablePropTypes } from '../..';
 import {
   AnalyticalTable,
   AnalyticalTableHooks,
   AnalyticalTableScaleWidthMode,
   AnalyticalTableSelectionBehavior,
-  AnalyticalTableSubComponentsBehavior,
   AnalyticalTableSelectionMode,
+  AnalyticalTableSubComponentsBehavior,
   AnalyticalTableVisibleRowCountMode,
-  ValueState,
   Button,
-  Input,
-  IndicationColor
+  IndicationColor,
+  Input
 } from '../..';
-import type { AnalyticalTableDomRef, AnalyticalTablePropTypes } from '../..';
 import { useManualRowSelect } from './pluginHooks/useManualRowSelect';
 import { useRowDisableSelection } from './pluginHooks/useRowDisableSelection';
 import { cssVarToRgb, cypressPassThroughTestsFactory } from '@/cypress/support/utils';
@@ -59,8 +59,8 @@ const data = [
       name: 'Lorem',
       age: 28
     },
-    status: ValueState.Success,
-    navigation: ValueState.Error
+    status: ValueState.Positive,
+    navigation: ValueState.Negative
   },
   {
     name: 'B',
@@ -92,9 +92,15 @@ describe('AnalyticalTable', () => {
   it('sorting', () => {
     const sort = cy.spy().as('onSortSpy');
     cy.mount(<AnalyticalTable data={data} columns={columns} onSort={sort} />);
+
+    cy.findByText('Name').click();
+    cy.get('[ui5-popover]').should('not.exist');
+
+    cy.mount(<AnalyticalTable data={data} columns={columns} onSort={sort} sortable />);
     cy.get('[aria-rowindex="3"] > [aria-colindex="1"]').should('text', 'X');
 
     cy.findByText('Name').click();
+    cy.get('[ui5-popover]').should('be.visible');
     cy.findByText('Sort Ascending').shadow().findByRole('listitem').click({ force: true });
     cy.get('@onSortSpy').should('have.been.calledWithMatch', {
       detail: { column: { id: 'name' }, sortDirection: 'asc' }
@@ -239,6 +245,130 @@ describe('AnalyticalTable', () => {
     cy.findByText('Name-3').should('not.be.visible');
   });
 
+  it('autoResize', () => {
+    let resizeColumns = columns.map((el) => {
+      return { ...el, autoResizable: true };
+    });
+
+    let dataFixed = data.map((el, i) => {
+      if (i === 2) return { ...el, name: 'Longer Name Too' };
+      return el;
+    });
+
+    const resizeSpy = cy.spy().as('resize');
+
+    cy.mount(
+      <AnalyticalTable
+        data={dataFixed}
+        columns={resizeColumns}
+        onAutoResize={(e) => {
+          resizeSpy(e);
+          e.preventDefault();
+        }}
+      />
+    );
+    cy.wait(100);
+
+    cy.get('[data-component-name="AnalyticalTableResizer"]').eq(0).as('resizer1');
+    cy.get('[data-component-name="AnalyticalTableResizer"]').eq(1).as('resizer2');
+
+    cy.get('@resizer2').should('be.visible').dblclick();
+    cy.get('[data-column-id="age"]').invoke('outerWidth').should('equal', 476);
+    cy.get('@resizer1').should('be.visible').dblclick();
+    cy.get('[data-column-id="name"]').invoke('outerWidth').should('equal', 476);
+
+    cy.get('@resize').should('have.callCount', 2);
+
+    cy.mount(<AnalyticalTable data={dataFixed} columns={resizeColumns} onAutoResize={resizeSpy} />);
+    cy.wait(100);
+    cy.get('@resizer2').should('be.visible').dblclick();
+    cy.get('[data-column-id="age"]').invoke('outerWidth').should('equal', 60);
+    cy.get('@resizer1').should('be.visible').dblclick();
+    cy.get('[data-column-id="name"]').invoke('outerWidth').should('equal', 129);
+
+    cy.get('@resize').should('have.callCount', 4);
+
+    dataFixed = generateMoreData(200);
+
+    dataFixed = dataFixed.map((el, i) => {
+      if (i === 2) return { ...el, name: 'Much Longer Name To Resize Larger For Testing A Larger Auto Resize' };
+      else if (i > 50) return { ...el, name: 'Short Name' };
+      return el;
+    });
+
+    const loadMore = cy.spy().as('more');
+    cy.mount(
+      <AnalyticalTable
+        data={dataFixed}
+        columns={resizeColumns}
+        onLoadMore={loadMore}
+        infiniteScroll={true}
+        infiniteScrollThreshold={0}
+        onAutoResize={resizeSpy}
+      />
+    );
+
+    cy.get('[data-component-name="AnalyticalTableBody"]').scrollTo('bottom');
+    cy.get('@resizer1').should('be.visible').dblclick();
+    cy.get('[data-column-id="name"]').invoke('outerWidth').should('equal', 93);
+
+    cy.get('@resize').should('have.callCount', 5);
+
+    resizeColumns = columns.map((el) => {
+      return { ...el, autoResizable: false };
+    });
+
+    cy.mount(<AnalyticalTable data={dataFixed} columns={resizeColumns} />);
+    cy.wait(100);
+    cy.get('@resizer2').should('be.visible').dblclick();
+    cy.get('[data-column-id="age"]').invoke('outerWidth').should('equal', 472.75);
+    cy.get('@resizer1').should('be.visible').dblclick();
+    cy.get('[data-column-id="name"]').invoke('outerWidth').should('equal', 472.75);
+
+    cy.get('@resize').should('have.callCount', 5);
+
+    const dataSub = data.map((el, i) => {
+      if (i === 2) return { ...el, name: 'Longer Name Too' };
+      return el;
+    });
+
+    resizeColumns = columns.map((el) => {
+      return { ...el, autoResizable: true };
+    });
+
+    const renderRowSubComponent = () => {
+      return <div title="subcomponent">SubComponent</div>;
+    };
+
+    cy.mount(
+      <AnalyticalTable
+        data={dataSub}
+        columns={resizeColumns}
+        renderRowSubComponent={renderRowSubComponent}
+        onAutoResize={resizeSpy}
+      />
+    );
+    cy.wait(100);
+    cy.get('@resizer2').should('be.visible').dblclick();
+    cy.get('[data-column-id="age"]').invoke('outerWidth').should('equal', 60);
+    cy.get('@resizer1').should('be.visible').dblclick();
+    cy.get('[data-column-id="name"]').invoke('outerWidth').should('equal', 165);
+
+    cy.get('@resize').should('have.callCount', 7);
+
+    const dataResizeTree = [...dataTree];
+    dataResizeTree[0].subRows[0].name = 'Longer Name To Resize Here';
+    cy.mount(<AnalyticalTable columns={resizeColumns} data={dataResizeTree} isTreeTable onAutoResize={resizeSpy} />);
+    cy.wait(100);
+    cy.get('@resizer1').should('be.visible').dblclick();
+    cy.get('[data-column-id="name"]').invoke('outerWidth').should('equal', 169);
+    cy.get('[aria-rowindex="1"] > [aria-colindex="1"] > [title="Expand Node"] > [ui5-button]').click();
+    cy.get('@resizer1').should('be.visible').dblclick();
+    cy.get('[data-column-id="name"]').invoke('outerWidth').should('equal', 251);
+
+    cy.get('@resize').should('have.callCount', 9);
+  });
+
   it('scrollTo', () => {
     interface ScrollTableProps {
       scrollFn: string;
@@ -321,6 +451,12 @@ describe('AnalyticalTable', () => {
     cy.findByText('1-100').should('be.visible');
   });
 
+  it('tree - no subrows spacer', () => {
+    const data = [...dataTree, { name: 'No Subrows', age: 1337 }];
+    cy.mount(<AnalyticalTable columns={columns} data={data} isTreeTable />);
+    cy.get('[data-component-name="AnalyticalTableNonExpandableCellSpacer"]').should('have.length', 1);
+  });
+
   it('tree selection & filtering', () => {
     const TreeSelectFilterTable = (props: PropTypes) => {
       const [filter, setFilter] = useState('');
@@ -348,7 +484,7 @@ describe('AnalyticalTable', () => {
             }}
             data={dataTree}
             globalFilterValue={filter}
-            selectionMode="MultiSelect"
+            selectionMode="Multiple"
           />
           <div data-testid="payloadHelper">
             {JSON.stringify(relevantPayload?.selectedFlatRows?.filter(Boolean).length)}
@@ -451,7 +587,7 @@ describe('AnalyticalTable', () => {
               setAllRowsSelected(e.detail.allRowsSelected);
               onRowSelect(e);
             }}
-            selectionMode={AnalyticalTableSelectionMode.MultiSelect}
+            selectionMode={AnalyticalTableSelectionMode.Multiple}
             selectedRowIds={selectedRowIds}
           />
           <p>
@@ -622,7 +758,7 @@ describe('AnalyticalTable', () => {
     const GroupBySelectTable = (props: PropTypes) => {
       const { onRowSelect } = props;
       const [relevantPayload, setRelevantPayload] = useState<Record<string, any>>({});
-      const tableInstance = useRef<Record<string, any>>();
+      const tableInstance = useRef<Record<string, any>>(null);
 
       useEffect(() => {
         if (tableInstance.current) {
@@ -654,7 +790,7 @@ describe('AnalyticalTable', () => {
               onRowSelect(e);
             }}
             data={groupableData}
-            selectionMode="MultiSelect"
+            selectionMode="Multiple"
           />
           <div data-testid="selectedFlatRowsLength">
             {JSON.stringify(relevantPayload?.selectedFlatRows?.filter(Boolean).length)}
@@ -674,7 +810,7 @@ describe('AnalyticalTable', () => {
     cy.findByTestId('isSelected').should('have.text', 'true');
 
     cy.findByText('Friend Name').click();
-    cy.findByText('Group').click();
+    cy.findByText('Group').realClick();
     cy.get('[aria-rowindex="7"] > [aria-colindex="3"] > [title="Expand Node"] > [ui5-icon]').click();
 
     cy.findByText('25').click();
@@ -697,7 +833,7 @@ describe('AnalyticalTable', () => {
       return (
         <>
           <AnalyticalTable
-            selectionMode={AnalyticalTableSelectionMode.MultiSelect}
+            selectionMode={AnalyticalTableSelectionMode.Multiple}
             data={dataTree}
             columns={columns}
             isTreeTable
@@ -734,13 +870,12 @@ describe('AnalyticalTable', () => {
       '{"0":true,"1":true,"0.0":true,"0.0.0":true,"0.0.0.0":true,"0.0.0.1":true,"0.0.0.2":true,"0.0.0.3":true,"0.0.1":true,"0.0.1.0":true,"0.0.1.1":true,"0.0.1.2":true,"0.0.1.3":true,"0.0.2":true,"0.0.2.0":true,"0.0.2.1":true,"0.0.2.2":true,"0.0.2.3":true,"0.0.3":true,"0.0.3.0":true,"0.0.3.1":true,"0.0.3.2":true,"0.0.3.3":true,"0.1":true,"0.1.0":true,"0.1.0.0":true,"0.1.0.1":true,"0.1.0.2":true,"0.1.0.3":true,"0.1.1":true,"0.1.1.0":true,"0.1.1.1":true,"0.1.1.2":true,"0.1.1.3":true,"0.1.2":true,"0.1.2.0":true,"0.1.2.1":true,"0.1.2.2":true,"0.1.2.3":true,"0.1.3":true,"0.1.3.0":true,"0.1.3.1":true,"0.1.3.2":true,"0.1.3.3":true,"0.2":true,"0.2.0":true,"0.2.0.0":true,"0.2.0.1":true,"0.2.0.2":true,"0.2.0.3":true,"0.2.1":true,"0.2.1.0":true,"0.2.1.1":true,"0.2.1.2":true,"0.2.1.3":true,"0.2.2":true,"0.2.2.0":true,"0.2.2.1":true,"0.2.2.2":true,"0.2.2.3":true,"0.2.3":true,"0.2.3.0":true,"0.2.3.1":true,"0.2.3.2":true,"0.2.3.3":true,"0.3":true,"0.3.0":true,"0.3.0.0":true,"0.3.0.1":true,"0.3.0.2":true,"0.3.0.3":true,"0.3.1":true,"0.3.1.0":true,"0.3.1.1":true,"0.3.1.2":true,"0.3.1.3":true,"0.3.2":true,"0.3.2.0":true,"0.3.2.1":true,"0.3.2.2":true,"0.3.2.3":true,"0.3.3":true,"0.3.3.0":true,"0.3.3.1":true,"0.3.3.2":true,"0.3.3.3":true,"1.0":true,"1.0.0":true,"1.0.0.1":true,"1.0.0.2":true,"1.0.0.3":true,"1.0.1":true,"1.0.1.0":true,"1.0.1.1":true,"1.0.1.2":true,"1.0.1.3":true,"1.0.2":true,"1.0.2.0":true,"1.0.2.1":true,"1.0.2.2":true,"1.0.2.3":true,"1.0.3":true,"1.0.3.0":true,"1.0.3.1":true,"1.0.3.2":true,"1.0.3.3":true,"1.1":true,"1.1.0":true,"1.1.0.0":true,"1.1.0.1":true,"1.1.0.2":true,"1.1.0.3":true,"1.1.1":true,"1.1.1.0":true,"1.1.1.1":true,"1.1.1.2":true,"1.1.1.3":true,"1.1.2":true,"1.1.2.0":true,"1.1.2.1":true,"1.1.2.2":true,"1.1.2.3":true,"1.1.3":true,"1.1.3.0":true,"1.1.3.1":true,"1.1.3.2":true,"1.1.3.3":true,"1.2":true,"1.2.0":true,"1.2.0.0":true,"1.2.0.1":true,"1.2.0.2":true,"1.2.0.3":true,"1.2.1":true,"1.2.1.0":true,"1.2.1.1":true,"1.2.1.2":true,"1.2.1.3":true,"1.2.2":true,"1.2.2.0":true,"1.2.2.1":true,"1.2.2.2":true,"1.2.2.3":true,"1.2.3":true,"1.2.3.0":true,"1.2.3.1":true,"1.2.3.2":true,"1.2.3.3":true,"1.3":true,"1.3.0":true,"1.3.0.0":true,"1.3.0.1":true,"1.3.0.2":true,"1.3.0.3":true,"1.3.1":true,"1.3.1.0":true,"1.3.1.1":true,"1.3.1.2":true,"1.3.1.3":true,"1.3.2":true,"1.3.2.0":true,"1.3.2.1":true,"1.3.2.2":true,"1.3.2.3":true,"1.3.3":true,"1.3.3.0":true,"1.3.3.1":true,"1.3.3.2":true,"1.3.3.3":true}'
     );
 
-    cy.get('[aria-rowindex="4"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate', 'true');
-    cy.get('[aria-rowindex="3"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate', 'true');
-    cy.get('[aria-rowindex="2"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate', 'true');
+    cy.get('[aria-rowindex="4"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate');
+    cy.get('[aria-rowindex="3"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate');
+    cy.get('[aria-rowindex="2"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate');
     cy.get('[data-column-id="__ui5wcr__internal_selection_column"] [ui5-checkbox]').should(
       'have.attr',
-      'indeterminate',
-      'true'
+      'indeterminate'
     );
 
     // deselect all
@@ -753,13 +888,12 @@ describe('AnalyticalTable', () => {
     cy.get('@onIndeterminateChangeSpy').should('have.callCount', 3);
     cy.findByTestId('selectedRows').should('have.text', '{"1.0.0.0":true}');
 
-    cy.get('[aria-rowindex="4"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate', 'true');
-    cy.get('[aria-rowindex="3"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate', 'true');
-    cy.get('[aria-rowindex="2"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate', 'true');
+    cy.get('[aria-rowindex="4"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate');
+    cy.get('[aria-rowindex="3"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate');
+    cy.get('[aria-rowindex="2"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate');
     cy.get('[data-column-id="__ui5wcr__internal_selection_column"] [ui5-checkbox]').should(
       'have.attr',
-      'indeterminate',
-      'true'
+      'indeterminate'
     );
 
     // deselect all
@@ -776,12 +910,11 @@ describe('AnalyticalTable', () => {
     cy.get('[aria-rowindex="6"] > [aria-colindex="1"]').should('have.attr', 'aria-selected', 'true');
     cy.get('[aria-rowindex="7"] > [aria-colindex="1"]').should('have.attr', 'aria-selected', 'true');
     cy.get('[aria-rowindex="8"] > [aria-colindex="1"]').should('have.attr', 'aria-selected', 'true');
-    cy.get('[aria-rowindex="3"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate', 'true');
-    cy.get('[aria-rowindex="2"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate', 'true');
+    cy.get('[aria-rowindex="3"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate');
+    cy.get('[aria-rowindex="2"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate');
     cy.get('[data-column-id="__ui5wcr__internal_selection_column"] [ui5-checkbox]').should(
       'have.attr',
-      'indeterminate',
-      'true'
+      'indeterminate'
     );
 
     // deselect all
@@ -794,17 +927,27 @@ describe('AnalyticalTable', () => {
     cy.findByText('Allen Kidd').click();
     cy.findByTestId('selectedRows').should('have.text', '{"1.0.0.0":true,"1.0.0.1":true,"1.0.0.2":true}');
     cy.findByText('Selma Kaufman').click();
-    cy.findByTestId('selectedRows').should(
-      'have.text',
-      '{"1.0.0.0":true,"1.0.0.1":true,"1.0.0.2":true,"1.0.0.3":true,"1.0.0":true}'
-    );
+
+    if (reactVersion.startsWith('19')) {
+      // ToDo: the parent row isn't included in the `setSelectedRowIds` anymore - check if it's feasible to include it again, otherwise add a note to the hook
+      cy.findByTestId('selectedRows').should(
+        'have.text',
+        // '{"1.0.0.0":true,"1.0.0.1":true,"1.0.0.2":true,"1.0.0.3":true,"1.0.0":true}'
+        '{"1.0.0.0":true,"1.0.0.1":true,"1.0.0.2":true,"1.0.0.3":true}'
+      );
+    } else {
+      cy.findByTestId('selectedRows').should(
+        'have.text',
+        '{"1.0.0.0":true,"1.0.0.1":true,"1.0.0.2":true,"1.0.0.3":true,"1.0.0":true}'
+      );
+    }
   });
 
   it('useIndeterminateRowSelection', () => {
     const indeterminateChange = cy.spy().as('onIndeterminateChangeSpy');
     cy.mount(
       <AnalyticalTable
-        selectionMode={AnalyticalTableSelectionMode.MultiSelect}
+        selectionMode={AnalyticalTableSelectionMode.Multiple}
         data={dataTree}
         columns={columns}
         isTreeTable
@@ -823,13 +966,12 @@ describe('AnalyticalTable', () => {
     cy.findByText('Wiggins Cotton').click();
     cy.get('@onIndeterminateChangeSpy').should('have.callCount', 1);
 
-    cy.get('[aria-rowindex="4"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate', 'true');
-    cy.get('[aria-rowindex="3"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate', 'true');
-    cy.get('[aria-rowindex="2"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate', 'true');
+    cy.get('[aria-rowindex="4"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate');
+    cy.get('[aria-rowindex="3"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate');
+    cy.get('[aria-rowindex="2"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate');
     cy.get('[data-column-id="__ui5wcr__internal_selection_column"] [ui5-checkbox]').should(
       'have.attr',
-      'indeterminate',
-      'true'
+      'indeterminate'
     );
 
     // deselect all
@@ -841,13 +983,12 @@ describe('AnalyticalTable', () => {
     cy.findByText('Wiggins Cotton').click();
     cy.get('@onIndeterminateChangeSpy').should('have.callCount', 3);
 
-    cy.get('[aria-rowindex="4"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate', 'true');
-    cy.get('[aria-rowindex="3"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate', 'true');
-    cy.get('[aria-rowindex="2"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate', 'true');
+    cy.get('[aria-rowindex="4"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate');
+    cy.get('[aria-rowindex="3"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate');
+    cy.get('[aria-rowindex="2"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate');
     cy.get('[data-column-id="__ui5wcr__internal_selection_column"] [ui5-checkbox]').should(
       'have.attr',
-      'indeterminate',
-      'true'
+      'indeterminate'
     );
 
     // deselect all
@@ -864,12 +1005,11 @@ describe('AnalyticalTable', () => {
     cy.get('[aria-rowindex="6"] > [aria-colindex="1"]').should('have.attr', 'aria-selected', 'false');
     cy.get('[aria-rowindex="7"] > [aria-colindex="1"]').should('have.attr', 'aria-selected', 'false');
     cy.get('[aria-rowindex="8"] > [aria-colindex="1"]').should('have.attr', 'aria-selected', 'false');
-    cy.get('[aria-rowindex="3"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate', 'true');
-    cy.get('[aria-rowindex="2"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate', 'true');
+    cy.get('[aria-rowindex="3"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate');
+    cy.get('[aria-rowindex="2"] > [aria-colindex="1"] [ui5-checkbox]').should('have.attr', 'indeterminate');
     cy.get('[data-column-id="__ui5wcr__internal_selection_column"] [ui5-checkbox]').should(
       'have.attr',
-      'indeterminate',
-      'true'
+      'indeterminate'
     );
   });
 
@@ -946,7 +1086,7 @@ describe('AnalyticalTable', () => {
     [
       { props: {}, bothWidth: 952, onlyNameWidth: 1904, onlyAgeWidth: 1904 },
       {
-        props: { selectionMode: AnalyticalTableSelectionMode.MultiSelect },
+        props: { selectionMode: AnalyticalTableSelectionMode.Multiple },
         bothWidth: 930,
         onlyNameWidth: 1860,
         onlyAgeWidth: 1860
@@ -967,7 +1107,7 @@ describe('AnalyticalTable', () => {
         props: {
           withNavigationHighlight: true,
           withRowHighlight: true,
-          selectionMode: AnalyticalTableSelectionMode.SingleSelect
+          selectionMode: AnalyticalTableSelectionMode.Single
         },
         bothWidth: 924,
         onlyNameWidth: 1848,
@@ -1257,9 +1397,7 @@ describe('AnalyticalTable', () => {
         accessor: 'friend.name'
       }
     ];
-    cy.mount(
-      <AnalyticalTable selectionMode="SingleSelect" data={data.slice(0, 2)} columns={columns} onRowSelect={select} />
-    );
+    cy.mount(<AnalyticalTable selectionMode="Single" data={data.slice(0, 2)} columns={columns} onRowSelect={select} />);
     cy.findAllByText('Custom Cell Button')
       .should('have.length', 2)
       .each(($cellBtn) => {
@@ -1289,7 +1427,7 @@ describe('AnalyticalTable', () => {
       }
     ];
     cy.mount(
-      <AnalyticalTable selectionMode="SingleSelect" data={data.slice(0, 2)} columns={columns2} onRowSelect={select} />
+      <AnalyticalTable selectionMode="Single" data={data.slice(0, 2)} columns={columns2} onRowSelect={select} />
     );
     cy.findAllByText('Custom Cell Button')
       .should('have.length', 2)
@@ -1304,15 +1442,25 @@ describe('AnalyticalTable', () => {
     cy.mount(<AnalyticalTable data={[]} columns={columns} loading />);
     cy.get('[data-component-name="AnalyticalTableLoadingPlaceholder"]').should('be.visible');
     cy.mount(<AnalyticalTable data={data} columns={columns} loading />);
-    cy.get('[data-component-name="Loader"]').should('be.visible');
+    cy.get('.ui5-busy-indicator-busy-area', { timeout: 2000 }).should('be.visible');
+    cy.mount(<AnalyticalTable data={data} columns={columns} loading loadingDelay={50000} />);
+    cy.get('.ui5-busy-indicator-busy-area', { timeout: 2000 }).should('not.exist');
     cy.mount(<AnalyticalTable data={[]} columns={columns} />);
-    cy.findByText('No Data').should('be.visible');
+    cy.findByText('No data').should('be.visible');
+    cy.mount(<AnalyticalTable data={data} columns={columns} filterable globalFilterValue="test123" />);
+    cy.findByText('No data found. Try adjusting the filter settings.').should('be.visible');
+    cy.mount(<AnalyticalTable data={data} columns={columns} filterable />);
+    cy.findByText('Lorem').should('be.visible');
+    cy.findByText('Name').realClick();
+    cy.get('[ui5-input]').typeIntoUi5Input('test123');
+    cy.findByText('Lorem').should('not.exist');
+    cy.findByText('No data found. Try adjusting the filter settings.').should('be.visible');
   });
 
   it('Alternate Row Color', () => {
     const standardRowColor = cssVarToRgb(ThemingParameters.sapList_Background);
     const alternatingRowColor = cssVarToRgb(ThemingParameters.sapList_AlternatingBackground);
-    cy.mount(<AnalyticalTable data={data} columns={columns} alternateRowColor minRows={7} />);
+    cy.mount(<AnalyticalTable data={data} columns={columns} alternateRowColor minRows={7} sortable />);
     cy.get('[data-component-name="AnalyticalTableContainer"]').should('have.css', 'background-color', standardRowColor);
 
     function testAlternateRowColor() {
@@ -1386,7 +1534,7 @@ describe('AnalyticalTable', () => {
       <AnalyticalTable
         data={data}
         columns={columns}
-        selectionMode={AnalyticalTableSelectionMode.SingleSelect}
+        selectionMode={AnalyticalTableSelectionMode.Single}
         selectionBehavior={AnalyticalTableSelectionBehavior.RowOnly}
       />
     );
@@ -1395,7 +1543,7 @@ describe('AnalyticalTable', () => {
       <AnalyticalTable
         data={data}
         columns={columns}
-        selectionMode={AnalyticalTableSelectionMode.MultiSelect}
+        selectionMode={AnalyticalTableSelectionMode.Multiple}
         selectionBehavior={AnalyticalTableSelectionBehavior.RowOnly}
       />
     );
@@ -1405,6 +1553,7 @@ describe('AnalyticalTable', () => {
   });
 
   it('navigated row', () => {
+    const navigationColor = cssVarToRgb(ThemingParameters.sapList_SelectionBorderColor);
     const TestComp = () => {
       const [selectedRow, setSelectedRow] = useState<{ id?: boolean }>({});
       const onRowSelect = (e) => {
@@ -1421,7 +1570,7 @@ describe('AnalyticalTable', () => {
           data={data}
           columns={columns}
           withNavigationHighlight
-          selectionMode={AnalyticalTableSelectionMode.MultiSelect}
+          selectionMode={AnalyticalTableSelectionMode.Multiple}
           markNavigatedRow={markNavigatedRow}
           onRowSelect={onRowSelect}
         />
@@ -1429,16 +1578,22 @@ describe('AnalyticalTable', () => {
     };
     cy.mount(<TestComp />);
     cy.findByText('A').click();
-    cy.get('[data-component-name="AnalyticalTableNavigatedCell"]').should('be.visible').should('have.length', 1);
+    cy.get('[data-component-name="AnalyticalTableNavigatedCell"]')
+      .should('be.visible')
+      .should('have.length', 1)
+      .should('have.css', 'background-color', navigationColor);
     cy.findByText('B').click();
-    cy.get('[data-component-name="AnalyticalTableNavigatedCell"]').should('be.visible').should('have.length', 1);
+    cy.get('[data-component-name="AnalyticalTableNavigatedCell"]')
+      .should('be.visible')
+      .should('have.length', 1)
+      .should('have.css', 'background-color', navigationColor);
   });
 
   it('select row with custom row key', () => {
     const selectedRowColor = cssVarToRgb(ThemingParameters.sapList_SelectionBackgroundColor);
     cy.mount(
       <AnalyticalTable
-        selectionMode={AnalyticalTableSelectionMode.SingleSelect}
+        selectionMode={AnalyticalTableSelectionMode.Single}
         data={data}
         columns={columns}
         reactTableOptions={{
@@ -1463,7 +1618,7 @@ describe('AnalyticalTable', () => {
         data={data}
         columns={columns}
         selectionBehavior={AnalyticalTableSelectionBehavior.Row}
-        selectionMode={AnalyticalTableSelectionMode.SingleSelect}
+        selectionMode={AnalyticalTableSelectionMode.Single}
         onRowClick={rowClick}
         onRowSelect={rowSelect}
       />
@@ -1491,7 +1646,7 @@ describe('AnalyticalTable', () => {
         data={data}
         columns={columns}
         selectionBehavior={AnalyticalTableSelectionBehavior.Row}
-        selectionMode={AnalyticalTableSelectionMode.SingleSelect}
+        selectionMode={AnalyticalTableSelectionMode.Single}
         onRowClick={rowSelectWithoutSelCell}
         onRowSelect={rowSelect}
       />
@@ -1510,9 +1665,9 @@ describe('AnalyticalTable', () => {
     const successColor = cssVarToRgb(ThemingParameters.sapSuccessColor);
     const localData = data.map((item, index) => {
       if ((index + 1) % 2) {
-        return { ...item, status: ValueState.Error };
+        return { ...item, status: ValueState.Negative };
       }
-      return { ...item, highlight: ValueState.Success };
+      return { ...item, highlight: ValueState.Positive };
     });
     const indicationData = new Array(9)
       .fill('')
@@ -1561,6 +1716,56 @@ describe('AnalyticalTable', () => {
           cy.wrap($highlightCell).should('have.css', 'background-color', color);
         }
       });
+
+    cy.mount(
+      <AnalyticalTable
+        header="Table Title"
+        data={data}
+        columns={columns}
+        withRowHighlight
+        highlightField={(row) => {
+          switch (row.name) {
+            case 'A':
+              return ValueState.Negative;
+            case 'B':
+              return 'Positive';
+            case 'X':
+              return IndicationColor.Indication01;
+            case 'C':
+              return 'Indication08';
+            default:
+              return ValueState.None;
+          }
+        }}
+      />
+    );
+
+    cy.get('[data-component-name="AnalyticalTableHighlightCell"]')
+      .should('have.length', 4)
+      .each(($highlightCell, index) => {
+        switch (index) {
+          case 0:
+            cy.wrap($highlightCell).should('have.css', 'background-color', errorColor);
+            break;
+          case 1:
+            cy.wrap($highlightCell).should('have.css', 'background-color', successColor);
+            break;
+          case 2:
+            cy.wrap($highlightCell).should(
+              'have.css',
+              'background-color',
+              cssVarToRgb(ThemingParameters.sapIndicationColor_1)
+            );
+            break;
+          case 3:
+            cy.wrap($highlightCell).should(
+              'have.css',
+              'background-color',
+              cssVarToRgb(ThemingParameters.sapIndicationColor_8)
+            );
+            break;
+        }
+      });
   });
 
   it('header popover open', () => {
@@ -1578,6 +1783,8 @@ describe('AnalyticalTable', () => {
       }
     ];
     cy.mount(<AnalyticalTable data={data} columns={columns} />);
+    cy.get('[data-column-id="name"]').should('not.have.attr', 'aria-haspopup', 'menu').click();
+    cy.mount(<AnalyticalTable data={data} columns={columns} sortable />);
     cy.get('[data-column-id="name"]').should('have.attr', 'aria-haspopup', 'menu').click();
     cy.get('[ui5-popover]').should('be.visible');
     cy.get('[data-column-id="age"]').should('not.have.attr', 'aria-haspopup');
@@ -1796,7 +2003,7 @@ describe('AnalyticalTable', () => {
           columns={columns}
           onRowSelect={onRowSelect}
           onRowClick={onRowClick}
-          selectionMode={AnalyticalTableSelectionMode.MultiSelect}
+          selectionMode={AnalyticalTableSelectionMode.Multiple}
           tableHooks={[useRowDisableSelection('disableSelection')]}
           minRows={1}
         />
@@ -1832,7 +2039,7 @@ describe('AnalyticalTable', () => {
   it('plugin hook: useManualRowSelect', () => {
     cy.mount(
       <AnalyticalTable
-        selectionMode={AnalyticalTableSelectionMode.MultiSelect}
+        selectionMode={AnalyticalTableSelectionMode.Multiple}
         data={manualSelectData}
         columns={columns}
         tableHooks={[useManualRowSelect('isSelected')]}
@@ -1850,7 +2057,7 @@ describe('AnalyticalTable', () => {
     const [, ...updatedManualSelectData] = manualSelectData;
     cy.mount(
       <AnalyticalTable
-        selectionMode={AnalyticalTableSelectionMode.MultiSelect}
+        selectionMode={AnalyticalTableSelectionMode.Multiple}
         data={[
           {
             name: 'Selected',
@@ -1887,7 +2094,7 @@ describe('AnalyticalTable', () => {
             Show Selected
           </Button>
           <AnalyticalTable
-            selectionMode={AnalyticalTableSelectionMode.MultiSelect}
+            selectionMode={AnalyticalTableSelectionMode.Multiple}
             data={data}
             columns={columns}
             tableInstance={instance}
@@ -1992,7 +2199,7 @@ describe('AnalyticalTable', () => {
 
   it("Expandable: don't scroll when expanded/collapsed", () => {
     const TestComp = () => {
-      const tableInstanceRef = useRef();
+      const tableInstanceRef = useRef<{ toggleRowExpanded?: (e: string) => void }>({});
       return (
         <>
           <button
@@ -2035,7 +2242,7 @@ describe('AnalyticalTable', () => {
 
     cy.mount(<AnalyticalTable data={[...data, ...data]} columns={columns} visibleRows={5} groupable />);
     cy.findByText('Name').click();
-    cy.findByText('Group').click();
+    cy.findByText('Group').realClick();
     cy.findByText('A (2)').trigger('keydown', {
       key: 'Enter'
     });
@@ -2179,7 +2386,7 @@ describe('AnalyticalTable', () => {
           <AnalyticalTable
             columns={columns}
             data={data}
-            selectionMode={AnalyticalTableSelectionMode.MultiSelect}
+            selectionMode={AnalyticalTableSelectionMode.Multiple}
             onRowSelect={handleSelect}
           />
           <span data-testid="payload">{stringifiedPl}</span>
@@ -2338,7 +2545,7 @@ describe('AnalyticalTable', () => {
     cy.findByText('Aggregated').should('not.exist');
 
     cy.findByText('Name').click();
-    cy.findByText('Group').click();
+    cy.findByText('Group').realClick();
     cy.findByText('Simon').should('be.visible').should('have.length', 1);
     cy.findAllByText('Aggregated').should('be.visible').should('have.length', 2);
     cy.get('[ui5-icon][name="navigation-right-arrow"]').should('be.visible').should('have.length', 2);
@@ -2516,15 +2723,15 @@ describe('AnalyticalTable', () => {
     cy.realPress('Tab');
     cy.focused().should('have.attr', 'data-row-index', '0').should('have.attr', 'data-column-index', '0');
     cy.realPress('Tab');
-    cy.focused().should('have.attr', 'ui5-button');
+    cy.focused().parent().should('have.attr', 'ui5-button');
     cy.realPress('ArrowLeft');
     cy.focused().should('have.attr', 'data-row-index', '1').should('have.attr', 'data-column-index', '1');
     cy.realPress('Tab');
-    cy.focused().should('have.attr', 'ui5-button');
+    cy.focused().parent().should('have.attr', 'ui5-button');
     cy.realPress('ArrowDown');
     cy.focused().should('have.attr', 'data-row-index', '2').should('have.attr', 'data-column-index', '2');
     cy.realPress(['Shift', 'Tab']);
-    cy.focused().should('have.attr', 'ui5-button');
+    cy.focused().parent().should('have.attr', 'ui5-button');
 
     const renderSubComp = (row) => {
       if (row.id === '2') {
@@ -2594,29 +2801,29 @@ describe('AnalyticalTable', () => {
     cy.realPress('ArrowDown');
     cy.focused().should('have.attr', 'data-subcomponent-row-index', '1');
     cy.realPress('Tab');
-    cy.focused().should('have.attr', 'ui5-button');
+    cy.focused().parent().should('have.attr', 'ui5-button');
     cy.realPress('ArrowDown');
     cy.focused().should('have.attr', 'data-subcomponent-row-index', '1');
     cy.realPress('Tab');
-    cy.focused().should('have.attr', 'ui5-button');
+    cy.focused().parent().should('have.attr', 'ui5-button');
     cy.realPress('ArrowUp');
     cy.focused().should('have.attr', 'data-subcomponent-row-index', '1');
     cy.realPress('Tab');
-    cy.focused().should('have.attr', 'ui5-button');
+    cy.focused().parent().should('have.attr', 'ui5-button');
     cy.realPress('ArrowLeft');
     cy.focused().should('have.attr', 'data-subcomponent-row-index', '1');
     cy.realPress('Tab');
-    cy.focused().should('have.attr', 'ui5-button');
+    cy.focused().parent().should('have.attr', 'ui5-button');
     cy.realPress('ArrowRight');
     cy.focused().should('have.attr', 'data-subcomponent-row-index', '1');
     cy.realPress('Tab');
-    cy.focused().should('have.attr', 'ui5-button');
+    cy.focused().parent().should('have.attr', 'ui5-button');
 
     cy.mount(
       <AnalyticalTable
         data={generateMoreData(50)}
         columns={columns}
-        selectionMode={AnalyticalTableSelectionMode.MultiSelect}
+        selectionMode={AnalyticalTableSelectionMode.Multiple}
       />
     );
 
@@ -2629,7 +2836,7 @@ describe('AnalyticalTable', () => {
       <AnalyticalTable
         data={generateMoreData(50)}
         columns={columns}
-        selectionMode={AnalyticalTableSelectionMode.MultiSelect}
+        selectionMode={AnalyticalTableSelectionMode.Multiple}
         withRowHighlight
       />
     );

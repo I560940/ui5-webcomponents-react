@@ -1,5 +1,6 @@
+import TitleLevel from '@ui5/webcomponents/dist/types/TitleLevel.js';
+import ValueState from '@ui5/webcomponents-base/dist/types/ValueState.js';
 import { useState } from 'react';
-import { TitleLevel } from '../../enums/index.js';
 import { VariantItem } from './VariantItem';
 import { WithCustomValidation as WithCustomValidationStory } from './VariantManagement.stories';
 import type { VariantManagementPropTypes } from './index.js';
@@ -90,6 +91,7 @@ describe('VariantManagement', () => {
     );
 
     cy.findByText('Manage Views').should('not.exist');
+    cy.contains('VariantItem 2').click();
     cy.findByText('Manage').click();
     cy.findByText('Manage Views').should('be.visible');
     cy.findByText('Cancel').click();
@@ -104,21 +106,23 @@ describe('VariantManagement', () => {
     cy.findByText('Manage').click();
     cy.get('[ui5-dialog]').should('have.attr', 'open');
     cy.findByTestId('12chars').typeIntoUi5Input('A');
-    cy.findByTestId('12chars').should('have.attr', 'value-state', 'Error');
+    cy.findByTestId('12chars').should('have.attr', 'value-state', ValueState.Negative);
     cy.realPress('Tab');
     // fallback
     cy.get('body').click({ force: true });
     cy.realPress('Escape');
     cy.get('[ui5-dialog]').should('not.exist');
+    cy.contains('Max 12 chars').click();
     cy.findByText('Manage').click();
     cy.findByTestId('12chars').should('have.attr', 'value-state', 'None');
     cy.findByTestId('12chars').typeIntoUi5Input('A');
-    cy.findByTestId('12chars').should('have.attr', 'value-state', 'Error');
+    cy.findByTestId('12chars').should('have.attr', 'value-state', ValueState.Negative);
     cy.findByText('Cancel').click();
+    cy.contains('Max 12 chars').click();
     cy.findByText('Manage').click();
     cy.findByTestId('12chars').should('have.attr', 'value-state', 'None');
     cy.findByTestId('12chars').typeIntoUi5Input('A');
-    cy.findByTestId('12chars').should('have.attr', 'value-state', 'Error');
+    cy.findByTestId('12chars').should('have.attr', 'value-state', ValueState.Negative);
     cy.findByText('Save').click();
     cy.get('[ui5-dialog]').should('have.attr', 'open');
     cy.findByTestId('12chars').typeIntoUi5Input('{backspace}');
@@ -136,7 +140,7 @@ describe('VariantManagement', () => {
     cy.findByText('Save As').click();
     cy.get('[ui5-dialog]').should('have.attr', 'open');
     cy.findByTestId('alphanumeric').typeIntoUi5Input('$');
-    cy.findByTestId('alphanumeric').should('have.attr', 'value-state', 'Error');
+    cy.findByTestId('alphanumeric').should('have.attr', 'value-state', ValueState.Negative);
     // Fallback: click on the Apply Automatically checkbox to prevent strange behavior in CI tests because of valueStateMessage popover
     cy.get('[text="Apply Automatically"]').realClick();
     cy.realPress('Escape');
@@ -145,17 +149,17 @@ describe('VariantManagement', () => {
     cy.findByText('Save As').click();
     cy.findByTestId('alphanumeric').should('have.attr', 'value-state', 'None');
     cy.findByTestId('alphanumeric').typeIntoUi5Input('$');
-    cy.findByTestId('alphanumeric').should('have.attr', 'value-state', 'Error');
+    cy.findByTestId('alphanumeric').should('have.attr', 'value-state', ValueState.Negative);
     cy.findByText('Cancel').click();
     cy.contains('Only alphanumeric chars in Save View input').click();
     cy.findByText('Save As').click();
     cy.findByTestId('alphanumeric').should('have.attr', 'value-state', 'None');
     cy.findByTestId('alphanumeric').typeIntoUi5Input('$');
-    cy.findByTestId('alphanumeric').should('have.attr', 'value-state', 'Error');
+    cy.findByTestId('alphanumeric').should('have.attr', 'value-state', ValueState.Negative);
     cy.findByText('Save').realClick();
     cy.get('[ui5-dialog]').should('have.attr', 'open');
     cy.wait(50);
-    cy.get('[ui5-input]').should('be.focused').and('have.attr', 'value-state', 'Error');
+    cy.get('[ui5-input]').should('be.focused').and('have.attr', 'value-state', ValueState.Negative);
     cy.findByTestId('alphanumeric').typeIntoUi5Input('{selectall}{backspace}A');
     cy.findByText('Save').click();
     cy.findByTestId('alphanumeric').should('not.exist');
@@ -168,7 +172,7 @@ describe('VariantManagement', () => {
 
     cy.get('[ui5-responsive-popover]').should('not.be.visible');
     cy.findAllByText('VariantItem 2').should('have.length', 2);
-    cy.get('[ui5-title]').findByText('VariantItem 2').click();
+    cy.get('[ui5-title]').contains('VariantItem 2').click();
     cy.get('[ui5-responsive-popover]').should('be.visible');
 
     cy.findAllByText('VariantItem 1').should('have.length', 1);
@@ -196,7 +200,7 @@ describe('VariantManagement', () => {
   it('Disabled', () => {
     cy.mount(<VariantManagement disabled>{TwoVariantItems}</VariantManagement>);
     cy.get('[ui5-responsive-popover]').should('not.be.visible');
-    cy.get('[ui5-title]').findByText('VariantItem 2').should('be.visible').click();
+    cy.get('[ui5-title]').contains('VariantItem 2').should('be.visible').click();
     cy.get('[ui5-responsive-popover]').should('not.be.visible');
     cy.get('[icon="navigation-down-arrow"]').should('have.attr', 'disabled', 'disabled').click({ force: true });
     cy.get('[ui5-responsive-popover]').should('not.be.visible');
@@ -230,7 +234,7 @@ describe('VariantManagement', () => {
     cy.mount(<TestComp onSave={save} />);
 
     cy.findByText('*').should('be.visible');
-    cy.get('[ui5-title]').findByText('VariantItem 2').click();
+    cy.get('[ui5-title]').contains('VariantItem 2').click();
     cy.findByText('Save').click();
     cy.get('@save').should('have.been.calledOnce');
     cy.findByText('Saved Variant:VariantItem 2');
@@ -247,12 +251,12 @@ describe('VariantManagement', () => {
 
   it('Show/Hide buttons', () => {
     cy.mount(<VariantManagement>{TwoVariantItems}</VariantManagement>);
-    cy.get('[ui5-title]').findByText('VariantItem 2').click();
+    cy.get('[ui5-title]').contains('VariantItem 2').click();
     cy.findByText('Save As').should('be.visible');
     cy.findByText('Manage').should('be.visible');
 
     cy.mount(<VariantManagement hideSaveAs>{TwoVariantItems}</VariantManagement>);
-    cy.get('[ui5-title]').findByText('VariantItem 2').click();
+    cy.get('[ui5-title]').contains('VariantItem 2').click();
     cy.findByText('Save As', { timeout: 200 }).should('not.exist');
     cy.findByText('Manage').should('be.visible');
 
@@ -262,7 +266,7 @@ describe('VariantManagement', () => {
         <VariantItem selected>VariantItem 2</VariantItem>
       </VariantManagement>
     );
-    cy.get('[ui5-title]').findByText('VariantItem 2').click();
+    cy.get('[ui5-title]').contains('VariantItem 2').click();
     cy.findByText('Save As', { timeout: 200 }).should('not.exist');
     cy.findByText('Manage', { timeout: 200 }).should('not.exist');
   });
@@ -292,7 +296,7 @@ describe('VariantManagement', () => {
     cy.get('[ui5-li]').should('have.length', 11);
     cy.findByPlaceholderText('Search').typeIntoUi5Input('VariantItem 10');
     cy.get('[ui5-li]').should('have.length', 1).should('have.text', 'VariantItem 10');
-    cy.get('[input-icon]').click();
+    cy.get('.ui5-input-clear-icon').click();
     cy.get('[ui5-li]').should('have.length', 11);
 
     cy.mount(
@@ -374,23 +378,28 @@ describe('VariantManagement', () => {
 
     // invalid entries
     cy.get('[ui5-input]').typeIntoUi5Input('{selectall}{backspace}');
-    cy.get('[ui5-input]').should('have.attr', 'value-state', 'Error');
+    cy.get('[ui5-input]').should('have.attr', 'value-state', ValueState.Negative);
     cy.findByText('Please specify a view name');
     cy.get('[ui5-input]').typeIntoUi5Input('VariantItem 1');
-    cy.get('[ui5-input]').should('have.attr', 'value-state', 'Error');
+    cy.get('[ui5-input]').should('have.attr', 'value-state', ValueState.Negative);
     cy.findByText('The view name already exists. Please enter a different name.');
 
     // valid entries & save
     cy.get('[ui5-input]').typeIntoUi5Input('{selectall}{backspace}Updated!');
     cy.findByText('Save').click();
-    cy.findByText('{"selected":true,"children":"Updated!","isDefault":true,"global":true,"applyAutomatically":true}');
+    cy.findByText(
+      '{"nativeDetail":1,"selected":true,"children":"Updated!","isDefault":true,"global":true,"applyAutomatically":true}'
+    );
     cy.get('@saveAs').should('have.been.calledOnce');
 
     // cancel
+    cy.contains('Updated!').click();
     cy.findByText('Save As').click();
     cy.get('[ui5-input]').typeIntoUi5Input('{selectall}{backspace}Updated again!');
     cy.findByText('Cancel').click();
-    cy.findByText('{"selected":true,"children":"Updated!","isDefault":true,"global":true,"applyAutomatically":true}');
+    cy.findByText(
+      '{"nativeDetail":1,"selected":true,"children":"Updated!","isDefault":true,"global":true,"applyAutomatically":true}'
+    );
     cy.get('@saveAs').should('have.been.calledOnce');
   });
 
@@ -548,7 +557,7 @@ describe('VariantManagement', () => {
     cy.findByText('Save').click();
     cy.get('@saveView').should('have.been.calledOnce');
     cy.findByText(
-      '{"deletedVariants":[],"prevVariants":[{"children":"Default VariantItem"},{"labelReadOnly":true,"children":"LabelReadOnly"},{"favorite":true,"children":"Favorite"},{"favorite":true,"isDefault":true,"children":"Favorite & isDefault"},{"isDefault":true,"children":"IsDefault"},{"hideDelete":true,"children":"HideDelete"},{"hideDelete":false,"global":true,"children":"HideDelete - false & global - true"},{"global":true,"children":"Global"},{"applyAutomatically":true,"children":"Apply Automatically (List item)"},{"applyAutomatically":true,"applyAutomaticallyText":"applyAutomaticallyText","children":"Apply Automatically with text"},{"applyAutomatically":false,"applyAutomaticallyText":"applyAutomaticallyText","children":"Apply Automatically (false) with text"},{"author":"author","children":"Author"},{"labelReadOnly":true,"favorite":true,"isDefault":true,"hideDelete":true,"global":true,"applyAutomatically":true,"author":"bla","children":"All props"}],"updatedVariants":[],"variants":[{"children":"Default VariantItem"},{"labelReadOnly":true,"children":"LabelReadOnly"},{"favorite":true,"children":"Favorite"},{"favorite":true,"isDefault":true,"children":"Favorite & isDefault"},{"isDefault":true,"children":"IsDefault"},{"hideDelete":true,"children":"HideDelete"},{"hideDelete":false,"global":true,"children":"HideDelete - false & global - true"},{"global":true,"children":"Global"},{"applyAutomatically":true,"children":"Apply Automatically (List item)"},{"applyAutomatically":true,"applyAutomaticallyText":"applyAutomaticallyText","children":"Apply Automatically with text"},{"applyAutomatically":false,"applyAutomaticallyText":"applyAutomaticallyText","children":"Apply Automatically (false) with text"},{"author":"author","children":"Author"},{"labelReadOnly":true,"favorite":true,"isDefault":true,"hideDelete":true,"global":true,"applyAutomatically":true,"author":"bla","children":"All props"}]}'
+      '{"nativeDetail":1,"deletedVariants":[],"prevVariants":[{"children":"Default VariantItem"},{"labelReadOnly":true,"children":"LabelReadOnly"},{"favorite":true,"children":"Favorite"},{"favorite":true,"isDefault":true,"children":"Favorite & isDefault"},{"isDefault":true,"children":"IsDefault"},{"hideDelete":true,"children":"HideDelete"},{"hideDelete":false,"global":true,"children":"HideDelete - false & global - true"},{"global":true,"children":"Global"},{"applyAutomatically":true,"children":"Apply Automatically (List item)"},{"applyAutomatically":true,"applyAutomaticallyText":"applyAutomaticallyText","children":"Apply Automatically with text"},{"applyAutomatically":false,"applyAutomaticallyText":"applyAutomaticallyText","children":"Apply Automatically (false) with text"},{"author":"author","children":"Author"},{"labelReadOnly":true,"favorite":true,"isDefault":true,"hideDelete":true,"global":true,"applyAutomatically":true,"author":"bla","children":"All props"}],"updatedVariants":[],"variants":[{"children":"Default VariantItem"},{"labelReadOnly":true,"children":"LabelReadOnly"},{"favorite":true,"children":"Favorite"},{"favorite":true,"isDefault":true,"children":"Favorite & isDefault"},{"isDefault":true,"children":"IsDefault"},{"hideDelete":true,"children":"HideDelete"},{"hideDelete":false,"global":true,"children":"HideDelete - false & global - true"},{"global":true,"children":"Global"},{"applyAutomatically":true,"children":"Apply Automatically (List item)"},{"applyAutomatically":true,"applyAutomaticallyText":"applyAutomaticallyText","children":"Apply Automatically with text"},{"applyAutomatically":false,"applyAutomaticallyText":"applyAutomaticallyText","children":"Apply Automatically (false) with text"},{"author":"author","children":"Author"},{"labelReadOnly":true,"favorite":true,"isDefault":true,"hideDelete":true,"global":true,"applyAutomatically":true,"author":"bla","children":"All props"}]}'
     );
 
     cy.mount(<TestComp onSaveManageViews={onSaveView} showOnlyFavorites />);
@@ -559,7 +568,7 @@ describe('VariantManagement', () => {
     cy.findByText('Save').click();
     cy.get('@saveView').should('have.been.calledTwice');
     cy.findByText(
-      '{"deletedVariants":[],"prevVariants":[{"children":"Default VariantItem"},{"labelReadOnly":true,"children":"LabelReadOnly"},{"favorite":true,"children":"Favorite"},{"favorite":true,"isDefault":true,"children":"Favorite & isDefault"},{"isDefault":true,"children":"IsDefault"},{"hideDelete":true,"children":"HideDelete"},{"hideDelete":false,"global":true,"children":"HideDelete - false & global - true"},{"global":true,"children":"Global"},{"applyAutomatically":true,"children":"Apply Automatically (List item)"},{"applyAutomatically":true,"applyAutomaticallyText":"applyAutomaticallyText","children":"Apply Automatically with text"},{"applyAutomatically":false,"applyAutomaticallyText":"applyAutomaticallyText","children":"Apply Automatically (false) with text"},{"author":"author","children":"Author"},{"labelReadOnly":true,"favorite":true,"isDefault":true,"hideDelete":true,"global":true,"applyAutomatically":true,"author":"bla","children":"All props"}],"updatedVariants":[],"variants":[{"children":"Default VariantItem"},{"labelReadOnly":true,"children":"LabelReadOnly"},{"favorite":true,"children":"Favorite"},{"favorite":true,"isDefault":true,"children":"Favorite & isDefault"},{"isDefault":true,"children":"IsDefault"},{"hideDelete":true,"children":"HideDelete"},{"hideDelete":false,"global":true,"children":"HideDelete - false & global - true"},{"global":true,"children":"Global"},{"applyAutomatically":true,"children":"Apply Automatically (List item)"},{"applyAutomatically":true,"applyAutomaticallyText":"applyAutomaticallyText","children":"Apply Automatically with text"},{"applyAutomatically":false,"applyAutomaticallyText":"applyAutomaticallyText","children":"Apply Automatically (false) with text"},{"author":"author","children":"Author"},{"labelReadOnly":true,"favorite":true,"isDefault":true,"hideDelete":true,"global":true,"applyAutomatically":true,"author":"bla","children":"All props"}]}'
+      '{"nativeDetail":1,"deletedVariants":[],"prevVariants":[{"children":"Default VariantItem"},{"labelReadOnly":true,"children":"LabelReadOnly"},{"favorite":true,"children":"Favorite"},{"favorite":true,"isDefault":true,"children":"Favorite & isDefault"},{"isDefault":true,"children":"IsDefault"},{"hideDelete":true,"children":"HideDelete"},{"hideDelete":false,"global":true,"children":"HideDelete - false & global - true"},{"global":true,"children":"Global"},{"applyAutomatically":true,"children":"Apply Automatically (List item)"},{"applyAutomatically":true,"applyAutomaticallyText":"applyAutomaticallyText","children":"Apply Automatically with text"},{"applyAutomatically":false,"applyAutomaticallyText":"applyAutomaticallyText","children":"Apply Automatically (false) with text"},{"author":"author","children":"Author"},{"labelReadOnly":true,"favorite":true,"isDefault":true,"hideDelete":true,"global":true,"applyAutomatically":true,"author":"bla","children":"All props"}],"updatedVariants":[],"variants":[{"children":"Default VariantItem"},{"labelReadOnly":true,"children":"LabelReadOnly"},{"favorite":true,"children":"Favorite"},{"favorite":true,"isDefault":true,"children":"Favorite & isDefault"},{"isDefault":true,"children":"IsDefault"},{"hideDelete":true,"children":"HideDelete"},{"hideDelete":false,"global":true,"children":"HideDelete - false & global - true"},{"global":true,"children":"Global"},{"applyAutomatically":true,"children":"Apply Automatically (List item)"},{"applyAutomatically":true,"applyAutomaticallyText":"applyAutomaticallyText","children":"Apply Automatically with text"},{"applyAutomatically":false,"applyAutomaticallyText":"applyAutomaticallyText","children":"Apply Automatically (false) with text"},{"author":"author","children":"Author"},{"labelReadOnly":true,"favorite":true,"isDefault":true,"hideDelete":true,"global":true,"applyAutomatically":true,"author":"bla","children":"All props"}]}'
     );
   });
 
@@ -606,7 +615,7 @@ describe('VariantManagement', () => {
     cy.findByText('Save').click();
     cy.get('@saveView').should('have.been.calledOnce');
     cy.findByText(
-      '{"deletedVariants":[{"children":"VariantItem 1"},{"selected":true,"children":"VariantItem 2"}],"prevVariants":[{"children":"VariantItem 1"},{"selected":true,"children":"VariantItem 2"},{"isDefault":true,"children":"VariantItem 3"}],"updatedVariants":[],"variants":[{"isDefault":true,"children":"VariantItem 3"}]}'
+      '{"nativeDetail":1,"deletedVariants":[{"children":"VariantItem 1"},{"selected":true,"children":"VariantItem 2"}],"prevVariants":[{"children":"VariantItem 1"},{"selected":true,"children":"VariantItem 2"},{"isDefault":true,"children":"VariantItem 3"}],"updatedVariants":[],"variants":[{"isDefault":true,"children":"VariantItem 3"}]}'
     );
   });
 

@@ -1,57 +1,34 @@
-import { ThemingParameters, useSyncRef } from '@ui5/webcomponents-react-base';
+import { ThemingParameters, useStylesheet, useSyncRef } from '@ui5/webcomponents-react-base';
 import { clsx } from 'clsx';
 import type { MutableRefObject, RefObject } from 'react';
-import React, { forwardRef, useEffect, useRef } from 'react';
-import { createUseStyles } from 'react-jss';
-import { FlexBoxDirection, GlobalStyleClasses } from '../../../enums/index.js';
-import { CustomThemingParameters } from '../../../themes/CustomVariables.js';
+import { forwardRef, useEffect, useRef } from 'react';
+import { FlexBoxDirection } from '../../../enums/index.js';
 import { FlexBox } from '../../FlexBox/index.js';
+import { classNames, styleData } from './VerticalScrollbar.module.css.js';
 
 interface VerticalScrollbarProps {
   internalRowHeight: number;
   tableRef: RefObject<any>;
   handleVerticalScrollBarScroll: any;
   tableBodyHeight: number;
-  'data-native-scrollbar'?: any;
   scrollContainerRef: MutableRefObject<HTMLDivElement>;
   parentRef: MutableRefObject<HTMLDivElement>;
+  nativeScrollbar: boolean;
 }
 
-const styles = {
-  headerSection: {
-    boxSizing: 'border-box',
-    borderBlockStart: CustomThemingParameters.AnalyticalTableOuterBorderBlock,
-    borderInlineEnd: CustomThemingParameters.AnalyticalTableOuterBorderInline,
-    borderBlockEnd: `${CustomThemingParameters.AnalyticalTableHeaderBorderWidth} solid ${ThemingParameters.sapList_HeaderBorderColor}`,
-    backgroundColor: ThemingParameters.sapList_HeaderBackground,
-    borderInlineStart: `1px solid ${ThemingParameters.sapList_BorderColor}`,
-    marginInlineStart: '-1px',
-    width: `calc(${ThemingParameters.sapScrollBar_Dimension} + 2px)`
-  },
-  scrollbar: {
-    overflowY: 'auto',
-    borderInlineEnd: CustomThemingParameters.AnalyticalTableOuterBorderInline,
-    borderBlockEnd: `1px solid ${ThemingParameters.sapList_TableFooterBorder}`,
-    borderInlineStart: `1px solid ${ThemingParameters.sapList_BorderColor}`,
-    marginInlineStart: '-1px',
-    boxSizing: 'border-box'
-  },
-  bottomSection: {
-    flexGrow: 1,
-    backgroundColor: ThemingParameters.sapList_FooterBackground,
-    boxSizing: 'border-box',
-    borderInlineEnd: CustomThemingParameters.AnalyticalTableOuterBorderInline
-  }
-};
-
-const useStyles = createUseStyles(styles, { name: 'VerticalScrollbar' });
-
 export const VerticalScrollbar = forwardRef<HTMLDivElement, VerticalScrollbarProps>((props, ref) => {
-  const { internalRowHeight, tableRef, handleVerticalScrollBarScroll, tableBodyHeight, scrollContainerRef, parentRef } =
-    props;
+  const {
+    internalRowHeight,
+    tableRef,
+    handleVerticalScrollBarScroll,
+    tableBodyHeight,
+    scrollContainerRef,
+    nativeScrollbar,
+    parentRef
+  } = props;
   const [componentRef, containerRef] = useSyncRef(ref);
   const scrollElementRef = useRef(null);
-  const classes = useStyles();
+  useStylesheet(styleData, VerticalScrollbar.displayName);
 
   const hasHorizontalScrollbar = tableRef?.current?.offsetWidth !== tableRef?.current?.scrollWidth;
 
@@ -68,7 +45,7 @@ export const VerticalScrollbar = forwardRef<HTMLDivElement, VerticalScrollbarPro
       observer.disconnect();
     };
   }, []);
-  const horizontalScrollbarSectionStyles = clsx(hasHorizontalScrollbar && classes.bottomSection);
+  const horizontalScrollbarSectionStyles = clsx(hasHorizontalScrollbar && classNames.bottomSection);
 
   return (
     <FlexBox
@@ -80,7 +57,7 @@ export const VerticalScrollbar = forwardRef<HTMLDivElement, VerticalScrollbarPro
         style={{
           height: `${internalRowHeight}px`
         }}
-        className={classes.headerSection}
+        className={classNames.headerSection}
       />
       <div
         ref={componentRef}
@@ -88,8 +65,7 @@ export const VerticalScrollbar = forwardRef<HTMLDivElement, VerticalScrollbarPro
           height: tableRef.current ? `${tableBodyHeight}px` : '0'
         }}
         onScroll={handleVerticalScrollBarScroll}
-        data-native-scrollbar={props['data-native-scrollbar']}
-        className={`${GlobalStyleClasses.sapScrollBar} ${classes.scrollbar}`}
+        className={clsx(classNames.scrollbar, nativeScrollbar && 'ui5-content-native-scrollbars')}
         data-component-name="AnalyticalTableVerticalScrollbar"
       >
         <div

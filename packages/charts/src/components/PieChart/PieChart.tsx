@@ -1,10 +1,9 @@
 'use client';
 
-import { enrichEventWithDetails } from '@ui5/webcomponents-react-base';
+import { enrichEventWithDetails, useStylesheet } from '@ui5/webcomponents-react-base';
 import { clsx } from 'clsx';
 import type { CSSProperties } from 'react';
-import React, { cloneElement, forwardRef, isValidElement, useCallback, useMemo } from 'react';
-import { createUseStyles } from 'react-jss';
+import { cloneElement, forwardRef, isValidElement, useCallback, useMemo } from 'react';
 import {
   Cell,
   Label as RechartsLabel,
@@ -25,14 +24,8 @@ import type { IPolarChartConfig } from '../../interfaces/IPolarChartConfig.js';
 import { ChartContainer } from '../../internal/ChartContainer.js';
 import { defaultFormatter } from '../../internal/defaults.js';
 import { tooltipContentStyle, tooltipFillOpacity } from '../../internal/staticProps.js';
+import { classNames, styleData } from './PieChart.module.css.js';
 import { PieChartPlaceholder } from './Placeholder.js';
-
-const useStyles = createUseStyles(
-  {
-    piechart: { '& g:focus,& path:focus': { outline: 'none' } }
-  },
-  { name: 'PieChartStyles' }
-);
 
 interface MeasureConfig extends Omit<IChartMeasure, 'accessor' | 'label' | 'color' | 'hideDataLabel'> {
   /**
@@ -98,6 +91,7 @@ const tooltipItemDefaultStyle = { color: 'var (--sapTextColor)' };
 const PieChart = forwardRef<HTMLDivElement, PieChartProps>((props, ref) => {
   const {
     loading,
+    loadingDelay,
     dataset,
     noLegend,
     noAnimation,
@@ -114,9 +108,9 @@ const PieChart = forwardRef<HTMLDivElement, PieChartProps>((props, ref) => {
     ...rest
   } = props;
 
-  const classes = useStyles();
+  useStylesheet(styleData, PieChart.displayName);
 
-  const chartConfig = {
+  const chartConfig: PieChartProps['chartConfig'] = {
     margin: { right: 30, left: 30, bottom: 30, top: 30, ...(props.chartConfig?.margin ?? {}) },
     legendPosition: 'bottom',
     legendHorizontalAlign: 'center',
@@ -246,7 +240,7 @@ const PieChart = forwardRef<HTMLDivElement, PieChartProps>((props, ref) => {
       const hideDataLabel =
         typeof measure.hideDataLabel === 'function' ? measure.hideDataLabel(props) : measure.hideDataLabel;
       if (hideDataLabel || chartConfig.activeSegment === props.index) return null;
-      return Pie.renderLabelLineItem(undefined, props);
+      return Pie.renderLabelLineItem({}, props);
     },
     [chartConfig.activeSegment, measure.hideDataLabel]
   );
@@ -274,6 +268,7 @@ const PieChart = forwardRef<HTMLDivElement, PieChartProps>((props, ref) => {
       dataset={dataset}
       ref={ref}
       loading={loading}
+      loadingDelay={loadingDelay}
       Placeholder={ChartPlaceholder ?? PieChartPlaceholder}
       style={style}
       className={className}
@@ -281,12 +276,13 @@ const PieChart = forwardRef<HTMLDivElement, PieChartProps>((props, ref) => {
       resizeDebounce={chartConfig.resizeDebounce}
       {...propsWithoutOmitted}
     >
+      {/*@ts-expect-error: todo not yet compatible with React19*/}
       <PieChartLib
         onClick={onClickInternal}
         margin={chartConfig.margin}
         className={clsx(
           typeof onDataPointClick === 'function' || typeof onClick === 'function' ? 'has-click-handler' : undefined,
-          classes.piechart
+          classNames.piechart
         )}
       >
         <Pie
@@ -298,7 +294,7 @@ const PieChart = forwardRef<HTMLDivElement, PieChartProps>((props, ref) => {
           dataKey={measure.accessor}
           data={dataset}
           animationBegin={0}
-          isAnimationActive={noAnimation === false}
+          isAnimationActive={!noAnimation}
           labelLine={renderLabelLine}
           label={dataLabel}
           activeIndex={chartConfig.activeSegment}
@@ -339,11 +335,6 @@ const PieChart = forwardRef<HTMLDivElement, PieChartProps>((props, ref) => {
     </ChartContainer>
   );
 });
-
-PieChart.defaultProps = {
-  noLegend: false,
-  noAnimation: false
-};
 
 PieChart.displayName = 'PieChart';
 

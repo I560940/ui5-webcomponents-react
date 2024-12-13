@@ -19,12 +19,7 @@ import * as ComponentStories from './SelectDialog.stories';
 
 ## Opening SelectDialogs
 
-<br />
-
-#### since 0.22.0
-
-We recommend opening and closing the `SelectDialog` component in a declarative way using the `open` prop.
-You can still use the imperative way which is outlined below.
+You can open and close the `SelectDialog` component in a declarative way using the `open` and `opener` prop.
 
 ```jsx
 const MyComponentWithSelectDialog = () => {
@@ -39,32 +34,9 @@ const MyComponentWithSelectDialog = () => {
         Open SelectDialog
       </Button>
       <SelectDialog open={dialogIsOpen} headerText="Select Product">
-        <StandardListItem image="pathToImg" description="description">
+        <ListItemStandard image="pathToImg" description="description">
           Product
-        </StandardListItem>
-      </SelectDialog>
-    </>
-  );
-};
-```
-
-#### before 0.22.0
-
-`SelectDialog`s can be opened by attaching a `ref` to the component and then calling the corresponding **`show`** method.
-
-```jsx
-const SelectDialogComponent = () => {
-  const dialogRef = useRef(null);
-  const onButtonClick = () => {
-    dialogRef.current.show();
-  };
-  return (
-    <>
-      <Button onClick={onButtonClick}>Open SelectDialog</Button>
-      <SelectDialog ref={dialogRef} headerText="Select Product">
-        <StandardListItem image="pathToImg" description="description">
-          Product
-        </StandardListItem>
+        </ListItemStandard>
       </SelectDialog>
     </>
   );
@@ -148,14 +120,14 @@ const MultiSelectDialog = () => {
       <Button onClick={handleOpen}>Open Dialog</Button>
       <SelectDialog
         open={dialogOpen}
-        mode={ListMode.MultiSelect}
+        mode={ListSelectionMode.Multiple}
         numberOfSelectedItems={Object.keys(selectedItems).length}
         listProps={{ onItemClick: handleItemClick }}
         showClearButton
         rememberSelections
         onClear={handleClear}
         onConfirm={handleConfirm}
-        onAfterClose={handleClose}
+        onClose={handleClose}
         onSearchInput={handleSearch}
         onSearch={handleSearch}
         onSearchReset={handleSearchReset}
@@ -176,7 +148,7 @@ const MultiSelectDialog = () => {
               return null;
             }
             return (
-              <StandardListItem
+              <ListItemStandard
                 image={currentProduct.img}
                 description={`${currentProduct.description}${index}`}
                 data-description={`${currentProduct.description}${index}`}
@@ -184,7 +156,7 @@ const MultiSelectDialog = () => {
                 selected={selectedItems[description]}
               >
                 {currentProduct.text}
-              </StandardListItem>
+              </ListItemStandard>
             );
           })
           .filter(Boolean)}

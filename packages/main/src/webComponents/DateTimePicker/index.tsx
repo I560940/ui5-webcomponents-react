@@ -14,13 +14,15 @@ import type { CommonProps, Ui5CustomEvent, Ui5DomRef, UI5WCSlotsNode } from '../
 interface DateTimePickerAttributes {
   /**
    * Defines the aria-label attribute for the component.
+   * @default undefined
    */
-  accessibleName?: string;
+  accessibleName?: string | undefined;
 
   /**
    * Receives id(or many ids) of the elements that label the component.
+   * @default undefined
    */
-  accessibleNameRef?: string;
+  accessibleNameRef?: string | undefined;
 
   /**
    * Determines whether the component is displayed as disabled.
@@ -30,8 +32,9 @@ interface DateTimePickerAttributes {
 
   /**
    * Determines the format, displayed in the input field.
+   * @default undefined
    */
-  formatPattern?: string;
+  formatPattern?: string | undefined;
 
   /**
    * Defines the visibility of the week numbers column.
@@ -57,16 +60,20 @@ interface DateTimePickerAttributes {
   minDate?: string;
 
   /**
-   * Determines the name with which the component will be submitted in an HTML form.
+   * Determines the name by which the component will be identified upon submission in an HTML form.
    *
-   * **Important:** For the `name` property to have effect, you must add the following import to your project:
-   * `import "@ui5/webcomponents/dist/features/InputElementsFormSupport.js";`
-   *
-   * **Note:** When set, a native `input` HTML element
-   * will be created inside the component so that it can be submitted as
-   * part of an HTML form. Do not use this property unless you need to submit a form.
+   * **Note:** This property is only applicable within the context of an HTML Form element.
+   * @default undefined
    */
-  name?: string;
+  name?: string | undefined;
+
+  /**
+   * Defines the open or closed state of the popover.
+   *
+   * **Note:** Available since [v2.0.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.0.0) of **@ui5/webcomponents**.
+   * @default false
+   */
+  open?: boolean;
 
   /**
    * Defines a short hint, intended to aid the user with data entry when the
@@ -118,12 +125,6 @@ interface DateTimePickerAttributes {
 
 interface DateTimePickerDomRef extends Required<DateTimePickerAttributes>, Ui5DomRef {
   /**
-   * Closes the picker.
-   * @returns {void}
-   */
-  closePicker: () => void;
-
-  /**
    * Currently selected date represented as a Local JavaScript Date instance.
    */
   readonly dateValue: Date | null;
@@ -144,23 +145,11 @@ interface DateTimePickerDomRef extends Required<DateTimePickerAttributes>, Ui5Do
   isInValidRange: (value: string) => boolean;
 
   /**
-   * Checks if the picker is open.
-   * @returns {boolean} - true if the picker is open, false otherwise
-   */
-  isOpen: () => boolean;
-
-  /**
    * Checks if a value is valid against the current date format of the DatePicker.
    * @param {string} value - A value to be tested against the current date format
    * @returns {boolean}
    */
   isValid: (value: string) => boolean;
-
-  /**
-   * Opens the picker.
-   * @returns {Promise<void>}
-   */
-  openPicker: () => Promise<void>;
 }
 
 interface DateTimePickerPropTypes
@@ -175,22 +164,26 @@ interface DateTimePickerPropTypes
    * **Note:** If not specified, a default text (in the respective language) will be displayed.
    *
    * **Note:** The `valueStateMessage` would be displayed,
-   * when the component is in `Information`, `Warning` or `Error` value state.
+   * when the component is in `Information`, `Critical` or `Negative` value state.
    *
    * __Note:__ The content of the prop will be rendered into a [&lt;slot&gt;](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot) by assigning the respective [slot](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/slot) attribute (`slot="valueStateMessage"`).
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   valueStateMessage?: UI5WCSlotsNode;
   /**
    * Fired when the input operation has finished by pressing Enter or on focusout.
+   *
+   * **Note:** Call `event.preventDefault()` inside the handler of this event to prevent its default action/s.
    */
   onChange?: (event: Ui5CustomEvent<DateTimePickerDomRef, DatePickerChangeEventDetail>) => void;
 
   /**
    * Fired when the value of the component is changed at each key stroke.
+   *
+   * **Note:** Call `event.preventDefault()` inside the handler of this event to prevent its default action/s.
    */
   onInput?: (event: Ui5CustomEvent<DateTimePickerDomRef, DatePickerInputEventDetail>) => void;
 
@@ -198,6 +191,8 @@ interface DateTimePickerPropTypes
    * Fired before the value state of the component is updated internally.
    * The event is preventable, meaning that if it's default action is
    * prevented, the component will not update the value state.
+   *
+   * **Note:** Call `event.preventDefault()` inside the handler of this event to prevent its default action/s.
    */
   onValueStateChange?: (event: Ui5CustomEvent<DateTimePickerDomRef, DatePickerValueStateChangeEventDetail>) => void;
 }
@@ -255,7 +250,7 @@ interface DateTimePickerPropTypes
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const DateTimePicker = withWebComponent<DateTimePickerPropTypes, DateTimePickerDomRef>(
   'ui5-datetime-picker',
@@ -272,7 +267,7 @@ const DateTimePicker = withWebComponent<DateTimePickerPropTypes, DateTimePickerD
     'value',
     'valueState'
   ],
-  ['disabled', 'hideWeekNumbers', 'readonly', 'required'],
+  ['disabled', 'hideWeekNumbers', 'open', 'readonly', 'required'],
   ['valueStateMessage'],
   ['change', 'input', 'value-state-change'],
   () => import('@ui5/webcomponents/dist/DateTimePicker.js')

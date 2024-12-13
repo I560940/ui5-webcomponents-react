@@ -1,9 +1,16 @@
 'use client';
 
-import { debounce, useI18nBundle, useIsomorphicLayoutEffect, useSyncRef } from '@ui5/webcomponents-react-base';
+import type PopupAccessibleRole from '@ui5/webcomponents/dist/types/PopupAccessibleRole.js';
+import {
+  debounce,
+  useI18nBundle,
+  useIsomorphicLayoutEffect,
+  useStylesheet,
+  useSyncRef
+} from '@ui5/webcomponents-react-base';
 import { clsx } from 'clsx';
 import type { ElementType, HTMLAttributes, ReactElement, ReactNode, Ref, RefObject } from 'react';
-import React, {
+import {
   Children,
   cloneElement,
   createRef,
@@ -14,17 +21,12 @@ import React, {
   useRef,
   useState
 } from 'react';
-import { createUseStyles } from 'react-jss';
-import type { PopupAccessibleRole } from '../../enums/index.js';
-import { ToolbarDesign, ToolbarStyle } from '../../enums/index.js';
 import { SHOW_MORE } from '../../i18n/i18n-defaults.js';
 import { flattenFragments } from '../../internal/utils.js';
 import type { CommonProps } from '../../types/index.js';
 import type { ButtonPropTypes, PopoverDomRef, ToggleButtonPropTypes } from '../../webComponents/index.js';
 import { OverflowPopover } from './OverflowPopover.js';
-import { styles } from './Toolbar.jss.js';
-
-const useStyles = createUseStyles(styles, { name: 'Toolbar' });
+import { classNames, styleData } from './Toolbar.module.css.js';
 
 export interface ToolbarPropTypes extends Omit<CommonProps, 'onClick' | 'children'> {
   /**
@@ -48,12 +50,12 @@ export interface ToolbarPropTypes extends Omit<CommonProps, 'onClick' | 'childre
    *
    * __Note:__ The visual styles are theme-dependent.
    */
-  toolbarStyle?: ToolbarStyle | keyof typeof ToolbarStyle;
+  toolbarStyle?: 'Clear' | 'Standard';
   /**
    * Defines the `Toolbar` design.<br />
    * <b>Note:</b> Design settings are theme-dependent.
    */
-  design?: ToolbarDesign | keyof typeof ToolbarDesign;
+  design?: 'Auto' | 'Info' | 'Solid' | 'Transparent';
   /**
    * Indicates that the whole `Toolbar` is clickable. The Press event is fired only if `active` is set to true.
    */
@@ -67,7 +69,7 @@ export interface ToolbarPropTypes extends Omit<CommonProps, 'onClick' | 'childre
   /**
    * Defines where modals are rendered into via `React.createPortal`.
    *
-   * You can find out more about this [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-working-with-portals--page).
+   * You can find out more about this [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-working-with-portals--page).
    *
    * Defaults to: `document.body`
    */
@@ -149,8 +151,8 @@ const OVERFLOW_BUTTON_WIDTH = 36 + 8 + 8; // width + padding end + spacing start
 const Toolbar = forwardRef<HTMLDivElement, ToolbarPropTypes>((props, ref) => {
   const {
     children,
-    toolbarStyle = ToolbarStyle.Standard,
-    design = ToolbarDesign.Auto,
+    toolbarStyle = 'Standard',
+    design = 'Auto',
     active = false,
     style,
     className,
@@ -166,7 +168,7 @@ const Toolbar = forwardRef<HTMLDivElement, ToolbarPropTypes>((props, ref) => {
     ...rest
   } = props;
 
-  const classes = useStyles();
+  useStylesheet(styleData, Toolbar.displayName);
   const [componentRef, outerContainer] = useSyncRef<HTMLDivElement>(ref);
   const controlMetaData = useRef([]);
   const [lastVisibleIndex, setLastVisibleIndex] = useState<number>(null);
@@ -180,12 +182,12 @@ const Toolbar = forwardRef<HTMLDivElement, ToolbarPropTypes>((props, ref) => {
   const showMoreText = i18nBundle.getText(SHOW_MORE);
 
   const toolbarClasses = clsx(
-    classes.outerContainer,
-    toolbarStyle === ToolbarStyle.Clear && classes.clear,
-    active && classes.active,
-    design === ToolbarDesign.Solid && classes.solid,
-    design === ToolbarDesign.Transparent && classes.transparent,
-    design === ToolbarDesign.Info && classes.info,
+    classNames.outerContainer,
+    toolbarStyle === 'Clear' && classNames.clear,
+    active && classNames.active,
+    design === 'Solid' && classNames.solid,
+    design === 'Transparent' && classNames.transparent,
+    design === 'Info' && classNames.info,
     className
   );
   const flatChildren = useMemo(() => {
@@ -207,12 +209,17 @@ const Toolbar = forwardRef<HTMLDivElement, ToolbarPropTypes>((props, ref) => {
         return item;
       }
       return (
-        <div ref={itemRef} key={index} className={classes.childContainer} data-component-name="ToolbarChildContainer">
+        <div
+          ref={itemRef}
+          key={index}
+          className={classNames.childContainer}
+          data-component-name="ToolbarChildContainer"
+        >
           {item}
         </div>
       );
     });
-  }, [flatChildren, controlMetaData, classes.childContainer]);
+  }, [flatChildren, controlMetaData, classNames.childContainer]);
 
   const overflowNeeded =
     (lastVisibleIndex || lastVisibleIndex === 0) &&
@@ -247,7 +254,7 @@ const Toolbar = forwardRef<HTMLDivElement, ToolbarPropTypes>((props, ref) => {
     };
   }, [numberOfAlwaysVisibleItems, overflowNeeded]);
 
-  const requestAnimationFrameRef = useRef<undefined | number>();
+  const requestAnimationFrameRef = useRef<undefined | number>(undefined);
   const calculateVisibleItems = useCallback(() => {
     requestAnimationFrameRef.current = requestAnimationFrame(() => {
       if (!outerContainer.current) return;
@@ -329,7 +336,7 @@ const Toolbar = forwardRef<HTMLDivElement, ToolbarPropTypes>((props, ref) => {
   };
 
   const prevChildren = useRef(flatChildren);
-  const debouncedOverflowChange = useRef<ToolbarPropTypes['onOverflowChange'] & { cancel(): void }>();
+  const debouncedOverflowChange = useRef<ToolbarPropTypes['onOverflowChange'] & { cancel(): void }>(undefined);
 
   useEffect(() => {
     if (typeof onOverflowChange === 'function') {
@@ -368,7 +375,7 @@ const Toolbar = forwardRef<HTMLDivElement, ToolbarPropTypes>((props, ref) => {
   return (
     <CustomTag
       style={styleWithMinWidth}
-      className={clsx(toolbarClasses, overflowNeeded && classes.hasOverflow)}
+      className={clsx(toolbarClasses, overflowNeeded && classNames.hasOverflow)}
       ref={componentRef}
       slot={slot}
       onClick={handleToolbarClick}
@@ -376,13 +383,14 @@ const Toolbar = forwardRef<HTMLDivElement, ToolbarPropTypes>((props, ref) => {
       tabIndex={active ? 0 : undefined}
       role={active ? 'button' : undefined}
       data-sap-ui-fastnavgroup="true"
+      data-component-name="Toolbar"
       {...rest}
     >
-      <div className={classes.toolbar} data-component-name="ToolbarContent" ref={contentRef}>
+      <div className={classNames.toolbar} data-component-name="ToolbarContent" ref={contentRef}>
         {overflowNeeded &&
           Children.map(childrenWithRef, (item, index) => {
             if (index >= lastVisibleIndex + 1 && index > numberOfAlwaysVisibleItems - 1) {
-              return cloneElement(item as ReactElement, {
+              return cloneElement(item as ReactElement<CommonProps>, {
                 style: { visibility: 'hidden', position: 'absolute', pointerEvents: 'none' }
               });
             }
@@ -393,13 +401,13 @@ const Toolbar = forwardRef<HTMLDivElement, ToolbarPropTypes>((props, ref) => {
       {overflowNeeded && (
         <div
           ref={overflowBtnRef}
-          className={classes.overflowButtonContainer}
+          className={classNames.overflowButtonContainer}
           data-component-name="ToolbarOverflowButtonContainer"
         >
           <OverflowPopover
             overflowPopoverRef={overflowPopoverRef}
             lastVisibleIndex={lastVisibleIndex}
-            classes={classes}
+            classes={classNames}
             portalContainer={portalContainer}
             overflowContentRef={overflowContentRef}
             numberOfAlwaysVisibleItems={numberOfAlwaysVisibleItems}
@@ -417,4 +425,6 @@ const Toolbar = forwardRef<HTMLDivElement, ToolbarPropTypes>((props, ref) => {
 });
 
 Toolbar.displayName = 'Toolbar';
+//@ts-expect-error: private identifier
+Toolbar._displayName = 'UI5WCRToolbar';
 export { Toolbar };

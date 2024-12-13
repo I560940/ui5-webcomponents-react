@@ -1,7 +1,7 @@
 'use client';
 
 import '@ui5/webcomponents/dist/Calendar.js';
-import type { CalendarSelectedDatesChangeEventDetail } from '@ui5/webcomponents/dist/Calendar.js';
+import type { CalendarSelectionChangeEventDetail } from '@ui5/webcomponents/dist/Calendar.js';
 import type CalendarSelectionMode from '@ui5/webcomponents/dist/types/CalendarSelectionMode.js';
 import type CalendarType from '@ui5/webcomponents-base/dist/types/CalendarType.js';
 import type { ReactNode } from 'react';
@@ -11,8 +11,9 @@ import type { CommonProps, Ui5CustomEvent, Ui5DomRef, UI5WCSlotsNode } from '../
 interface CalendarAttributes {
   /**
    * Determines the format, displayed in the input field.
+   * @default undefined
    */
-  formatPattern?: string;
+  formatPattern?: string | undefined;
 
   /**
    * Defines the visibility of the week numbers column.
@@ -67,10 +68,7 @@ interface CalendarDomRef extends Required<CalendarAttributes>, Ui5DomRef {}
 
 interface CalendarPropTypes
   extends CalendarAttributes,
-    Omit<
-      CommonProps,
-      keyof CalendarAttributes | 'calendarLegend' | 'children' | 'specialDates' | 'onSelectedDatesChange'
-    > {
+    Omit<CommonProps, keyof CalendarAttributes | 'calendarLegend' | 'children' | 'specialDates' | 'onSelectionChange'> {
   /**
    * Defines the calendar legend of the component.
    *
@@ -78,13 +76,16 @@ interface CalendarPropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
+   *
+   * **Note:** Available since [v1.23.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.23.0) of **@ui5/webcomponents**.
    */
   calendarLegend?: UI5WCSlotsNode;
 
   /**
    * Defines the selected date or dates (depending on the `selectionMode` property)
-   * for this calendar as instances of `CalendarDate`.
+   * for this calendar as instances of `CalendarDate` or `CalendarDateRange`.
+   * Use `CalendarDate` for single or multiple selection, and `CalendarDateRange` for range selection.
    */
   children?: ReactNode | ReactNode[];
 
@@ -95,7 +96,9 @@ interface CalendarPropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
+   *
+   * **Note:** Available since [v1.23.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.23.0) of **@ui5/webcomponents**.
    */
   specialDates?: UI5WCSlotsNode;
   /**
@@ -103,8 +106,10 @@ interface CalendarPropTypes
    *
    * **Note:** If you call `preventDefault()` for this event, the component will not
    * create instances of `CalendarDate` for the newly selected dates. In that case you should do this manually.
+   *
+   * **Note:** Call `event.preventDefault()` inside the handler of this event to prevent its default action/s.
    */
-  onSelectedDatesChange?: (event: Ui5CustomEvent<CalendarDomRef, CalendarSelectedDatesChangeEventDetail>) => void;
+  onSelectionChange?: (event: Ui5CustomEvent<CalendarDomRef, CalendarSelectionChangeEventDetail>) => void;
 }
 
 /**
@@ -115,7 +120,7 @@ interface CalendarPropTypes
  * date string, correctly formatted according to the `Calendar`'s `formatPattern` property.
  * Whenever the user changes the date selection, `Calendar` will automatically create/remove instances
  * of `CalendarDate` in itself, unless you prevent this behavior by calling `preventDefault()` for the
- * `selected-dates-change` event. This is useful if you want to control the selected dates externally.
+ * `selection-change` event. This is useful if you want to control the selected dates externally.
  *
  * ### Usage
  *
@@ -134,38 +139,38 @@ interface CalendarPropTypes
  * - Day picker:
  *
  * - [F4] - Shows month picker
- * - [SHIFT] + [F4] - Shows year picker
- * - [PAGEUP] - Navigate to the previous month
- * - [PAGEDOWN] - Navigate to the next month
- * - [SHIFT] + [PAGEUP] - Navigate to the previous year
- * - [SHIFT] + [PAGEDOWN] - Navigate to the next year
- * - [CTRL] + [SHIFT] + [PAGEUP] - Navigate ten years backwards
- * - [CTRL] + [SHIFT] + [PAGEDOWN] - Navigate ten years forwards
- * - [HOME] - Navigate to the first day of the week
- * - [END] - Navigate to the last day of the week
- * - [CTRL] + [HOME] - Navigate to the first day of the month
- * - [CTRL] + [END] - Navigate to the last day of the month
+ * - [Shift] + [F4] - Shows year picker
+ * - [Page Up] - Navigate to the previous month
+ * - [Page Down] - Navigate to the next month
+ * - [Shift] + [Page Up] - Navigate to the previous year
+ * - [Shift] + [Page Down] - Navigate to the next year
+ * - [Ctrl] + [Shift] + [Page Up] - Navigate ten years backwards
+ * - [Ctrl] + [Shift] + [Page Down] - Navigate ten years forwards
+ * - [Home] - Navigate to the first day of the week
+ * - [End] - Navigate to the last day of the week
+ * - [Ctrl] + [Home] - Navigate to the first day of the month
+ * - [Ctrl] + [End] - Navigate to the last day of the month
  *
  * - Month picker:
  *
- * - [PAGEUP] - Navigate to the previous year
- * - [PAGEDOWN] - Navigate to the next year
- * - [HOME] - Navigate to the first month of the current row
- * - [END] - Navigate to the last month of the current row
- * - [CTRL] + [HOME] - Navigate to the first month of the current year
- * - [CTRL] + [END] - Navigate to the last month of the year
+ * - [Page Up] - Navigate to the previous year
+ * - [Page Down] - Navigate to the next year
+ * - [Home] - Navigate to the first month of the current row
+ * - [End] - Navigate to the last month of the current row
+ * - [Ctrl] + [Home] - Navigate to the first month of the current year
+ * - [Ctrl] + [End] - Navigate to the last month of the year
  *
  * - Year picker:
  *
- * - [PAGEUP] - Navigate to the previous year range
- * - [PAGEDOWN] - Navigate the next year range
- * - [HOME] - Navigate to the first year of the current row
- * - [END] - Navigate to the last year of the current row
- * - [CTRL] + [HOME] - Navigate to the first year of the current year range
- * - [CTRL] + [END] - Navigate to the last year of the current year range
+ * - [Page Up] - Navigate to the previous year range
+ * - [Page Down] - Navigate the next year range
+ * - [Home] - Navigate to the first year of the current row
+ * - [End] - Navigate to the last year of the current row
+ * - [Ctrl] + [Home] - Navigate to the first year of the current year range
+ * - [Ctrl] + [End] - Navigate to the last year of the current year range
  *
  * #### Fast Navigation
- * This component provides a build in fast navigation group which can be used via `F6 / Shift + F6` or ` Ctrl + Alt(Option) + Down /  Ctrl + Alt(Option) + Up`.
+ * This component provides a build in fast navigation group which can be used via [F6] / [Shift] + [F6] / [Ctrl] + [Alt/Option] / [Down] or [Ctrl] + [Alt/Option] + [Up].
  * In order to use this functionality, you need to import the following module:
  * `import "@ui5/webcomponents-base/dist/features/F6Navigation.js"`
  *
@@ -194,14 +199,14 @@ interface CalendarPropTypes
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const Calendar = withWebComponent<CalendarPropTypes, CalendarDomRef>(
   'ui5-calendar',
   ['formatPattern', 'maxDate', 'minDate', 'primaryCalendarType', 'secondaryCalendarType', 'selectionMode'],
   ['hideWeekNumbers'],
   ['calendarLegend', 'specialDates'],
-  ['selected-dates-change'],
+  ['selection-change'],
   () => import('@ui5/webcomponents/dist/Calendar.js')
 );
 

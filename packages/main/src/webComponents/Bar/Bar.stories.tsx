@@ -1,8 +1,8 @@
 import { GitHubLogo } from '@sb/components/GitHub-Mark';
 import type { Meta, StoryObj } from '@storybook/react';
+import BarDesign from '@ui5/webcomponents/dist/types/BarDesign.js';
+import ButtonDesign from '@ui5/webcomponents/dist/types/ButtonDesign.js';
 import navBackIcon from '@ui5/webcomponents-icons/dist/nav-back.js';
-import { BarDesign } from '../../enums/BarDesign';
-import { ButtonDesign } from '../../enums/ButtonDesign';
 import { Button } from '../Button';
 import { Input } from '../Input';
 import { Link } from '../Link';
@@ -40,7 +40,7 @@ export const WithCustomElements: Story = {
           <>
             <Button icon={navBackIcon} design={ButtonDesign.Transparent} />
             <img
-              src="https://raw.githubusercontent.com/SAP/ui5-webcomponents-react/main/assets/Logo.png"
+              src="https://raw.githubusercontent.com/SAP/ui5-webcomponents-react/main/assets/Logo-Sticker.png"
               alt="logo"
               style={{ marginLeft: '6px', width: '120px' }}
             />

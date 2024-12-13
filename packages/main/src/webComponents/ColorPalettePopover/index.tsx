@@ -2,7 +2,7 @@
 
 import '@ui5/webcomponents/dist/ColorPalettePopover.js';
 import type { ColorPalettePopoverItemClickEventDetail } from '@ui5/webcomponents/dist/ColorPalettePopover.js';
-import type { CSSProperties, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { withWebComponent } from '../../internal/withWebComponent.js';
 import type { CommonProps, Ui5CustomEvent, Ui5DomRef } from '../../types/index.js';
 
@@ -13,19 +13,25 @@ interface ColorPalettePopoverAttributes {
    * **Note:** The default color should be a part of the ColorPalette colors`
    * @default undefined
    */
-  defaultColor?: CSSProperties['color'];
+  defaultColor?: string | undefined;
 
   /**
    * Defines the open | closed state of the popover.
+   *
+   * **Note:** Available since [v1.21.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.21.0) of **@ui5/webcomponents**.
    * @default false
    */
   open?: boolean;
 
   /**
    * Defines the ID or DOM Reference of the element that the popover is shown at.
+   * When using this attribute in a declarative way, you must only use the `id` (as a string) of the element at which you want to show the popover.
+   * You can only set the `opener` attribute to a DOM Reference when using JavaScript.
+   *
+   * **Note:** Available since [v1.21.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.21.0) of **@ui5/webcomponents**.
    * @default undefined
    */
-  opener?: string;
+  opener?: HTMLElement | string | undefined;
 
   /**
    * Defines whether the user can choose the default color from a button.
@@ -48,30 +54,7 @@ interface ColorPalettePopoverAttributes {
   showRecentColors?: boolean;
 }
 
-interface ColorPalettePopoverDomRef extends Omit<Required<ColorPalettePopoverAttributes>, 'opener'>, Ui5DomRef {
-  /**
-   * Defines the ID or DOM Reference of the element that the popover is shown at.
-   */
-  opener: HTMLElement | string | undefined;
-
-  /**
-   * Shows the ColorPalettePopover.
-   *
-   * @deprecated The method is deprecated in favour of `open` and `opener` properties.
-   * @param {HTMLElement | EventTarget} opener - the element that the popover is shown at
-   * @returns {void}
-   */
-  openPopover: (opener: HTMLElement | EventTarget) => void;
-
-  /**
-   * Shows the ColorPalettePopover.
-   *
-   * @deprecated The method is deprecated in favour of `open` and `opener` properties.
-   * @param {HTMLElement | EventTarget} opener - the element that the popover is shown at
-   * @returns {void}
-   */
-  showAt: (opener: HTMLElement | EventTarget) => void;
-}
+interface ColorPalettePopoverDomRef extends Required<ColorPalettePopoverAttributes>, Ui5DomRef {}
 
 interface ColorPalettePopoverPropTypes
   extends ColorPalettePopoverAttributes,
@@ -82,6 +65,8 @@ interface ColorPalettePopoverPropTypes
   children?: ReactNode | ReactNode[];
   /**
    * Fired when the `ColorPalettePopover` is closed due to user interaction.
+   *
+   * **Note:** Available since [v1.21.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.21.0) of **@ui5/webcomponents**.
    */
   onClose?: (event: Ui5CustomEvent<ColorPalettePopoverDomRef>) => void;
 
@@ -107,7 +92,7 @@ interface ColorPalettePopoverPropTypes
  * For the `ColorPalettePopover`
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const ColorPalettePopover = withWebComponent<ColorPalettePopoverPropTypes, ColorPalettePopoverDomRef>(
   'ui5-color-palette-popover',

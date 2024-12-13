@@ -28,10 +28,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: preactjs/compressed-size-action@2.5.0
+      - uses: preactjs/compressed-size-action@2.6.0
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
-          pattern: 'packages/**/dist/**/*.js'
+          pattern: 'packages/**/dist/**/*.{js,css}'
           compression: 'gzip'
           clean-script: 'clean:remove-modules'
 
@@ -41,7 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4.0.2
+      - uses: actions/setup-node@v4.0.3
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
@@ -57,20 +57,31 @@ jobs:
     needs: ['install']
     name: 'Build'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        react: ['18', '19']
     env:
       CYPRESS_INSTALL_BINARY: 0
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4.0.2
+      - uses: actions/setup-node@v4.0.3
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
 
-      - name: Install and Build
+      - name: Install
+        run: yarn install --immutable
+
+      - name: Install 18
+        if: ${{ matrix.react == '18' }}
         run: |
-          yarn install --immutable
-          yarn build
+          yarn set resolution "@types/react@npm:*" "18"
+          yarn set resolution "@types/react-dom@npm:*" "18"
+          yarn add react@18 react-dom@18
+
+      - name: Build
+        run: yarn build
 
   lint:
     needs: ['install']
@@ -80,7 +91,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4.0.2
+      - uses: actions/setup-node@v4.0.3
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
@@ -103,7 +114,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
@@ -116,9 +127,9 @@ jobs:
           NODE_OPTIONS: '--max-old-space-size=4096'
 
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.5.0
+        uses: JamesIves/github-pages-deploy-action@v4.6.3
         with:
           branch: gh-pages # The branch the action should deploy to.
           folder: .out # The folder the action should deploy.
-          target-folder: main
+          target-folder: nightly
           clean: true

@@ -11,15 +11,24 @@ interface TitleAttributes {
   /**
    * Defines the component level.
    * Available options are: `"H6"` to `"H1"`.
+   * This property does not influence the style of the component.
+   * Use the property `size` for this purpose instead.
    * @default "H2"
    */
   level?: TitleLevel | keyof typeof TitleLevel;
 
   /**
+   * Defines the visual appearance of the title.
+   * Available options are: `"H6"` to `"H1"`.
+   * @default "H5"
+   */
+  size?: TitleLevel | keyof typeof TitleLevel;
+
+  /**
    * Defines how the text of a component will be displayed when there is not enough space.
    *
    * **Note:** for option "Normal" the text will wrap and the words will not be broken based on hyphenation.
-   * @default "None"
+   * @default "Normal"
    */
   wrappingType?: WrappingType | keyof typeof WrappingType;
 }
@@ -42,11 +51,11 @@ interface TitlePropTypes extends TitleAttributes, Omit<CommonProps, keyof TitleA
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const Title = withWebComponent<TitlePropTypes, TitleDomRef>(
   'ui5-title',
-  ['level', 'wrappingType'],
+  ['level', 'size', 'wrappingType'],
   [],
   [],
   [],

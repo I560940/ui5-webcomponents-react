@@ -1,7 +1,7 @@
 import { SplitterElementContent } from '@sb/components/SplitterElementContent';
 import { isChromatic } from '@sb/utils';
 import type { Meta, StoryObj } from '@storybook/react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, FlexBox, Label, SegmentedButton, SegmentedButtonItem, SplitterElement, Text } from '../..';
 import { SplitterLayout } from './index.js';
 
@@ -39,7 +39,7 @@ export const Default: Story = {
         </SplitterElement>
         <SplitterElement>
           <FlexBox style={{ height: '100%', width: '100%' }} alignItems="Center" justifyContent="Center">
-            <Text>{`Content 2
+            <Text style={{ whiteSpace: 'pre-line' }}>{`Content 2
             with
             multi
             lines

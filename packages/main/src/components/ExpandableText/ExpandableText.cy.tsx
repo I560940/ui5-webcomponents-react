@@ -1,5 +1,5 @@
-import { cypressPassThroughTestsFactory } from '@/cypress/support/utils';
 import { ExpandableText } from './index.js';
+import { cypressPassThroughTestsFactory } from '@/cypress/support/utils';
 
 const longText = `             If renderWhitespace is set to true, there will be thirteen white spaces in front and after this sentence.             Lorem ipsum dolor st amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat`;
 
@@ -65,15 +65,18 @@ describe('ExpandableText', () => {
         {longText}
       </ExpandableText>
     );
-    cy.findByText('Show more').click();
+    cy.findByText('Show more').should('have.attr', 'accessible-name', 'Show the full text').click();
+
     getText(
       'If renderWhitespace is set to true, there will be thirteen white spaces in front and after this sent… Show less'
     );
     cy.get('[ui5-responsive-popover]').should('have.attr', 'open');
+    cy.findByText('Show less').should('have.attr', 'accessible-name', 'Close the popover').realClick();
     cy.realPress('Escape');
     getText(
       'If renderWhitespace is set to true, there will be thirteen white spaces in front and after this sent… Show more'
     );
+    cy.findByText('Show more').should('have.attr', 'accessible-name', 'Show the full text');
   });
 
   cypressPassThroughTestsFactory(ExpandableText);

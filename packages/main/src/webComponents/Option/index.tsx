@@ -7,17 +7,10 @@ import type { CommonProps, Ui5DomRef } from '../../types/index.js';
 
 interface OptionAttributes {
   /**
-   * Defines the additional text displayed at the end of the option element.
+   * Defines the `additionalText`, displayed in the end of the option.
+   * @default undefined
    */
-  additionalText?: string;
-
-  /**
-   * Defines whether the component is in disabled state.
-   *
-   * **Note:** A disabled component is hidden.
-   * @default false
-   */
-  disabled?: boolean;
+  additionalText?: string | undefined;
 
   /**
    * Defines the `icon` source URI.
@@ -25,9 +18,9 @@ interface OptionAttributes {
    * **Note:**
    * SAP-icons font provides numerous built-in icons. To find all the available icons, see the
    * [Icon Explorer](https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html).
-   * @default null
+   * @default undefined
    */
-  icon?: string | null | undefined;
+  icon?: string | undefined;
 
   /**
    * Defines the selected state of the component.
@@ -36,10 +29,19 @@ interface OptionAttributes {
   selected?: boolean;
 
   /**
+   * Defines the tooltip of the option.
+   *
+   * **Note:** Available since [v2.0.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.0.0) of **@ui5/webcomponents**.
+   * @default undefined
+   */
+  tooltip?: string | undefined;
+
+  /**
    * Defines the value of the `Select` inside an HTML Form element when this component is selected.
    * For more information on HTML Form support, see the `name` property of `Select`.
+   * @default undefined
    */
-  value?: string;
+  value?: string | undefined;
 }
 
 interface OptionDomRef extends Required<OptionAttributes>, Ui5DomRef {}
@@ -58,13 +60,12 @@ interface OptionPropTypes extends OptionAttributes, Omit<CommonProps, keyof Opti
  *
  *
  *
- * @abstract
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const Option = withWebComponent<OptionPropTypes, OptionDomRef>(
   'ui5-option',
-  ['additionalText', 'icon', 'value'],
-  ['disabled', 'selected'],
+  ['additionalText', 'icon', 'tooltip', 'value'],
+  ['selected'],
   [],
   [],
   () => import('@ui5/webcomponents/dist/Option.js')

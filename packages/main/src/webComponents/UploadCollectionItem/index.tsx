@@ -1,7 +1,8 @@
 'use client';
 
 import '@ui5/webcomponents-fiori/dist/UploadCollectionItem.js';
-import type { AccessibilityAttributes } from '@ui5/webcomponents/dist/ListItem.js';
+import type { ListItemAccessibilityAttributes } from '@ui5/webcomponents/dist/ListItem.js';
+import type Highlight from '@ui5/webcomponents/dist/types/Highlight.js';
 import type ListItemType from '@ui5/webcomponents/dist/types/ListItemType.js';
 import type UploadState from '@ui5/webcomponents-fiori/dist/types/UploadState.js';
 import type { ReactNode } from 'react';
@@ -10,10 +11,31 @@ import type { CommonProps, Ui5CustomEvent, Ui5DomRef, UI5WCSlotsNode } from '../
 
 interface UploadCollectionItemAttributes {
   /**
+   * Defines the additional accessibility attributes that will be applied to the component.
+   * The following fields are supported:
+   *
+   * - **ariaSetsize**: Defines the number of items in the current set  when not all items in the set are present in the DOM.
+   * **Note:** The value is an integer reflecting the number of items in the complete set. If the size of the entire set is unknown, set `-1`.
+   *
+   * 	- **ariaPosinset**: Defines an element's number or position in the current set when not all items are present in the DOM.
+   * 	**Note:** The value is an integer greater than or equal to 1, and less than or equal to the size of the set when that size is known.
+   *
+   * **Note:** Available since [v1.15.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.15.0) of **@ui5/webcomponents-fiori**.
+   * @default {}
+   */
+  accessibilityAttributes?: ListItemAccessibilityAttributes;
+
+  /**
    * Disables the delete button.
    * @default false
    */
   disableDeleteButton?: boolean;
+
+  /**
+   * Holds an instance of `File` associated with this item.
+   * @default null
+   */
+  file?: File | null;
 
   /**
    * The name of the file.
@@ -27,8 +49,7 @@ interface UploadCollectionItemAttributes {
   fileNameClickable?: boolean;
 
   /**
-   * By default, the delete button will always be shown, regardless of the `UploadCollection`'s property `mode`.
-   * Setting this property to `true` will hide the delete button.
+   * Hides the delete button.
    * @default false
    */
   hideDeleteButton?: boolean;
@@ -46,8 +67,19 @@ interface UploadCollectionItemAttributes {
   hideTerminateButton?: boolean;
 
   /**
+   * Defines the highlight state of the list items.
+   * Available options are: `"None"` (by default), `"Positive"`, `"Critical"`, `"Information"` and `"Negative"`.
+   *
+   * **Note:** Available since [v1.24](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.24) of **@ui5/webcomponents-fiori**.
+   * @default "None"
+   */
+  highlight?: Highlight | keyof typeof Highlight;
+
+  /**
    * The navigated state of the list item.
    * If set to `true`, a navigation indicator is displayed at the end of the list item.
+   *
+   * **Note:** Available since [v1.10.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.10.0) of **@ui5/webcomponents-fiori**.
    * @default false
    */
   navigated?: boolean;
@@ -61,15 +93,18 @@ interface UploadCollectionItemAttributes {
   progress?: number;
 
   /**
-   * Defines the selected state of the `ListItem`.
+   * Defines the selected state of the component.
    * @default false
    */
   selected?: boolean;
 
   /**
    * Defines the text of the tooltip that would be displayed for the list item.
+   *
+   * **Note:** Available since [v1.23.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.23.0) of **@ui5/webcomponents-fiori**.
+   * @default undefined
    */
-  tooltip?: string;
+  tooltip?: string | undefined;
 
   /**
    * Defines the visual indication and behavior of the list items.
@@ -82,35 +117,20 @@ interface UploadCollectionItemAttributes {
   type?: ListItemType | keyof typeof ListItemType;
 
   /**
-   * If set to `Uploading` or `Error`, a progress indicator showing the `progress` is displayed.
-   * Also if set to `Error`, a refresh button is shown. When this icon is pressed `retry` event is fired.
-   * If set to `Uploading`, a terminate button is shown. When this icon is pressed `terminate` event is fired.
+   * Upload state.
+   *
+   * Depending on this property, the item displays the following:
+   *
+   * - `Ready` - progress indicator is displayed.
+   * - `Uploading` - progress indicator and terminate button are displayed. When the terminate button is pressed, `terminate` event is fired.
+   * - `Error` - progress indicator and retry button are displayed. When the retry button is pressed, `retry` event is fired.
+   * - `Complete` - progress indicator is not displayed.
    * @default "Ready"
    */
   uploadState?: UploadState | keyof typeof UploadState;
 }
 
-interface UploadCollectionItemDomRef extends Required<UploadCollectionItemAttributes>, Ui5DomRef {
-  /**
-   * An object of strings that defines several additional accessibility attribute values
-   * for customization depending on the use case.
-   *
-   *  It supports the following fields:
-   *
-   * - `ariaSetsize`: Defines the number of items in the current set of listitems or treeitems when not all items in the set are present in the DOM.
-   * 	The value of each `aria-setsize` is an integer reflecting number of items in the complete set.
-   *
-   * 	**Note:** If the size of the entire set is unknown, set `aria-setsize="-1"`.
-   * 	- `ariaPosinset`: Defines an element's number or position in the current set of listitems or treeitems when not all items are present in the DOM.
-   * 	The value of each `aria-posinset` is an integer greater than or equal to 1, and less than or equal to the size of the set when that size is known.
-   */
-  accessibilityAttributes: AccessibilityAttributes;
-
-  /**
-   * Holds an instance of `File` associated with this item.
-   */
-  file: File | null | undefined;
-}
+interface UploadCollectionItemDomRef extends Required<UploadCollectionItemAttributes>, Ui5DomRef {}
 
 interface UploadCollectionItemPropTypes
   extends UploadCollectionItemAttributes,
@@ -141,7 +161,9 @@ interface UploadCollectionItemPropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
+   *
+   * **Note:** Available since [v1.9.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.9.0) of **@ui5/webcomponents-fiori**.
    */
   deleteButton?: UI5WCSlotsNode;
 
@@ -154,7 +176,7 @@ interface UploadCollectionItemPropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   thumbnail?: UI5WCSlotsNode;
   /**
@@ -197,11 +219,11 @@ interface UploadCollectionItemPropTypes
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const UploadCollectionItem = withWebComponent<UploadCollectionItemPropTypes, UploadCollectionItemDomRef>(
   'ui5-upload-collection-item',
-  ['fileName', 'progress', 'tooltip', 'type', 'uploadState'],
+  ['accessibilityAttributes', 'file', 'fileName', 'highlight', 'progress', 'tooltip', 'type', 'uploadState'],
   [
     'disableDeleteButton',
     'fileNameClickable',

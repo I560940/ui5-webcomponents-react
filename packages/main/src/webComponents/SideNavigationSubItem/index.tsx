@@ -9,6 +9,8 @@ interface SideNavigationSubItemAttributes {
    * Defines whether the component is disabled.
    * A disabled component can't be pressed or
    * focused, and it is not in the tab chain.
+   *
+   * **Note:** Available since [v1.19.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.19.0) of **@ui5/webcomponents-fiori**.
    * @default false
    */
   disabled?: boolean;
@@ -18,8 +20,11 @@ interface SideNavigationSubItemAttributes {
    * If a JavaScript action should be triggered,
    * this should not be set, but instead an event handler
    * for the `click` event should be registered.
+   *
+   * **Note:** Available since [v1.19.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.19.0) of **@ui5/webcomponents-fiori**.
+   * @default undefined
    */
-  href?: string;
+  href?: string | undefined;
 
   /**
    * Defines the icon of the item.
@@ -27,8 +32,9 @@ interface SideNavigationSubItemAttributes {
    * The SAP-icons font provides numerous options.
    *
    * See all the available icons in the [Icon Explorer](https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html).
+   * @default undefined
    */
-  icon?: string;
+  icon?: string | undefined;
 
   /**
    * Defines whether the item is selected
@@ -48,13 +54,27 @@ interface SideNavigationSubItemAttributes {
    * - `_search`
    *
    * **This property must only be used when the `href` property is set.**
+   *
+   * **Note:** Available since [v1.19.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.19.0) of **@ui5/webcomponents-fiori**.
+   * @default undefined
    */
-  target?: string;
+  target?: string | undefined;
 
   /**
    * Defines the text of the item.
+   * @default undefined
    */
-  text?: string;
+  text?: string | undefined;
+
+  /**
+   * Defines the tooltip of the component.
+   *
+   * A tooltip attribute should be provided, in order to represent meaning/function, when the component is collapsed(icon only is visualized).
+   *
+   * **Note:** Available since [v2.0.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.0.0) of **@ui5/webcomponents-fiori**.
+   * @default undefined
+   */
+  tooltip?: string | undefined;
 }
 
 interface SideNavigationSubItemDomRef extends Required<SideNavigationSubItemAttributes>, Ui5DomRef {}
@@ -64,22 +84,23 @@ interface SideNavigationSubItemPropTypes
     Omit<CommonProps, keyof SideNavigationSubItemAttributes | 'onClick'> {
   /**
    * Fired when the component is activated either with a
-   * click/tap or by using the Enter or Space key.
+   * click/tap or by using the [Enter] or [Space] keys.
    */
   onClick?: (event: Ui5CustomEvent<SideNavigationSubItemDomRef>) => void;
 }
 
 /**
+ * Represents a single navigation action within `SideNavigationItem`.
  * The `SideNavigationSubItem` is intended to be used inside a `SideNavigationItem` only.
  *
  *
  *
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  * @abstract
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
  */
 const SideNavigationSubItem = withWebComponent<SideNavigationSubItemPropTypes, SideNavigationSubItemDomRef>(
   'ui5-side-navigation-sub-item',
-  ['href', 'icon', 'target', 'text'],
+  ['href', 'icon', 'target', 'text', 'tooltip'],
   ['disabled', 'selected'],
   [],
   ['click'],

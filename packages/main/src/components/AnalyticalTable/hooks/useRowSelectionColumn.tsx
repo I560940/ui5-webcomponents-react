@@ -1,6 +1,5 @@
 import { CssSizeVariablesNames, enrichEventWithDetails } from '@ui5/webcomponents-react-base';
 import type { CSSProperties } from 'react';
-import React from 'react';
 import { AnalyticalTableSelectionBehavior, AnalyticalTableSelectionMode } from '../../../enums/index.js';
 import { CheckBox } from '../../../webComponents/CheckBox/index.js';
 import type { ReactTableHooks } from '../types/index.js';
@@ -20,7 +19,7 @@ const Header = (instance) => {
     webComponentsReactProperties: { selectionMode }
   } = instance;
 
-  if (selectionMode === AnalyticalTableSelectionMode.SingleSelect) {
+  if (selectionMode === AnalyticalTableSelectionMode.Single) {
     return null;
   }
   const checkBoxProps = getToggleAllRowsSelectedProps();
@@ -31,12 +30,13 @@ const Header = (instance) => {
       tabIndex={-1}
       onChange={undefined}
       checked={checkBoxProps.indeterminate ? true : checkBoxProps.checked}
+      aria-hidden="true"
     />
   );
 };
 
 const Cell = ({ row, webComponentsReactProperties: { selectionMode } }) => {
-  if (selectionMode === AnalyticalTableSelectionMode.SingleSelect || row.isGrouped) {
+  if (selectionMode === AnalyticalTableSelectionMode.Single || row.isGrouped) {
     return null;
   }
 
@@ -44,6 +44,7 @@ const Cell = ({ row, webComponentsReactProperties: { selectionMode } }) => {
     <CheckBox
       {...row.getToggleRowSelectedProps()}
       tabIndex={-1}
+      aria-hidden="true"
       style={customCheckBoxStyling}
       data-name="internal_selection_column"
     />
@@ -74,7 +75,7 @@ const headerProps = (props, { instance }) => {
   const style = { ...props.style, cursor: 'pointer', display: 'flex', justifyContent: 'center' };
   if (
     props.key === 'header___ui5wcr__internal_selection_column' &&
-    selectionMode === AnalyticalTableSelectionMode.MultiSelect
+    selectionMode === AnalyticalTableSelectionMode.Multiple
   ) {
     const onClick = (e) => {
       toggleAllRowsSelected(!isAllRowsSelected);
@@ -96,12 +97,22 @@ const headerProps = (props, { instance }) => {
     };
 
     const onKeyDown = (e) => {
-      if (e.code === 'Space' || e.code === 'Enter') {
+      if (e.code === 'Enter' || e.code === 'Space') {
+        e.preventDefault();
+        if (e.code === 'Enter') {
+          onClick(e);
+        }
+      }
+    };
+
+    const onKeyUp = (e) => {
+      if (e.code === 'Space') {
         e.preventDefault();
         onClick(e);
       }
     };
-    return [props, { onClick, onKeyDown, style, title: isAllRowsSelected ? deselectAllText : selectAllText }];
+
+    return [props, { onClick, onKeyDown, onKeyUp, style, title: isAllRowsSelected ? deselectAllText : selectAllText }];
   }
   return props;
 };

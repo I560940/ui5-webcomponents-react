@@ -2,7 +2,7 @@
 
 import { enrichEventWithDetails, ThemingParameters, useIsRTL, useSyncRef } from '@ui5/webcomponents-react-base';
 import type { CSSProperties } from 'react';
-import React, { forwardRef, useCallback, useMemo } from 'react';
+import { forwardRef, useCallback, useMemo } from 'react';
 import {
   Bar,
   Brush,
@@ -15,6 +15,7 @@ import {
   XAxis,
   YAxis
 } from 'recharts';
+import type { YAxisProps } from 'recharts';
 import { useChartMargin } from '../../hooks/useChartMargin.js';
 import { useLabelFormatter } from '../../hooks/useLabelFormatter.js';
 import { useLegendItemClick } from '../../hooks/useLegendItemClick.js';
@@ -69,7 +70,7 @@ interface MeasureConfig extends IChartMeasure {
 }
 
 interface DimensionConfig extends IChartDimension {
-  interval?: number;
+  interval?: YAxisProps['interval'];
 }
 
 export interface BulletChartProps extends IChartBaseProps {
@@ -111,6 +112,8 @@ export interface BulletChartProps extends IChartBaseProps {
   /**
    * layout for showing measures. `horizontal` bars would equal the column chart, `vertical` would be a bar chart.
    * Default Value: `horizontal`
+   *
+   * @default `"horizontal"`
    */
   layout?: 'horizontal' | 'vertical';
 }
@@ -125,6 +128,7 @@ type AvailableChartTypes = 'primary' | 'comparison' | 'additional' | string;
 const BulletChart = forwardRef<HTMLDivElement, BulletChartProps>((props, ref) => {
   const {
     loading,
+    loadingDelay,
     dataset,
     onDataPointClick,
     noLegend,
@@ -132,7 +136,7 @@ const BulletChart = forwardRef<HTMLDivElement, BulletChartProps>((props, ref) =>
     tooltipConfig,
     onLegendClick,
     onClick,
-    layout,
+    layout = 'horizontal',
     style,
     className,
     slot,
@@ -144,7 +148,7 @@ const BulletChart = forwardRef<HTMLDivElement, BulletChartProps>((props, ref) =>
 
   const [componentRef, chartRef] = useSyncRef<any>(ref);
 
-  const chartConfig = {
+  const chartConfig: BulletChartProps['chartConfig'] = {
     yAxisVisible: false,
     xAxisVisible: true,
     gridStroke: ThemingParameters.sapList_BorderColor,
@@ -214,8 +218,8 @@ const BulletChart = forwardRef<HTMLDivElement, BulletChartProps>((props, ref) =>
                       ? payload[key] === payload.value[1] - payload.value[0]
                       : payload[key] === payload.value && key !== 'value'
                   )[0]
-                : payload.dataKey ??
-                  Object.keys(payload).find((key) => payload[key] === payload.value && key !== 'value'),
+                : (payload.dataKey ??
+                  Object.keys(payload).find((key) => payload[key] === payload.value && key !== 'value')),
               payload: payload.payload
             })
           );
@@ -237,7 +241,7 @@ const BulletChart = forwardRef<HTMLDivElement, BulletChartProps>((props, ref) =>
   const onItemLegendClick = useLegendItemClick(onLegendClick);
   const onClickInternal = useOnClickInternal(onClick);
 
-  const isBigDataSet = dataset?.length > 30 ?? false;
+  const isBigDataSet = dataset?.length > 30;
   const primaryDimensionAccessor = primaryDimension?.accessor;
 
   const [yAxisWidth, legendPosition] = useLongestYAxisLabel(
@@ -268,6 +272,7 @@ const BulletChart = forwardRef<HTMLDivElement, BulletChartProps>((props, ref) =>
     <ChartContainer
       ref={componentRef}
       loading={loading}
+      loadingDelay={loadingDelay}
       dataset={dataset}
       Placeholder={ChartPlaceholder ?? Placeholder}
       style={style}
@@ -276,6 +281,7 @@ const BulletChart = forwardRef<HTMLDivElement, BulletChartProps>((props, ref) =>
       resizeDebounce={chartConfig.resizeDebounce}
       {...propsWithoutOmitted}
     >
+      {/*@ts-expect-error: todo not yet compatible with React19*/}
       <ComposedChartLib
         syncId={syncId}
         onClick={onClickInternal}
@@ -319,7 +325,7 @@ const BulletChart = forwardRef<HTMLDivElement, BulletChartProps>((props, ref) =>
               axisProps.reversed = isRTL;
             }
 
-            return <AxisComponent key={dimension.accessor} {...axisProps} />;
+            return <AxisComponent key={dimension.reactKey} {...axisProps} />;
           })}
         {layout === 'horizontal' && (
           <YAxis
@@ -407,8 +413,8 @@ const BulletChart = forwardRef<HTMLDivElement, BulletChartProps>((props, ref) =>
             stroke={referenceLine?.color ?? referenceLine?.stroke}
             y={referenceLine?.value ? (layout === 'horizontal' ? referenceLine?.value : undefined) : referenceLine?.y}
             x={referenceLine?.value ? (layout === 'vertical' ? referenceLine?.value : undefined) : referenceLine?.x}
-            yAxisId={referenceLine?.yAxisId ?? layout === 'horizontal' ? 'primary' : undefined}
-            xAxisId={referenceLine?.xAxisId ?? layout === 'vertical' ? 'primary' : undefined}
+            yAxisId={(referenceLine?.yAxisId ?? layout === 'horizontal') ? 'primary' : undefined}
+            xAxisId={(referenceLine?.xAxisId ?? layout === 'vertical') ? 'primary' : undefined}
             label={referenceLine?.label}
           />
         )}
@@ -434,7 +440,7 @@ const BulletChart = forwardRef<HTMLDivElement, BulletChartProps>((props, ref) =>
         )}
         {sortedMeasures?.map((element, index) => {
           const chartElementProps: any = {
-            isAnimationActive: noAnimation === false
+            isAnimationActive: !noAnimation
           };
           let labelPosition = 'top';
           switch (element.type) {
@@ -473,7 +479,7 @@ const BulletChart = forwardRef<HTMLDivElement, BulletChartProps>((props, ref) =>
 
           return (
             <Bar
-              key={element.accessor}
+              key={element.reactKey}
               name={element.label ?? element.accessor}
               label={
                 isBigDataSet ? null : <ChartDataLabel config={element} chartType={'bar'} position={labelPosition} />
@@ -512,12 +518,6 @@ const BulletChart = forwardRef<HTMLDivElement, BulletChartProps>((props, ref) =>
     </ChartContainer>
   );
 });
-
-BulletChart.defaultProps = {
-  noLegend: false,
-  noAnimation: false,
-  layout: 'horizontal'
-};
 
 BulletChart.displayName = 'BulletChart';
 

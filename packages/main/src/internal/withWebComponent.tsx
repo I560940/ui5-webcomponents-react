@@ -3,12 +3,16 @@
 import { getEffectiveScopingSuffixForTag } from '@ui5/webcomponents-base/dist/CustomElementsScope.js';
 import { useIsomorphicLayoutEffect, useSyncRef } from '@ui5/webcomponents-react-base';
 import type { ComponentType, ReactElement, ReactNode, Ref } from 'react';
-import React, { cloneElement, forwardRef, Fragment, isValidElement, useEffect, useState } from 'react';
+import { cloneElement, forwardRef, Fragment, isValidElement, useEffect, useState } from 'react';
 import type { CommonProps, Ui5DomRef } from '../types/index.js';
 import { useServerSideEffect } from './ssr.js';
 import { camelToKebabCase, capitalizeFirstLetter, kebabToCamelCase } from './utils.js';
 
 const createEventPropName = (eventName: string) => `on${capitalizeFirstLetter(kebabToCamelCase(eventName))}`;
+
+const isPrimitiveAttribute = (value: unknown): boolean => {
+  return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean';
+};
 
 type EventHandler = (event: CustomEvent<unknown>) => void;
 
@@ -49,7 +53,7 @@ export const withWebComponent = <Props extends Record<string, any>, RefType = Ui
 
     // regular props (no booleans, no slots and no events)
     const regularProps = regularProperties.reduce((acc, name) => {
-      if (rest.hasOwnProperty(name)) {
+      if (rest.hasOwnProperty(name) && isPrimitiveAttribute(rest[name])) {
         return { ...acc, [camelToKebabCase(name)]: rest[name] };
       }
       return acc;
@@ -80,7 +84,7 @@ export const withWebComponent = <Props extends Record<string, any>, RefType = Ui
       const removeFragments = (element: ReactNode) => {
         if (!isValidElement(element)) return;
         if (element.type === Fragment) {
-          const elementChildren = element.props?.children;
+          const elementChildren = (element as ReactElement<{ children?: ReactNode | ReactNode[] }>).props?.children;
           if (Array.isArray(elementChildren)) {
             elementChildren.forEach((item) => {
               if (Array.isArray(item)) {
@@ -158,6 +162,20 @@ export const withWebComponent = <Props extends Record<string, any>, RefType = Ui
         });
       }
     }, [Component, waitForDefine, isDefined]);
+
+    const propsToApply = regularProperties.map((prop) => ({ name: prop, value: props[prop] }));
+    useEffect(() => {
+      void customElements.whenDefined(Component as unknown as string).then(() => {
+        for (const prop of propsToApply) {
+          if (prop.value != null && !isPrimitiveAttribute(prop.value)) {
+            if (ref.current) {
+              ref.current[prop.name] = prop.value;
+            }
+          }
+        }
+      });
+    }, [Component, ...propsToApply]);
+
     if (waitForDefine && !isDefined) {
       return null;
     }
@@ -169,6 +187,7 @@ export const withWebComponent = <Props extends Record<string, any>, RefType = Ui
         {...regularProps}
         {...nonWebComponentRelatedProps}
         class={className}
+        suppressHydrationWarning
       >
         {slots}
         {children}

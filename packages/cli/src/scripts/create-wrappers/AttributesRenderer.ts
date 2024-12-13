@@ -3,6 +3,7 @@ import dedent from 'dedent';
 import {
   mapWebComponentTypeToPrimitive,
   propDescriptionFormatter,
+  sinceFilter,
   snakeCaseToCamelCase
 } from '../../util/formatters.js';
 import { resolveReferenceImports } from '../../util/referenceResolver.js';
@@ -17,10 +18,10 @@ function mapWebComponentTypeToTsType(type: string) {
     return primitive;
   }
   switch (type) {
-    case 'HTMLElement | string | undefined':
-    case 'HTMLElement | string':
-      // opener props only accept strings as prop types
-      return 'string';
+    // case 'HTMLElement | string | undefined':
+    // case 'HTMLElement | string':
+    //   // opener props only accept strings as prop types
+    //   return 'string';
 
     default:
       if (!loggedTypes.has(type)) {
@@ -41,10 +42,18 @@ export class AttributesRenderer extends AbstractRenderer {
     return this;
   }
 
-  private descriptionBuilder(attribute: CEM.ClassField) {
+  private descriptionBuilder(attribute: CEM.ClassField, context: WebComponentWrapper) {
     const parts: string[] = [];
 
     parts.push(` * ${propDescriptionFormatter(attribute.description ?? '')}`);
+
+    if (sinceFilter(attribute._ui5since)) {
+      parts.push(` *`);
+      parts.push(
+        ` * **Note:** Available since [v${attribute._ui5since}](https://github.com/SAP/ui5-webcomponents/releases/tag/v${attribute._ui5since}) of **${context.packageName}**.`
+      );
+    }
+
     if (attribute.default && attribute.default.length > 0 && attribute.default !== '""') {
       parts.push(` * @default ${attribute.default}`);
     }
@@ -61,7 +70,7 @@ export class AttributesRenderer extends AbstractRenderer {
     type = mapWebComponentTypeToTsType(type);
 
     const references = attribute.type?.references;
-    const isEnum = references != null && references?.length > 0;
+    const isEnum = references != null && references?.length > 0 && attribute.default !== '{}';
 
     if (isEnum) {
       type += ` | keyof typeof ${type}`;
@@ -93,7 +102,7 @@ export class AttributesRenderer extends AbstractRenderer {
     interface ${context.componentName}Attributes {
       ${this._attributes
         .map((attribute) => {
-          return `${this.descriptionBuilder(attribute)}\n${this.propTyping(attribute, context)}`;
+          return `${this.descriptionBuilder(attribute, context)}\n${this.propTyping(attribute, context)}`;
         })
         .join('\n\n')}
     }

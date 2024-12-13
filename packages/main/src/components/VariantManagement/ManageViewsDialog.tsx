@@ -1,16 +1,11 @@
-import { isDesktop, isPhone, isTablet } from '@ui5/webcomponents-base/dist/Device.js';
+import BarDesign from '@ui5/webcomponents/dist/types/BarDesign.js';
+import ButtonDesign from '@ui5/webcomponents/dist/types/ButtonDesign.js';
+import TableOverflowMode from '@ui5/webcomponents/dist/types/TableOverflowMode.js';
 import searchIcon from '@ui5/webcomponents-icons/dist/search.js';
-import {
-  enrichEventWithDetails,
-  ThemingParameters,
-  useI18nBundle,
-  useIsomorphicId
-} from '@ui5/webcomponents-react-base';
-import type { MouseEventHandler, ReactNode } from 'react';
-import React, { Children, useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { createUseStyles } from 'react-jss';
-import { BarDesign, FlexBoxAlignItems, FlexBoxDirection, ButtonDesign } from '../../enums/index.js';
+import { enrichEventWithDetails, useI18nBundle, useStylesheet } from '@ui5/webcomponents-react-base';
+import type { MouseEventHandler, ReactElement } from 'react';
+import { Children, isValidElement, useEffect, useId, useRef, useState } from 'react';
+import { FlexBoxAlignItems, FlexBoxDirection } from '../../enums/index.js';
 import {
   APPLY_AUTOMATICALLY,
   CANCEL,
@@ -18,64 +13,30 @@ import {
   DEFAULT,
   MANAGE_VIEWS,
   SAVE,
+  SEARCH,
   SHARING,
-  VIEW,
-  SEARCH
+  VIEW
 } from '../../i18n/i18n-defaults.js';
-import { useCanRenderPortal } from '../../internal/ssr.js';
-import { cssVarVersionInfoPrefix } from '../../internal/utils.js';
 import { Bar } from '../../webComponents/Bar/index.js';
 import { Button } from '../../webComponents/Button/index.js';
+import type { DialogPropTypes } from '../../webComponents/Dialog/index.js';
 import { Dialog } from '../../webComponents/Dialog/index.js';
 import type { InputDomRef } from '../../webComponents/index.js';
 import { Icon, Input } from '../../webComponents/index.js';
 import { Table } from '../../webComponents/Table/index.js';
-import { TableColumn } from '../../webComponents/TableColumn/index.js';
+import { TableHeaderCell } from '../../webComponents/TableHeaderCell/index.js';
+import { TableHeaderRow } from '../../webComponents/TableHeaderRow/index.js';
 import { FlexBox } from '../FlexBox/index.js';
+import { classNames, styleData } from './ManageViewsDialog.module.css.js';
 import { ManageViewsTableRows } from './ManageViewsTableRows.js';
 import type { VariantManagementPropTypes } from './types.js';
 import type { VariantItemPropTypes } from './VariantItem.js';
 
-const _popupDefaultHeaderHeight = `var(${cssVarVersionInfoPrefix}popup_default_header_height)`;
-const _popupHeaderFontFamily = `var(${cssVarVersionInfoPrefix}popup_header_font_family)`;
+type ManageViewsDialogChildType = boolean | undefined | null | ReactElement<VariantItemPropTypes>;
 
-const styles = {
-  manageViewsDialog: {
-    // isTablet is true for some desktops with touch screens
-    width: isPhone() || (isTablet() && !isDesktop()) ? '100%' : '70vw',
-    '&::part(content), &::part(header)': {
-      padding: 0
-    },
-    '&::part(footer)': {
-      padding: 0,
-      borderBlockStart: 'none'
-    }
-  },
-  headerText: {
-    margin: 0,
-    textAlign: 'center',
-    alignSelf: 'start',
-    minHeight: _popupDefaultHeaderHeight,
-    maxHeight: _popupDefaultHeaderHeight,
-    lineHeight: _popupDefaultHeaderHeight,
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    maxWidth: '100%',
-    display: 'inline-block',
-    paddingInlineStart: '1rem',
-    fontFamily: `"72override",${_popupHeaderFontFamily}`,
-    fontSize: '1rem'
-  },
-  search: { width: 'calc(100% - 2rem)', marginBlockEnd: '0.5rem' },
-  inputIcon: { cursor: 'pointer', color: ThemingParameters.sapContent_IconColor }
-};
-
-const useStyles = createUseStyles(styles, { name: 'ManageViewsDialog' });
-
-interface ManageViewsDialogPropTypes {
-  children: ReactNode | ReactNode[];
-  onAfterClose: any;
+export interface ManageViewsDialogPropTypes {
+  children: ManageViewsDialogChildType | ManageViewsDialogChildType[];
+  onAfterClose: DialogPropTypes['onClose'];
   handleSaveManageViews: (
     e: MouseEventHandler<HTMLElement>,
     payload: {
@@ -89,7 +50,6 @@ interface ManageViewsDialogPropTypes {
   showSetAsDefault: boolean;
   showCreatedBy: boolean;
   variantNames: string[];
-  portalContainer: VariantManagementPropTypes['portalContainer'];
   showOnlyFavorites?: VariantManagementPropTypes['showOnlyFavorites'];
   onManageViewsCancel?: VariantManagementPropTypes['onManageViewsCancel'];
 }
@@ -104,11 +64,10 @@ export const ManageViewsDialog = (props: ManageViewsDialogPropTypes) => {
     showSetAsDefault,
     showCreatedBy,
     variantNames,
-    portalContainer,
     showOnlyFavorites,
     onManageViewsCancel
   } = props;
-  const uniqueId = useIsomorphicId();
+  const uniqueId = useId();
   const i18nBundle = useI18nBundle('@ui5/webcomponents-react');
   const cancelText = i18nBundle.getText(CANCEL);
   const saveText = i18nBundle.getText(SAVE);
@@ -122,54 +81,59 @@ export const ManageViewsDialog = (props: ManageViewsDialogPropTypes) => {
 
   const [changedVariantNames, setChangedVariantNames] = useState(new Map());
   const [invalidVariants, setInvalidVariants] = useState<Record<string, InputDomRef & { isInvalid?: boolean }>>({});
+  const [hasApplyAutomaticallyText, setHasApplyAutomaticallyText] = useState(false);
 
-  const classes = useStyles();
+  useStylesheet(styleData, 'ManageViewsDialog');
 
-  const columns = (
-    <>
-      {showOnlyFavorites && <TableColumn key="favorite-variant-item" />}
-      <TableColumn>{viewHeaderText}</TableColumn>
+  const headerRow = (
+    <TableHeaderRow sticky>
+      {showOnlyFavorites && <TableHeaderCell key="favorite-variant-item" />}
+      <TableHeaderCell importance={10} min-width="18rem">
+        {viewHeaderText}
+      </TableHeaderCell>
       {showShare && (
-        <TableColumn demandPopin minWidth={600}>
+        <TableHeaderCell minWidth="7.5rem" maxWidth="8rem">
           {sharingHeaderText}
-        </TableColumn>
+        </TableHeaderCell>
       )}
       {showSetAsDefault && (
-        <TableColumn demandPopin minWidth={600} popinText={defaultHeaderText}>
+        <TableHeaderCell minWidth="8rem" maxWidth="8rem">
           {defaultHeaderText}
-        </TableColumn>
+        </TableHeaderCell>
       )}
-      {showApplyAutomatically && (
-        <TableColumn demandPopin minWidth={600} popinText={applyAutomaticallyHeaderText}>
+      {TableHeaderCell && (
+        <TableHeaderCell minWidth={hasApplyAutomaticallyText ? '25rem' : '5rem'}>
           {applyAutomaticallyHeaderText}
-        </TableColumn>
+        </TableHeaderCell>
       )}
-      {showCreatedBy && (
-        <TableColumn demandPopin minWidth={600} popinText={createdByHeaderText}>
-          {createdByHeaderText}
-        </TableColumn>
-      )}
-      <TableColumn key="delete-variant-item" />
-    </>
+      {showCreatedBy && <TableHeaderCell minWidth="10rem">{createdByHeaderText}</TableHeaderCell>}
+      <TableHeaderCell importance={9} width="3rem" key="delete-variant-item" />
+    </TableHeaderRow>
   );
 
-  const [childrenProps, setChildrenProps] = useState(
+  const [childrenProps, setChildrenProps] = useState<Partial<VariantItemPropTypes>[]>(
     Children.map(children, (child) => {
-      if (!React.isValidElement(child)) {
+      if (!isValidElement(child)) {
         return {};
       }
       return child.props;
     })
   );
+
   useEffect(() => {
+    let _hasApplyAutomaticallyText = false;
     setChildrenProps(
       Children.map(children, (child) => {
-        if (!React.isValidElement(child)) {
+        if (!isValidElement(child)) {
           return {};
+        }
+        if (child.props?.applyAutomaticallyText) {
+          _hasApplyAutomaticallyText = true;
         }
         return child.props;
       })
     );
+    setHasApplyAutomaticallyText(_hasApplyAutomaticallyText);
   }, [children]);
 
   const [filteredProps, setFilteredProps] = useState(childrenProps);
@@ -250,29 +214,24 @@ export const ManageViewsDialog = (props: ManageViewsDialogPropTypes) => {
     );
   };
 
-  const canRenderPortal = useCanRenderPortal();
-  if (!canRenderPortal) {
-    return null;
-  }
-
-  return createPortal(
+  return (
     <Dialog
       open
-      className={classes.manageViewsDialog}
+      className={classNames.manageViewsDialog}
       data-component-name="VariantManagementManageViewsDialog"
-      onAfterClose={onAfterClose}
+      onClose={onAfterClose}
       onBeforeClose={handleClose}
       headerText={manageViewsText}
       initialFocus={`search-${uniqueId}`}
       header={
         <FlexBox direction={FlexBoxDirection.Column} style={{ width: '100%' }} alignItems={FlexBoxAlignItems.Center}>
-          <h2 className={classes.headerText}>{manageViewsText}</h2>
+          <h2 className={classNames.headerText}>{manageViewsText}</h2>
           <Input
             id={`search-${uniqueId}`}
-            className={classes.search}
+            className={classNames.search}
             placeholder={searchText}
             showClearIcon
-            icon={<Icon name={searchIcon} className={classes.inputIcon} />}
+            icon={<Icon name={searchIcon} className={classNames.inputIcon} />}
             onInput={handleSearchInput}
           />
         </FlexBox>
@@ -294,8 +253,8 @@ export const ManageViewsDialog = (props: ManageViewsDialogPropTypes) => {
         />
       }
     >
-      <Table columns={columns} stickyColumnHeader role="table">
-        {filteredProps.map((itemProps: VariantItemPropTypes) => {
+      <Table headerRow={headerRow} role="table" overflowMode={TableOverflowMode.Popin}>
+        {filteredProps.map((itemProps) => {
           return (
             <ManageViewsTableRows
               {...itemProps}
@@ -317,7 +276,6 @@ export const ManageViewsDialog = (props: ManageViewsDialogPropTypes) => {
           );
         })}
       </Table>
-    </Dialog>,
-    portalContainer ?? document.body
+    </Dialog>
   );
 };

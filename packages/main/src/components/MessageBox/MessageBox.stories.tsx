@@ -1,23 +1,14 @@
-import { isChromatic } from '@sb/utils';
+import { isChromatic } from '@sb/utils.js';
 import type { Meta, StoryObj } from '@storybook/react';
-import { forwardRef, useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { MessageBoxActions } from '../../enums/MessageBoxActions';
-import { MessageBoxTypes } from '../../enums/MessageBoxTypes';
-import type { DialogDomRef } from '../../webComponents';
-import { Button } from '../../webComponents/Button/index';
-import type { MessageBoxPropTypes } from './index.js';
-import { MessageBox as OriginalMessageBox } from './index.js';
-
-// todo remove once portals are supported inline, or popovers are supported w/o having to mount them to the body
-const MessageBox = forwardRef<DialogDomRef, MessageBoxPropTypes>((args, ref) =>
-  createPortal(<OriginalMessageBox {...args} ref={ref} />, document.body)
-);
-MessageBox.displayName = 'MessageBox';
+import { useEffect, useState } from 'react';
+import { MessageBoxAction } from '../../enums/MessageBoxAction.js';
+import { MessageBoxType } from '../../enums/MessageBoxType.js';
+import { Button } from '../../webComponents/Button/index.js';
+import { MessageBox } from './index.js';
 
 const meta = {
   title: 'Modals & Popovers / MessageBox',
-  component: OriginalMessageBox,
+  component: MessageBox,
   argTypes: {
     header: {
       control: { disable: true }
@@ -30,22 +21,22 @@ const meta = {
     }
   },
   args: {
-    open: false,
-    type: MessageBoxTypes.Confirm,
-    children: 'Press "Escape" to close the MessageBox.'
+    open: isChromatic,
+    type: MessageBoxType.Confirm,
+    children: 'You can close the MessageBox by pressing "Escape" or selecting one of the footer buttons.'
   },
   parameters: {
     chromatic: { delay: 1000 }
   },
   tags: ['package:@ui5/webcomponents', 'cem-module:Dialog']
-} satisfies Meta<typeof OriginalMessageBox>;
+} satisfies Meta<typeof MessageBox>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render(args) {
-    const [open, setOpen] = useState(isChromatic || args.open);
+    const [open, setOpen] = useState(args.open);
     const onButtonClick = () => {
       setOpen(true);
     };
@@ -68,9 +59,9 @@ export const Default: Story = {
 export const WithCustomActions: Story = {
   args: {
     actions: [
-      MessageBoxActions.OK,
+      MessageBoxAction.OK,
       'Custom Action',
-      MessageBoxActions.Cancel,
+      MessageBoxAction.Cancel,
       <Button key="0" id="custom-action">
         Custom Button
       </Button>
@@ -81,12 +72,12 @@ export const WithCustomActions: Story = {
     const onButtonClick = () => {
       setOpen(true);
     };
-    const handleClose = (e) => {
-      if (e.detail.action === 'Custom Action') {
+    const handleClose = (action, escPressed) => {
+      if (action === 'Custom Action') {
         // do something on "Custom Action" button click
       }
       setOpen(false);
-      args.onClose(e);
+      args.onClose(action, escPressed);
     };
     return (
       <>

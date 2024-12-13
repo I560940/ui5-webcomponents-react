@@ -1,16 +1,14 @@
 'use client';
 
+import ButtonDesign from '@ui5/webcomponents/dist/types/ButtonDesign.js';
 import { isPhone } from '@ui5/webcomponents-base/dist/Device.js';
-import { useI18nBundle, useStylesheet, useSyncRef } from '@ui5/webcomponents-react-base';
+import { useI18nBundle, useStylesheet } from '@ui5/webcomponents-react-base';
 import { clsx } from 'clsx';
 import type { ReactElement } from 'react';
-import React, { forwardRef, useReducer, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import { ButtonDesign } from '../../enums/index.js';
+import { forwardRef, useEffect, useReducer, useRef, useState } from 'react';
 import { AVAILABLE_ACTIONS, CANCEL, X_OF_Y } from '../../i18n/i18n-defaults.js';
 import { addCustomCSSWithScoping } from '../../internal/addCustomCSSWithScoping.js';
-import { useCanRenderPortal } from '../../internal/ssr.js';
-import { flattenFragments } from '../../internal/utils.js';
+import { flattenFragments, getUi5TagWithSuffix } from '../../internal/utils.js';
 import { CustomThemingParameters } from '../../themes/CustomVariables.js';
 import type { UI5WCSlotsNode } from '../../types/index.js';
 import type {
@@ -32,7 +30,7 @@ export interface ActionSheetPropTypes extends Omit<ResponsivePopoverPropTypes, '
    * Defines the header HTML Element. Will be shown in the header area on phone devices. This prop will be ignored in tablets and desktop browsers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--page).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--page).
    */
   header?: UI5WCSlotsNode;
   /**
@@ -42,25 +40,17 @@ export interface ActionSheetPropTypes extends Omit<ResponsivePopoverPropTypes, '
    */
   children?: ReactElement<ButtonPropTypes> | ReactElement<ButtonPropTypes>[];
   /**
-   * Displays a cancel button below the action buttons on mobile devices. No cancel button will be shown on desktop and tablet devices.
+   * Hides the cancel button below the action buttons on mobile devices. No cancel button will be shown on desktop and tablet devices.
    */
-  showCancelButton?: boolean;
+  hideCancelButton?: boolean;
   /**
-   * Defines internally used a11y properties.
+   * Defines internally used accessibility properties/attributes.
    */
-  a11yConfig?: {
+  accessibilityAttributes?: {
     actionSheetMobileContent?: {
       role?: string;
     };
   };
-  /**
-   * Defines where modals are rendered into via `React.createPortal`.
-   *
-   * You can find out more about this [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-working-with-portals--page).
-   *
-   * Defaults to: `document.body`
-   */
-  portalContainer?: Element;
 }
 
 if (isPhone()) {
@@ -117,7 +107,7 @@ function ActionSheetButton(props: ActionSheetButtonPropTypes) {
 /**
  * The `ActionSheet` holds a list of buttons from which the user can select to complete an action.
  *
- * The children of the action sheet should be `Button` components. Elements in the `ActionSheet` are left-aligned. Actions should be arranged in order of importance, from top to bottom.
+ * The children of the action sheet should be `Button` components. Elements in the `ActionSheet` are start-aligned. Actions should be arranged in order of importance, from top to bottom.
  *
  * ### Guidelines
  * - Always display text or text and icons for the actions. Do not use icons only.
@@ -126,50 +116,30 @@ function ActionSheetButton(props: ActionSheetButtonPropTypes) {
  *
  */
 const ActionSheet = forwardRef<ResponsivePopoverDomRef, ActionSheetPropTypes>((props, ref) => {
-  const {
-    a11yConfig,
-    allowTargetOverlap,
-    children,
-    className,
-    footer,
-    header,
-    headerText,
-    hideArrow,
-    horizontalAlign,
-    initialFocus,
-    modal,
-    placementType,
-    portalContainer,
-    showCancelButton = true,
-    slot,
-    style,
-    verticalAlign,
-    onAfterClose,
-    onAfterOpen,
-    onBeforeClose,
-    onBeforeOpen,
-    ...rest
-  } = props;
+  const { accessibilityAttributes, children, className, header, headerText, hideCancelButton, onOpen, open, ...rest } =
+    props;
 
   useStylesheet(styleData, ActionSheet.displayName);
 
   const i18nBundle = useI18nBundle('@ui5/webcomponents-react');
-  const [componentRef, popoverRef] = useSyncRef(ref);
   const actionBtnsRef = useRef(null);
   const [focusedItem, setFocusedItem] = useReducer((_, action) => {
     return parseInt(action.target.dataset.actionBtnIndex);
   }, 0);
   const childrenToRender = flattenFragments(children);
   const childrenArrayLength = childrenToRender.length;
-  const childrenLength = isPhone() && showCancelButton ? childrenArrayLength + 1 : childrenArrayLength;
+  const childrenLength = isPhone() && !hideCancelButton ? childrenArrayLength + 1 : childrenArrayLength;
 
-  const canRenderPortal = useCanRenderPortal();
-  if (!canRenderPortal) {
-    return null;
-  }
+  const [internalOpen, setInternalOpen] = useState(undefined);
+  useEffect(() => {
+    const tagName = getUi5TagWithSuffix('ui5-responsive-popover');
+    void customElements.whenDefined(tagName).then(() => {
+      setInternalOpen(open);
+    });
+  }, [open]);
 
   const handleCancelBtnClick = () => {
-    popoverRef.current.close();
+    setInternalOpen(false);
   };
 
   const renderActionSheetButton = (element, index: number, childrenArray) => {
@@ -181,7 +151,7 @@ const ActionSheet = forwardRef<ResponsivePopoverDomRef, ActionSheetPropTypes>((p
         tabIndex={focusedItem === index ? 0 : -1}
         {...element.props}
         onClick={(e) => {
-          popoverRef.current.close();
+          setInternalOpen(false);
           if (typeof element.props?.onClick === 'function') {
             element.props?.onClick(e);
           }
@@ -200,8 +170,8 @@ const ActionSheet = forwardRef<ResponsivePopoverDomRef, ActionSheetPropTypes>((p
     if (isPhone()) {
       actionBtnsRef.current.querySelector(`[data-action-btn-index="${focusedItem}"]`).focus();
     }
-    if (typeof onAfterOpen === 'function') {
-      onAfterOpen(e);
+    if (typeof onOpen === 'function') {
+      onOpen(e);
     }
   };
 
@@ -245,39 +215,27 @@ const ActionSheet = forwardRef<ResponsivePopoverDomRef, ActionSheetPropTypes>((p
   };
 
   const displayHeader = isPhone();
-  return createPortal(
+  return (
     <ResponsivePopover
-      style={style}
-      slot={slot}
-      allowTargetOverlap={allowTargetOverlap}
+      open={internalOpen}
       headerText={displayHeader ? headerText : undefined}
-      horizontalAlign={horizontalAlign}
-      initialFocus={initialFocus}
-      modal={modal}
-      hideArrow={hideArrow}
-      placementType={placementType}
-      verticalAlign={verticalAlign}
-      footer={footer}
       header={displayHeader ? header : undefined}
-      onAfterClose={onAfterClose}
-      onBeforeClose={onBeforeClose}
-      onBeforeOpen={onBeforeOpen}
       accessibleName={i18nBundle.getText(AVAILABLE_ACTIONS)}
       {...rest}
-      onAfterOpen={handleAfterOpen}
-      ref={componentRef}
+      onOpen={handleAfterOpen}
+      ref={ref}
       className={clsx(classNames.actionSheet, isPhone() && classNames.actionSheetMobile, className)}
       data-actionsheet
     >
       <div
         className={isPhone() ? classNames.contentMobile : undefined}
         data-component-name="ActionSheetMobileContent"
-        role={a11yConfig?.actionSheetMobileContent?.role ?? 'application'}
+        role={accessibilityAttributes?.actionSheetMobileContent?.role ?? 'application'}
         onKeyDown={handleKeyDown}
         ref={actionBtnsRef}
       >
         {childrenToRender.map(renderActionSheetButton)}
-        {isPhone() && showCancelButton && (
+        {isPhone() && !hideCancelButton && (
           <Button
             design={ButtonDesign.Negative}
             onClick={handleCancelBtnClick}
@@ -290,8 +248,7 @@ const ActionSheet = forwardRef<ResponsivePopoverDomRef, ActionSheetPropTypes>((p
           </Button>
         )}
       </div>
-    </ResponsivePopover>,
-    portalContainer ?? document.body
+    </ResponsivePopover>
   );
 });
 

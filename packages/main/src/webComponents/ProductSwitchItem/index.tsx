@@ -13,13 +13,15 @@ interface ProductSwitchItemAttributes {
    * `<ProductSwitchItem icon="palette">`
    *
    * See all the available icons in the [Icon Explorer](https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html).
+   * @default undefined
    */
-  icon?: string;
+  icon?: string | undefined;
 
   /**
    * Defines the subtitle of the component.
+   * @default undefined
    */
-  subtitleText?: string;
+  subtitleText?: string | undefined;
 
   /**
    * Defines a target where the `targetSrc` content must be open.
@@ -31,19 +33,23 @@ interface ProductSwitchItemAttributes {
    * - `_blank`
    * - `_parent`
    * - `_search`
-   * @default "_self"
+   *
+   * **Note:** By default target will be open in the same frame as it was clicked.
+   * @default undefined
    */
-  target?: string;
+  target?: string | undefined;
 
   /**
    * Defines the component target URI. Supports standard hyperlink behavior.
+   * @default undefined
    */
-  targetSrc?: string;
+  targetSrc?: string | undefined;
 
   /**
    * Defines the title of the component.
+   * @default undefined
    */
-  titleText?: string;
+  titleText?: string | undefined;
 }
 
 interface ProductSwitchItemDomRef extends Required<ProductSwitchItemAttributes>, Ui5DomRef {}
@@ -69,11 +75,11 @@ interface ProductSwitchItemPropTypes
  * When focused, the user can use the following keyboard
  * shortcuts in order to perform a navigation:
  *
- * - [SPACE/ENTER/RETURN] - Trigger `ui5-click` event
+ * - [Space] / [Enter] or [Return] - Trigger `ui5-click` event
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const ProductSwitchItem = withWebComponent<ProductSwitchItemPropTypes, ProductSwitchItemDomRef>(
   'ui5-product-switch-item',

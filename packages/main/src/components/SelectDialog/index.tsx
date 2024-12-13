@@ -1,19 +1,14 @@
 'use client';
 
+import ButtonDesign from '@ui5/webcomponents/dist/types/ButtonDesign.js';
+import IconMode from '@ui5/webcomponents/dist/types/IconMode.js';
+import ListSelectionMode from '@ui5/webcomponents/dist/types/ListSelectionMode.js';
 import iconDecline from '@ui5/webcomponents-icons/dist/decline.js';
 import iconSearch from '@ui5/webcomponents-icons/dist/search.js';
-import {
-  CssSizeVariables,
-  enrichEventWithDetails,
-  ThemingParameters,
-  useI18nBundle,
-  useSyncRef
-} from '@ui5/webcomponents-react-base';
+import { enrichEventWithDetails, useI18nBundle, useStylesheet, useSyncRef } from '@ui5/webcomponents-react-base';
 import { clsx } from 'clsx';
 import type { ReactNode } from 'react';
-import React, { forwardRef, useState } from 'react';
-import { createUseStyles } from 'react-jss';
-import { ButtonDesign, ListMode, ToolbarDesign } from '../../enums/index.js';
+import { forwardRef, useEffect, useState } from 'react';
 import { CANCEL, CLEAR, RESET, SEARCH, SELECT, SELECTED } from '../../i18n/i18n-defaults.js';
 import type { Ui5CustomEvent } from '../../types/index.js';
 import type {
@@ -25,75 +20,12 @@ import type {
   InputDomRef,
   ListDomRef,
   ListPropTypes,
-  StandardListItemDomRef
+  ListItemStandardDomRef
 } from '../../webComponents/index.js';
 import { Button, Dialog, Icon, Input, List, Title } from '../../webComponents/index.js';
-import { Text } from '../Text/index.js';
+import { Text } from '../../webComponents/Text/index.js';
 import { Toolbar } from '../Toolbar/index.js';
-
-const useStyles = createUseStyles(
-  {
-    dialog: {
-      '&::part(header)': {
-        paddingBottom: '0.25rem',
-        flexDirection: 'column',
-        marginBottom: 0
-      },
-      '&::part(content)': {
-        padding: 0
-      }
-    },
-    headerContent: {
-      display: 'grid',
-      gridTemplateColumns: 'fit-content(100px) minmax(0, 1fr) fit-content(100px)',
-      gridTemplateAreas: `
-      "titleStart titleCenter cancel"
-      "input input input"
-      `,
-      gridTemplateRows: `${CssSizeVariables.ui5WcrDialogHeaderHeight} ${CssSizeVariables.ui5WcrDialogSubHeaderHeight}`,
-      width: '100%',
-      alignItems: 'center'
-    },
-    title: {
-      fontSize: ThemingParameters.sapFontLargeSize,
-      fontFamily: ThemingParameters.sapFontHeaderFamily,
-      gridColumnStart: 'titleStart',
-      gridColumnEnd: 'titleCenter',
-      maxWidth: '100%',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis'
-    },
-    titleCenterAlign: {
-      gridArea: 'titleCenter',
-      justifySelf: 'center'
-    },
-    hiddenClearBtn: {
-      gridArea: 'titleStart',
-      visibility: 'hidden'
-    },
-    clearBtn: {
-      gridArea: 'cancel',
-      justifySelf: 'end'
-    },
-    input: {
-      gridArea: 'input',
-      width: '100%'
-    },
-    footer: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'end',
-      width: '100%',
-      boxSizing: 'border-box',
-      '& > *': {
-        marginInlineStart: '0.5rem'
-      }
-    },
-    inputIcon: { cursor: 'pointer', color: ThemingParameters.sapContent_IconColor },
-    infoBar: { padding: '0 0.5rem', position: 'sticky', top: 0, zIndex: 1 }
-  },
-  { name: 'SelectDialog' }
-);
+import { classNames, styleData } from './SelectDialog.module.css.js';
 
 interface ListDomRefWithPrivateAPIs extends ListDomRef {
   get hasData(): boolean;
@@ -106,12 +38,12 @@ interface ListDomRefWithPrivateAPIs extends ListDomRef {
 }
 
 export interface SelectDialogPropTypes
-  extends Omit<DialogPropTypes, 'header' | 'headerText' | 'footer' | 'children'>,
+  extends Omit<DialogPropTypes, 'header' | 'headerText' | 'footer' | 'children' | 'state'>,
     Pick<ListPropTypes, 'growing' | 'onLoadMore'> {
   /**
    * Defines the list items of the component.
    *
-   * __Note:__ Although this prop accepts all HTML Elements and therefore also all list items, it is strongly recommended that you only use `StandardListItem` in order to preserve the intended design.
+   * __Note:__ Although this prop accepts all HTML Elements and therefore also all list items, it is strongly recommended that you only use `ListItemStandard` in order to preserve the intended design.
    */
   children?: ReactNode | ReactNode[];
   /**
@@ -143,19 +75,19 @@ export interface SelectDialogPropTypes
   /**
    * Defines the mode of the SelectDialog list.
    *
-   * __Note:__ Although this prop accepts all `ListMode`s, it is strongly recommended that you only use `SingleSelect` or `MultiSelect` in order to preserve the intended design.
+   * __Note:__ Although this prop accepts all `ListSelectionMode`s, it is strongly recommended that you only use `Single` or `Multiple` in order to preserve the intended design.
    *
-   * @default ListMode.SingleSelect
+   * @default ListSelectionMode.Single
    */
-  mode?: ListPropTypes['mode'];
+  selectionMode?: ListPropTypes['selectionMode'];
   /**
    * Defines props you can pass to the internal `List` component.
    *
-   * __Note:__ `mode`, `children`, `growing`, `onLoadMore` and `footerText` are not supported.
+   * __Note:__ `selectionMode`, `children`, `growing`, `onLoadMore` and `footerText` are not supported.
    *
    * @default {}
    */
-  listProps?: Omit<ListPropTypes, 'mode' | 'children' | 'footerText' | 'growing' | 'onLoadMore'>;
+  listProps?: Omit<ListPropTypes, 'selectionMode' | 'children' | 'footerText' | 'growing' | 'onLoadMore'>;
   /**
    * Defines the props of the confirm button.
    *
@@ -177,17 +109,19 @@ export interface SelectDialogPropTypes
   /**
    * This event will be fired when the reset button has been clicked in the search field or when the dialog is closed.
    */
-  onSearchReset?: (event: Ui5CustomEvent<IconDomRef, { prevValue: string }>) => void;
+  onSearchReset?: (event: Ui5CustomEvent<{ prevValue: string; nativeDetail?: number }>) => void;
   /**
    * This event will be fired when the clear button has been clicked.
    */
-  onClear?: (event: Ui5CustomEvent<ButtonDomRef, { prevSelectedItems: StandardListItemDomRef[] }>) => void;
+  onClear?: (
+    event: Ui5CustomEvent<ButtonDomRef, { prevSelectedItems: ListItemStandardDomRef[]; nativeDetail: number }>
+  ) => void;
   /**
    * This event will be fired when the dialog is confirmed by selecting an item in single selection mode or by pressing the confirmation button in multi selection mode.
    */
   onConfirm?:
-    | ((event: Ui5CustomEvent<ListDomRef, { selectedItems: StandardListItemDomRef[] }>) => void)
-    | ((event: Ui5CustomEvent<ButtonDomRef, { selectedItems: StandardListItemDomRef[] }>) => void);
+    | ((event: Ui5CustomEvent<ListDomRef, { selectedItems: ListItemStandardDomRef[] }>) => void)
+    | ((event: Ui5CustomEvent<ButtonDomRef, { selectedItems: ListItemStandardDomRef[] }>) => void);
   /**
    * This event will be fired when the cancel button is clicked or ESC key is pressed.
    */
@@ -199,6 +133,7 @@ export interface SelectDialogPropTypes
  */
 const SelectDialog = forwardRef<DialogDomRef, SelectDialogPropTypes>((props, ref) => {
   const {
+    open,
     children,
     className,
     confirmButtonText,
@@ -207,11 +142,11 @@ const SelectDialog = forwardRef<DialogDomRef, SelectDialogPropTypes>((props, ref
     headerText,
     headerTextAlignCenter,
     listProps = {},
-    mode = ListMode.SingleSelect,
+    selectionMode = ListSelectionMode.Single,
     numberOfSelectedItems,
     rememberSelections,
     showClearButton,
-    onAfterClose,
+    onClose,
     onClear,
     onConfirm,
     onLoadMore,
@@ -220,31 +155,34 @@ const SelectDialog = forwardRef<DialogDomRef, SelectDialogPropTypes>((props, ref
     onSearchReset,
     onBeforeOpen,
     onBeforeClose,
-    onAfterOpen,
+    onOpen,
     onCancel,
     ...rest
   } = props;
 
-  const classes = useStyles();
+  useStylesheet(styleData, SelectDialog.displayName);
   const i18nBundle = useI18nBundle('@ui5/webcomponents-react');
   const [searchValue, setSearchValue] = useState('');
   const [selectedItems, setSelectedItems] = useState([]);
-  const [componentRef, selectDialogRef] = useSyncRef(ref);
   const [listComponentRef, listRef] = useSyncRef<ListDomRefWithPrivateAPIs>((listProps as any).ref);
+  const [internalOpen, setInternalOpen] = useState(open);
+  useEffect(() => {
+    setInternalOpen(open);
+  }, [open]);
 
   const handleBeforeOpen = (e) => {
     const localSelectedItems = listRef.current?.getSelectedItems() ?? [];
     if (typeof onBeforeOpen === 'function') {
       onBeforeOpen(e);
     }
-    if (mode === ListMode.MultiSelect && listRef.current?.hasData) {
+    if (selectionMode === ListSelectionMode.Multiple && listRef.current?.hasData) {
       setSelectedItems(localSelectedItems);
     }
   };
 
   const handleAfterOpen = (e) => {
-    if (typeof onAfterOpen === 'function') {
-      onAfterOpen(e);
+    if (typeof onOpen === 'function') {
+      onOpen(e);
     }
     listRef.current?.focusFirstItem();
   };
@@ -276,18 +214,18 @@ const SelectDialog = forwardRef<DialogDomRef, SelectDialogPropTypes>((props, ref
     if (typeof listProps?.onSelectionChange === 'function') {
       listProps.onSelectionChange(e);
     }
-    if (mode === ListMode.MultiSelect) {
+    if (selectionMode === ListSelectionMode.Multiple) {
       setSelectedItems(e.detail.selectedItems);
     } else {
       if (typeof onConfirm === 'function') {
         onConfirm(e);
       }
-      selectDialogRef.current.close();
+      setInternalOpen(false);
     }
   };
 
   const handleClose = (e) => {
-    selectDialogRef.current.close();
+    setInternalOpen(false);
     if (typeof onCancel === 'function') {
       onCancel(e);
     }
@@ -305,12 +243,13 @@ const SelectDialog = forwardRef<DialogDomRef, SelectDialogPropTypes>((props, ref
     if (typeof onConfirm === 'function') {
       onConfirm(enrichEventWithDetails(e, { selectedItems }));
     }
-    selectDialogRef.current.close();
+    setInternalOpen(false);
   };
 
   const handleAfterClose = (e) => {
-    if (typeof onAfterClose === 'function') {
-      onAfterClose(e);
+    setInternalOpen(false);
+    if (typeof onClose === 'function') {
+      onClose(e);
     }
     if (typeof onSearchReset === 'function') {
       onSearchReset(enrichEventWithDetails(e, { prevValue: searchValue }));
@@ -333,34 +272,37 @@ const SelectDialog = forwardRef<DialogDomRef, SelectDialogPropTypes>((props, ref
   return (
     <Dialog
       {...rest}
+      open={internalOpen}
       data-component-name="SelectDialog"
-      ref={componentRef}
-      className={clsx(classes.dialog, className)}
-      onAfterClose={handleAfterClose}
+      ref={ref}
+      className={clsx(classNames.dialog, className)}
+      onClose={handleAfterClose}
       onBeforeOpen={handleBeforeOpen}
-      onAfterOpen={handleAfterOpen}
+      onOpen={handleAfterOpen}
       onBeforeClose={handleBeforeClose}
     >
-      <div className={classes.headerContent} slot="header">
+      <div className={classNames.headerContent} slot="header">
         {showClearButton && headerTextAlignCenter && (
           <Button
             onClick={handleClear}
             design={ButtonDesign.Transparent}
-            className={classes.hiddenClearBtn}
+            className={classNames.hiddenClearBtn}
             tabIndex={-1}
             aria-hidden="true"
           >
             {i18nBundle.getText(CLEAR)}
           </Button>
         )}
-        <Title className={clsx(classes.title, headerTextAlignCenter && classes.titleCenterAlign)}>{headerText}</Title>
+        <Title className={clsx(classNames.title, headerTextAlignCenter && classNames.titleCenterAlign)}>
+          {headerText}
+        </Title>
         {showClearButton && (
-          <Button onClick={handleClear} design={ButtonDesign.Transparent} className={classes.clearBtn}>
+          <Button onClick={handleClear} design={ButtonDesign.Transparent} className={classNames.clearBtn}>
             {i18nBundle.getText(CLEAR)}
           </Button>
         )}
         <Input
-          className={classes.input}
+          className={classNames.input}
           accessibleName={i18nBundle.getText(SEARCH)}
           value={searchValue}
           placeholder={i18nBundle.getText(SEARCH)}
@@ -373,15 +315,15 @@ const SelectDialog = forwardRef<DialogDomRef, SelectDialogPropTypes>((props, ref
                   accessibleName={i18nBundle.getText(RESET)}
                   title={i18nBundle.getText(RESET)}
                   name={iconDecline}
-                  interactive
+                  mode={IconMode.Interactive}
                   onClick={handleResetSearch}
-                  className={classes.inputIcon}
+                  className={classNames.inputIcon}
                 />
               )}
               <Icon
-                interactive
+                mode={IconMode.Interactive}
                 name={iconSearch}
-                className={classes.inputIcon}
+                className={classNames.inputIcon}
                 onClick={handleSearchSubmit}
                 accessibleName={i18nBundle.getText(SEARCH)}
                 title={i18nBundle.getText(SEARCH)}
@@ -391,8 +333,8 @@ const SelectDialog = forwardRef<DialogDomRef, SelectDialogPropTypes>((props, ref
         />
       </div>
 
-      {mode === ListMode.MultiSelect && (!!selectedItems.length || numberOfSelectedItems > 0) && (
-        <Toolbar design={ToolbarDesign.Info} className={classes.infoBar}>
+      {selectionMode === ListSelectionMode.Multiple && (!!selectedItems.length || numberOfSelectedItems > 0) && (
+        <Toolbar design="Info" className={classNames.infoBar}>
           <Text>{`${i18nBundle.getText(SELECTED)}: ${numberOfSelectedItems ?? selectedItems.length}`}</Text>
         </Toolbar>
       )}
@@ -401,13 +343,13 @@ const SelectDialog = forwardRef<DialogDomRef, SelectDialogPropTypes>((props, ref
         ref={listComponentRef}
         growing={growing}
         onLoadMore={onLoadMore}
-        mode={mode}
+        selectionMode={selectionMode}
         onSelectionChange={handleSelectionChange}
       >
         {children}
       </List>
-      <div slot="footer" className={classes.footer}>
-        {mode === ListMode.MultiSelect && (
+      <div slot="footer" className={classNames.footer}>
+        {selectionMode === ListSelectionMode.Multiple && (
           <Button {...confirmButtonProps} onClick={handleConfirm} design={ButtonDesign.Emphasized}>
             {confirmButtonText ?? i18nBundle.getText(SELECT)}
           </Button>

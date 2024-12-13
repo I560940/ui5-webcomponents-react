@@ -3,11 +3,11 @@ import dataLarge from '@sb/mockData/Friends500.json';
 import dataManualSelect from '@sb/mockData/FriendsManualSelect25.json';
 import dataTree from '@sb/mockData/FriendsTree.json';
 import type { Meta, StoryObj } from '@storybook/react';
-import React, { useReducer, useState } from 'react';
-import { AnalyticalTableSelectionMode, FlexBoxAlignItems, FlexBoxDirection, InputType } from '../../enums';
-import { Button, CheckBox, Input, Label, ToggleButton } from '../../webComponents';
+import InputType from '@ui5/webcomponents/dist/types/InputType.js';
+import { useReducer, useState } from 'react';
+import { AnalyticalTableSelectionMode, FlexBoxAlignItems, FlexBoxDirection } from '../../enums';
+import { Button, CheckBox, Input, Label, ToggleButton, Text } from '../../webComponents';
 import { FlexBox } from '../FlexBox';
-import { Text } from '../Text';
 import meta from './AnalyticalTable.stories';
 import * as AnalyticalTableHooks from './pluginHooks/AnalyticalTableHooks';
 import { AnalyticalTable } from './index';
@@ -50,7 +50,7 @@ export const PluginAnnounceEmptyCells: Story = {
 export const PluginDisableRowSelection: Story = {
   args: {
     data: dataLarge.map((item) => ({ ...item, disableSelection: Math.random() < 0.5 })),
-    selectionMode: AnalyticalTableSelectionMode.MultiSelect
+    selectionMode: AnalyticalTableSelectionMode.Multiple
   },
   render: (args) => {
     const disableRowFunc = (row) => row.original.age < 40;
@@ -107,7 +107,7 @@ export const PluginIndeterminateRowSelection: Story = {
           selectSubRows ? "Don't " : ''
         }Select Sub-Rows`}</ToggleButton>
         <AnalyticalTable
-          selectionMode={AnalyticalTableSelectionMode.MultiSelect}
+          selectionMode={AnalyticalTableSelectionMode.Multiple}
           data={dataTree}
           columns={args.columns}
           isTreeTable
@@ -143,7 +143,7 @@ export const PluginManualRowSelect: Story = {
         <br />
         <br />
         <AnalyticalTable
-          selectionMode={AnalyticalTableSelectionMode.MultiSelect}
+          selectionMode={AnalyticalTableSelectionMode.Multiple}
           data={data}
           columns={args.columns}
           tableHooks={[AnalyticalTableHooks.useManualRowSelect('isSelected')]}

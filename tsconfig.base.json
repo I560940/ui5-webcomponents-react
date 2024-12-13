@@ -1,21 +1,22 @@
 {
   "compilerOptions": {
-    "module": "esnext",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "target": "ES2021",
     "lib": ["ES2022", "dom"],
-    "jsx": "react",
-    "baseUrl": ".",
-    "rootDir": ".",
+    "jsx": "react-jsx",
+    "baseUrl": "${configDir}/src",
+    "rootDir": "${configDir}/src",
     "composite": true,
     "paths": {
+      "@/*": ["./*"],
       "@sb/*": ["./.storybook/*"],
       "@ui5/webcomponents-cypress-commands": ["./packages/cypress-commands/src/index.ts"],
       "@ui5/webcomponents-react": ["./packages/main/src/index.ts"],
+      "@ui5/webcomponents-react/dist/*": ["./packages/main/src/*"],
       "@ui5/webcomponents-react-base": ["./packages/base/src/index.ts"],
-      "@ui5/webcomponents-react-charts": ["./packages/charts/src/index.ts"],
-      "@ui5/webcomponents-react/*": ["./packages/main/src/*"]
+      "@ui5/webcomponents-react-charts": ["./packages/charts/src/index.ts"]
     },
-    "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "strict": false,
     "allowSyntheticDefaultImports": true,
@@ -23,6 +24,9 @@
     "removeComments": false,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "declaration": true
+    "declaration": true,
+    "skipLibCheck": true,
+    "outDir": "${configDir}/dist",
+    "declarationDir": "${configDir}/dist"
   }
 }

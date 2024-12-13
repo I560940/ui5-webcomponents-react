@@ -7,8 +7,11 @@ import type { CommonProps, Ui5CustomEvent, Ui5DomRef } from '../../types/index.j
 interface RangeSliderAttributes {
   /**
    * Defines the accessible ARIA name of the component.
+   *
+   * **Note:** Available since [v1.4.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.4.0) of **@ui5/webcomponents**.
+   * @default undefined
    */
-  accessibleName?: string;
+  accessibleName?: string | undefined;
 
   /**
    * Defines whether the slider is in disabled state.
@@ -43,6 +46,16 @@ interface RangeSliderAttributes {
    * @default 0
    */
   min?: number;
+
+  /**
+   * Determines the name by which the component will be identified upon submission in an HTML form.
+   *
+   * **Note:** This property is only applicable within the context of an HTML Form element.
+   *
+   * **Note:** Available since [v2.0.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.0.0) of **@ui5/webcomponents**.
+   * @default undefined
+   */
+  name?: string | undefined;
 
   /**
    * Enables tickmarks visualization for each step.
@@ -131,11 +144,11 @@ interface RangeSliderPropTypes
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const RangeSlider = withWebComponent<RangeSliderPropTypes, RangeSliderDomRef>(
   'ui5-range-slider',
-  ['accessibleName', 'endValue', 'labelInterval', 'max', 'min', 'startValue', 'step'],
+  ['accessibleName', 'endValue', 'labelInterval', 'max', 'min', 'name', 'startValue', 'step'],
   ['disabled', 'showTickmarks', 'showTooltip'],
   [],
   ['change', 'input'],

@@ -1,11 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import PopoverHorizontalAlign from '@ui5/webcomponents/dist/types/PopoverHorizontalAlign.js';
+import PopoverPlacement from '@ui5/webcomponents/dist/types/PopoverPlacement.js';
+import PopoverVerticalAlign from '@ui5/webcomponents/dist/types/PopoverVerticalAlign.js';
 import acceptIcon from '@ui5/webcomponents-icons/dist/accept.js';
 import declineIcon from '@ui5/webcomponents-icons/dist/decline.js';
 import deleteIcon from '@ui5/webcomponents-icons/dist/delete.js';
 import emailIcon from '@ui5/webcomponents-icons/dist/email.js';
 import forwardIcon from '@ui5/webcomponents-icons/dist/forward.js';
-import React, { useState } from 'react';
-import { PopoverHorizontalAlign, PopoverPlacementType, PopoverVerticalAlign } from '../../enums/index.js';
+import { useEffect, useRef, useState } from 'react';
+import type { ButtonDomRef } from '../../webComponents/index.js';
 import { Button } from '../../webComponents/index.js';
 import { ActionSheet } from './index.js';
 
@@ -22,11 +25,11 @@ const meta = {
     header: {
       control: { disable: true }
     },
-    a11yConfig: { table: { category: 'A11y props' } }
+    accessibilityAttributes: { table: { category: 'Accessibility props' } }
   },
   args: {
     horizontalAlign: PopoverHorizontalAlign.Center,
-    placementType: PopoverPlacementType.Right,
+    placement: PopoverPlacement.End,
     verticalAlign: PopoverVerticalAlign.Center,
     open: false
   },
@@ -41,22 +44,27 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render(args) {
+    const buttonRef = useRef<ButtonDomRef>(null);
     const [actionSheetOpen, setActionSheetOpen] = useState<boolean | undefined>(args.open);
+    useEffect(() => {
+      setActionSheetOpen(args.open);
+    }, [args.open]);
     return (
       <>
         <Button
           onClick={() => {
             setActionSheetOpen(true);
           }}
-          id={'actionSheetOpener'}
+          ref={buttonRef}
         >
           Open ActionSheet
         </Button>
         <ActionSheet
           {...args}
-          opener="actionSheetOpener"
+          opener={buttonRef.current}
           open={actionSheetOpen}
-          onAfterClose={() => {
+          onClose={(e) => {
+            args.onClose(e);
             setActionSheetOpen(false);
           }}
         >

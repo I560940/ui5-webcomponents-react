@@ -1,7 +1,8 @@
 'use client';
 
 import { enrichEventWithDetails, ThemingParameters } from '@ui5/webcomponents-react-base';
-import React, { forwardRef, useCallback, useRef } from 'react';
+import { forwardRef, useCallback, useRef } from 'react';
+import type { PolarGridProps } from 'recharts';
 import {
   Legend,
   PolarAngleAxis,
@@ -79,6 +80,7 @@ const measureDefaults = {
 const RadarChart = forwardRef<HTMLDivElement, RadarChartProps>((props, ref) => {
   const {
     loading,
+    loadingDelay,
     dataset,
     noLegend,
     noAnimation,
@@ -94,11 +96,14 @@ const RadarChart = forwardRef<HTMLDivElement, RadarChartProps>((props, ref) => {
     ...rest
   } = props;
 
-  const chartConfig = {
+  const chartConfig: RadarChartProps['chartConfig'] & {
+    dataLabel: boolean;
+    polarGridType: PolarGridProps['gridType'];
+  } = {
     legendPosition: 'bottom',
     legendHorizontalAlign: 'center',
     dataLabel: true,
-    polarGridType: 'circle' as const,
+    polarGridType: 'circle',
     resizeDebounce: 250,
     ...props.chartConfig
   };
@@ -162,6 +167,7 @@ const RadarChart = forwardRef<HTMLDivElement, RadarChartProps>((props, ref) => {
       dataset={dataset}
       ref={ref}
       loading={loading}
+      loadingDelay={loadingDelay}
       Placeholder={ChartPlaceholder ?? PieChartPlaceholder}
       style={style}
       className={className}
@@ -169,6 +175,7 @@ const RadarChart = forwardRef<HTMLDivElement, RadarChartProps>((props, ref) => {
       resizeDebounce={chartConfig.resizeDebounce}
       {...propsWithoutOmitted}
     >
+      {/*@ts-expect-error: todo not yet compatible with React19*/}
       <RadarChartLib
         onClick={onClickInternal}
         data={dataset}
@@ -187,7 +194,7 @@ const RadarChart = forwardRef<HTMLDivElement, RadarChartProps>((props, ref) => {
         {measures.map((element, index) => {
           return (
             <Radar
-              key={element.accessor}
+              key={element.reactKey}
               activeDot={{ onClick: onDataPointClickInternal } as any}
               name={element.label ?? element.accessor}
               dataKey={element.accessor}
@@ -195,7 +202,7 @@ const RadarChart = forwardRef<HTMLDivElement, RadarChartProps>((props, ref) => {
               fill={element.color ?? `var(--sapChart_OrderedColor_${(index % 11) + 1})`}
               fillOpacity={element.opacity}
               label={<ChartDataLabel config={element} chartType="radar" position={'outside'} />}
-              isAnimationActive={noAnimation === false}
+              isAnimationActive={!noAnimation}
             />
           );
         })}
@@ -223,11 +230,6 @@ const RadarChart = forwardRef<HTMLDivElement, RadarChartProps>((props, ref) => {
     </ChartContainer>
   );
 });
-
-RadarChart.defaultProps = {
-  noLegend: false,
-  noAnimation: false
-};
 
 RadarChart.displayName = 'RadarChart';
 

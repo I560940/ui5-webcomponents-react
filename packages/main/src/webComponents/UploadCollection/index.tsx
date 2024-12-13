@@ -1,7 +1,7 @@
 'use client';
 
 import '@ui5/webcomponents-fiori/dist/UploadCollection.js';
-import type ListMode from '@ui5/webcomponents/dist/types/ListMode.js';
+import type UploadCollectionSelectionMode from '@ui5/webcomponents-fiori/dist/types/UploadCollectionSelectionMode.js';
 import type {
   UploadCollectionItemDeleteEventDetail,
   UploadCollectionSelectionChangeEventDetail
@@ -13,8 +13,9 @@ import type { CommonProps, Ui5CustomEvent, Ui5DomRef, UI5WCSlotsNode } from '../
 interface UploadCollectionAttributes {
   /**
    * Defines the accessible ARIA name of the component.
+   * @default undefined
    */
-  accessibleName?: string;
+  accessibleName?: string | undefined;
 
   /**
    * By default there will be drag and drop overlay shown over the `UploadCollection` when files
@@ -27,23 +28,22 @@ interface UploadCollectionAttributes {
   hideDragOverlay?: boolean;
 
   /**
-   * Defines the mode of the `UploadCollection`.
-   *
-   * **Note:**
-   * Mode "Delete" has no effect. The delete button is controlled by the `hideDeleteButton` property of UploadCollectionItem
-   * @default "None"
-   */
-  mode?: ListMode | keyof typeof ListMode;
-
-  /**
    * Allows you to set your own text for the 'No data' description.
+   * @default undefined
    */
-  noDataDescription?: string;
+  noDataDescription?: string | undefined;
 
   /**
    * Allows you to set your own text for the 'No data' text.
+   * @default undefined
    */
-  noDataText?: string;
+  noDataText?: string | undefined;
+
+  /**
+   * Defines the selection mode of the `UploadCollection`.
+   * @default "None"
+   */
+  selectionMode?: UploadCollectionSelectionMode | keyof typeof UploadCollectionSelectionMode;
 }
 
 interface UploadCollectionDomRef extends Required<UploadCollectionAttributes>, Ui5DomRef {}
@@ -72,7 +72,7 @@ interface UploadCollectionPropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   header?: UI5WCSlotsNode;
   /**
@@ -89,7 +89,7 @@ interface UploadCollectionPropTypes
 
   /**
    * Fired when selection is changed by user interaction
-   * in `SingleSelect` and `MultiSelect` modes.
+   * in `Single` and `Multiple` modes.
    */
   onSelectionChange?: (
     event: Ui5CustomEvent<UploadCollectionDomRef, UploadCollectionSelectionChangeEventDetail>
@@ -104,11 +104,11 @@ interface UploadCollectionPropTypes
  *
  * `import "@ui5/webcomponents-fiori/dist/UploadCollectionItem.js";` (for `UploadCollectionItem`)
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const UploadCollection = withWebComponent<UploadCollectionPropTypes, UploadCollectionDomRef>(
   'ui5-upload-collection',
-  ['accessibleName', 'mode', 'noDataDescription', 'noDataText'],
+  ['accessibleName', 'noDataDescription', 'noDataText', 'selectionMode'],
   ['hideDragOverlay'],
   ['header'],
   ['drop', 'item-delete', 'selection-change'],

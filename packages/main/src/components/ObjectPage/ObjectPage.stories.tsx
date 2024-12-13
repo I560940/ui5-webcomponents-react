@@ -1,16 +1,24 @@
 import '@ui5/webcomponents-fiori/dist/illustrations/UnableToLoad.js';
 import SampleImage from '@sb/demoImages/Person.png';
 import type { Meta, StoryObj } from '@storybook/react';
+import BarDesign from '@ui5/webcomponents/dist/types/BarDesign.js';
+import ButtonDesign from '@ui5/webcomponents/dist/types/ButtonDesign.js';
+import ValueState from '@ui5/webcomponents-base/dist/types/ValueState.js';
+import IllustrationMessageType from '@ui5/webcomponents-fiori/dist/types/IllustrationMessageType.js';
+import declineIcon from '@ui5/webcomponents-icons/dist/decline.js';
+import exitFSIcon from '@ui5/webcomponents-icons/dist/exit-full-screen.js';
+import fullscreenIcon from '@ui5/webcomponents-icons/dist/full-screen.js';
 import sunIcon from '@ui5/webcomponents-icons/dist/general-leave-request.js';
+import { useRef } from 'react';
+import { Toolbar as LegacyToolbar, ToolbarSpacer as LegacyToolbarSpacer } from '../../../../compat/src/index.js';
+import type { ObjectPageDomRef } from '../../index.js';
 import {
   Bar,
-  BarDesign,
   Breadcrumbs,
   BreadcrumbsItem,
   Button,
-  ButtonDesign,
-  DynamicPageHeader,
-  DynamicPageTitle,
+  ObjectPageHeader,
+  ObjectPageTitle,
   FlexBox,
   FlexBoxAlignItems,
   FlexBoxDirection,
@@ -20,7 +28,6 @@ import {
   FormItem,
   Icon,
   IllustratedMessage,
-  IllustrationMessageType,
   Label,
   Link,
   MessageStrip,
@@ -30,31 +37,29 @@ import {
   ObjectStatus,
   Text,
   Title,
-  ToggleButton,
-  ValueState
-} from '../..';
+  Toolbar,
+  ToolbarButton
+} from '../../index.js';
 import { ObjectPage } from './index.js';
 
 const meta = {
   title: 'Layouts & Floorplans / ObjectPage',
   component: ObjectPage,
   argTypes: {
-    headerTitle: { control: { disable: true } },
-    headerContent: { control: { disable: true } },
-    footer: { control: { disable: true } },
+    titleArea: { control: { disable: true } },
+    headerArea: { control: { disable: true } },
+    footerArea: { control: { disable: true } },
     children: { control: { disable: true } },
     placeholder: { control: { disable: true } },
-    a11yConfig: { table: { category: 'A11y props' } }
+    accessibilityAttributes: { table: { category: 'Accessibility props' } }
   },
   args: {
     mode: ObjectPageMode.Default,
-    showHideHeaderButton: true,
     selectedSectionId: 'goals',
-    headerContentPinnable: true,
     imageShapeCircle: true,
     image: SampleImage,
     style: { height: '700px' },
-    footer: (
+    footerArea: (
       <Bar
         design={BarDesign.FloatingFooter}
         endContent={
@@ -65,18 +70,22 @@ const meta = {
         }
       />
     ),
-    headerTitle: (
-      <DynamicPageTitle
-        showSubHeaderRight
+    titleArea: (
+      <ObjectPageTitle
         header="Denise Smith"
         subHeader="Senior UI Developer"
-        actions={
-          <>
-            <Button key="1" design={ButtonDesign.Emphasized}>
-              Primary Action
-            </Button>
-            <Button key="2">Action</Button>
-          </>
+        actionsBar={
+          <Toolbar design="Transparent">
+            <ToolbarButton design={ButtonDesign.Emphasized} text="Primary Action" />
+            <ToolbarButton design={ButtonDesign.Transparent} text="Action" />
+          </Toolbar>
+        }
+        navigationBar={
+          <Toolbar design="Transparent">
+            <ToolbarButton icon={fullscreenIcon} design={ButtonDesign.Transparent} />
+            <ToolbarButton icon={exitFSIcon} design={ButtonDesign.Transparent} />
+            <ToolbarButton icon={declineIcon} design={ButtonDesign.Transparent} />
+          </Toolbar>
         }
         breadcrumbs={
           <Breadcrumbs>
@@ -88,11 +97,11 @@ const meta = {
         expandedContent={<MessageStrip>Information (only visible if header content is expanded)</MessageStrip>}
         snappedContent={<MessageStrip>Information (only visible if header content is collapsed/snapped)</MessageStrip>}
       >
-        <ObjectStatus state={ValueState.Success}>employed</ObjectStatus>
-      </DynamicPageTitle>
+        <ObjectStatus state={ValueState.Positive}>employed</ObjectStatus>
+      </ObjectPageTitle>
     ),
-    headerContent: (
-      <DynamicPageHeader>
+    headerArea: (
+      <ObjectPageHeader>
         <FlexBox wrap={FlexBoxWrap.Wrap} alignItems={FlexBoxAlignItems.Center}>
           <FlexBox direction={FlexBoxDirection.Column}>
             <Link>+33 6 4512 5158</Link>
@@ -106,7 +115,7 @@ const meta = {
             <Label>California, USA</Label>
           </FlexBox>
         </FlexBox>
-      </DynamicPageHeader>
+      </ObjectPageHeader>
     )
   }
 } satisfies Meta<typeof ObjectPage>;
@@ -119,22 +128,14 @@ export const Default: Story = {
     return (
       <ObjectPage {...args}>
         <ObjectPageSection titleText="Goals" id="goals" aria-label="Goals">
-          <Form
-            columnsL={3}
-            columnsXL={3}
-            labelSpanXL={6}
-            labelSpanL={6}
-            columnsM={2}
-            labelSpanM={6}
-            style={{ alignItems: 'baseline' }}
-          >
-            <FormItem label="Evangelize the UI framework across the company">
+          <Form layout="S1 M2 L3 XL3" labelSpan="S12 M12 L12 XL12">
+            <FormItem labelContent={<Label showColon>Evangelize the UI framework across the company</Label>}>
               <Text>4 days overdue - Cascaded</Text>
             </FormItem>
-            <FormItem label="Get trained in development management direction">
+            <FormItem labelContent={<Label showColon>Get trained in development management direction</Label>}>
               <Text>Due Nov, 21</Text>
             </FormItem>
-            <FormItem label="Mentor junior developers">
+            <FormItem labelContent={<Label showColon>Mentor junior developers</Label>}>
               <Text>Due Dec, 31 - Cascaded</Text>
             </FormItem>
           </Form>
@@ -154,33 +155,31 @@ export const Default: Story = {
               </>
             }
           >
-            <Form columnsXL={4} columnsL={4} style={{ alignItems: 'baseline' }}>
-              <FormGroup titleText="Phone Numbers">
-                <FormItem label="Home">
+            <Form style={{ alignItems: 'baseline' }}>
+              <FormGroup headerText="Phone Numbers">
+                <FormItem labelContent={<Label showColon>Home</Label>}>
                   <Text>+1 234-567-8901</Text>
-                </FormItem>
-                <FormItem label="">
                   <Text>+1 234-567-5555</Text>
                 </FormItem>
               </FormGroup>
-              <FormGroup titleText="Social Accounts">
-                <FormItem label="LinkedIn">
+              <FormGroup headerText="Social Accounts">
+                <FormItem labelContent={<Label showColon>LinkedIn</Label>}>
                   <Text>/DeniseSmith</Text>
                 </FormItem>
-                <FormItem label="Twitter">
+                <FormItem labelContent={<Label showColon>Twitter</Label>}>
                   <Text>@DeniseSmith</Text>
                 </FormItem>
               </FormGroup>
-              <FormGroup titleText="Addresses">
-                <FormItem label="Home Address">
+              <FormGroup headerText="Addresses">
+                <FormItem labelContent={<Label showColon>Home Address</Label>}>
                   <Text>2096 Mission Street</Text>
                 </FormItem>
-                <FormItem label="Mailing Address">
+                <FormItem labelContent={<Label showColon>Mailing Address</Label>}>
                   <Text>PO Box 32114</Text>
                 </FormItem>
               </FormGroup>
-              <FormGroup titleText="Mailing Address">
-                <FormItem label="Work">
+              <FormGroup headerText="Mailing Address">
+                <FormItem labelContent={<Label showColon>Work</Label>}>
                   <Text>DeniseSmith@sap.com</Text>
                 </FormItem>
               </FormGroup>
@@ -191,14 +190,14 @@ export const Default: Story = {
             id="personal-payment-information"
             aria-label="Payment Information"
           >
-            <Form columnsXL={4} columnsL={4} style={{ alignItems: 'baseline' }}>
-              <FormGroup titleText="Salary">
-                <FormItem label="Bank Transfer">
+            <Form>
+              <FormGroup headerText="Salary">
+                <FormItem labelContent={<Label showColon>Bank Transfer</Label>}>
                   <Text>Money Bank, Inc.</Text>
                 </FormItem>
               </FormGroup>
-              <FormGroup titleText="Payment method for Expenses">
-                <FormItem label="Extra Travel Expenses">
+              <FormGroup headerText="Payment method for Expenses">
+                <FormItem labelContent={<Label showColon>Extra Travel Expenses</Label>}>
                   <Text>Cash 100 USD</Text>
                 </FormItem>
               </FormGroup>
@@ -211,29 +210,29 @@ export const Default: Story = {
             id="employment-job-information"
             aria-label="Job Information"
           >
-            <Form columnsXL={4} columnsL={4} style={{ alignItems: 'baseline' }}>
-              <FormItem label="Job Classification">
+            <Form>
+              <FormItem labelContent={<Label showColon>Job Classification</Label>}>
                 <FlexBox direction={FlexBoxDirection.Column}>
                   <Text>Senior UI Developer</Text>
                   <Label>(UIDEV-SR)</Label>
                 </FlexBox>
               </FormItem>
-              <FormItem label="Job Title">
+              <FormItem labelContent={<Label showColon>Job Title</Label>}>
                 <Text>Developer</Text>
               </FormItem>
-              <FormItem label="Employee Class">
+              <FormItem labelContent={<Label showColon>Employee Class</Label>}>
                 <Text>Employee</Text>
               </FormItem>
-              <FormItem label="Manager">
+              <FormItem labelContent={<Label showColon>Manager</Label>}>
                 <FlexBox direction={FlexBoxDirection.Column}>
                   <Text>Dan Smith</Text>
                   <Label>Development Manager</Label>
                 </FlexBox>
               </FormItem>
-              <FormItem label="Pay Grade">
+              <FormItem labelContent={<Label showColon>Pay Grade</Label>}>
                 <Text>Salary Grade 18 (GR-14)</Text>
               </FormItem>
-              <FormItem label="FTE">
+              <FormItem labelContent={<Label showColon>FTE</Label>}>
                 <Text>1</Text>
               </FormItem>
             </Form>
@@ -243,23 +242,23 @@ export const Default: Story = {
             id="employment-employee-details"
             aria-label="Employee Details"
           >
-            <Form columnsXL={4} columnsL={4} style={{ alignItems: 'baseline' }}>
-              <FormItem label="Start Date">
+            <Form>
+              <FormItem labelContent={<Label showColon>Start Date</Label>}>
                 <Text>Jan 01, 2018</Text>
               </FormItem>
-              <FormItem label="End Date">
+              <FormItem labelContent={<Label showColon>End Date</Label>}>
                 <Text>Dec 31, 9999</Text>
               </FormItem>
-              <FormItem label="Payroll Start Date">
+              <FormItem labelContent={<Label showColon>Payroll Start Date</Label>}>
                 <Text>Jan 01, 2018</Text>
               </FormItem>
-              <FormItem label="Benefits Start Date">
+              <FormItem labelContent={<Label showColon>Benefits Start Date</Label>}>
                 <Text>Jul 01, 2018</Text>
               </FormItem>
-              <FormItem label="Company Car Eligibility">
+              <FormItem labelContent={<Label showColon>Company Car Eligibility</Label>}>
                 <Text>Jan 01, 2021</Text>
               </FormItem>
-              <FormItem label="Equity Start Date">
+              <FormItem labelContent={<Label showColon>Equity Start Date</Label>}>
                 <Text>Jul 01, 2018</Text>
               </FormItem>
             </Form>
@@ -269,14 +268,14 @@ export const Default: Story = {
             id="employment-job-relationship"
             aria-label="Job Relationship"
           >
-            <Form columnsXL={4} columnsL={4} style={{ alignItems: 'baseline' }}>
-              <FormItem label="Manager">
+            <Form>
+              <FormItem labelContent={<Label showColon>Manager</Label>}>
                 <Text>John Doe</Text>
               </FormItem>
-              <FormItem label="Scrum Master">
+              <FormItem labelContent={<Label showColon>Scrum Master</Label>}>
                 <Text>Michael Adams</Text>
               </FormItem>
-              <FormItem label="Product Owner">
+              <FormItem labelContent={<Label showColon>Product Owner</Label>}>
                 <Text>John Miller</Text>
               </FormItem>
             </Form>
@@ -293,83 +292,11 @@ export const WithIllustratedMessage: Story = {
     return (
       <ObjectPage
         image={args.image}
-        headerTitle={args.headerTitle}
-        headerContent={args.headerContent}
+        titleArea={args.titleArea}
+        headerArea={args.headerArea}
         imageShapeCircle
         placeholder={<IllustratedMessage name={IllustrationMessageType.UnableToLoad} />}
       />
-    );
-  }
-};
-
-export const WithCustomOverflowButton: Story = {
-  name: 'with custom overflow button',
-  render() {
-    const titleProps = {
-      actionsToolbarProps: {
-        overflowButton: <ToggleButton design={ButtonDesign.Transparent} icon="navigation-down-arrow" />
-      },
-      navigationActionsToolbarProps: {
-        overflowButton: <ToggleButton design={ButtonDesign.Transparent} icon="menu2" />
-      },
-      actions: (
-        <>
-          <Button key={'edit'} design={ButtonDesign.Emphasized}>
-            Edit
-          </Button>
-          <Button key={'delete'} design={ButtonDesign.Transparent}>
-            Delete
-          </Button>
-          <Button key={'copy'} design={ButtonDesign.Transparent}>
-            Copy
-          </Button>
-          <Button key={'action'} icon="action" design={ButtonDesign.Transparent}>
-            Action
-          </Button>
-          <Button design={ButtonDesign.Transparent}>Create</Button>
-          <Button design={ButtonDesign.Transparent}>Loooooooooooooooooooooooooooooooooooong actions Button</Button>
-        </>
-      ),
-      navigationActions: (
-        <>
-          <Button key={'fullscreen'} icon="full-screen" design={ButtonDesign.Transparent} />
-          <Button key={'exitFullscreen'} icon="exit-full-screen" design={ButtonDesign.Transparent} />
-          <Button key={'decline'} icon="decline" design={ButtonDesign.Transparent} />
-          <Button design={ButtonDesign.Transparent}>UI5 Web Components For React</Button>
-          <Button design={ButtonDesign.Transparent}>Navigation Actions Button</Button>
-          <Button design={ButtonDesign.Transparent}>
-            Loooooooooooooooooooooooooooooooooooong navigation actions Button
-          </Button>
-        </>
-      )
-    };
-    return (
-      <>
-        <ObjectPage
-          style={{ width: '1000px' }}
-          showHideHeaderButton={false}
-          headerTitle={
-            <DynamicPageTitle
-              {...titleProps}
-              header={
-                <Title wrappingType="Normal">
-                  Custom overflow buttons for navigationActions and actions (width: 1000px)
-                </Title>
-              }
-            />
-          }
-        />
-        <ObjectPage
-          style={{ width: '1400px' }}
-          showHideHeaderButton={false}
-          headerTitle={
-            <DynamicPageTitle
-              {...titleProps}
-              header={<Title>Custom overflow buttons for actions (width: 1400px)</Title>}
-            />
-          }
-        />
-      </>
     );
   }
 };
@@ -434,6 +361,64 @@ export const FullScreenSingleSection: Story = {
         </ObjectPageSection>
         <ObjectPageSection titleText="Section with Overflow" id="section3" style={{ height: '100%', overflow: 'auto' }}>
           <div style={{ height: '300%', background: 'lightyellow' }} />
+        </ObjectPageSection>
+      </ObjectPage>
+    );
+  }
+};
+
+export const LegacyToolbarSupport: Story = {
+  render(args) {
+    const objectPageRef = useRef<ObjectPageDomRef>(null);
+    const handleToolbarClick = (e) => {
+      if (e.target.dataset.componentName === 'ToolbarContent') {
+        objectPageRef.current.toggleHeaderArea();
+      }
+    };
+    return (
+      <ObjectPage
+        {...args}
+        ref={objectPageRef}
+        titleArea={
+          <ObjectPageTitle
+            header="Legacy Toolbar Support"
+            subHeader="actions and navigation actions are rendered inside the legacy Toolbar component"
+            actionsBar={
+              <LegacyToolbar
+                design="Transparent"
+                toolbarStyle="Clear"
+                onClick={handleToolbarClick}
+                data-in-object-page-title
+              >
+                <LegacyToolbarSpacer />
+                <Button design={ButtonDesign.Emphasized}>Primary Action</Button>
+                <Button design={ButtonDesign.Transparent}>Action</Button>
+              </LegacyToolbar>
+            }
+            navigationBar={
+              <LegacyToolbar
+                design="Transparent"
+                toolbarStyle="Clear"
+                onClick={handleToolbarClick}
+                data-in-object-page-title
+              >
+                <LegacyToolbarSpacer />
+                <Button icon={fullscreenIcon} design={ButtonDesign.Transparent} />
+                <Button icon={exitFSIcon} design={ButtonDesign.Transparent} />
+                <Button icon={declineIcon} design={ButtonDesign.Transparent} />
+              </LegacyToolbar>
+            }
+          />
+        }
+      >
+        <ObjectPageSection titleText="Section 1" id="opSection1">
+          <div style={{ height: '300px', width: '100%', background: 'lightblue' }}>Section 1 Content</div>
+        </ObjectPageSection>
+        <ObjectPageSection titleText="Section 2" id="opSection2">
+          <div style={{ height: '200px', width: '100%', background: 'lightblue' }}>Section 2 Content</div>
+        </ObjectPageSection>
+        <ObjectPageSection titleText="Section 3" id="opSection3">
+          <div style={{ height: '500px', width: '100%', background: 'lightblue' }}>Section 3 Content</div>
         </ObjectPageSection>
       </ObjectPage>
     );

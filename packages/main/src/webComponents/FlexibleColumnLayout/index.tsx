@@ -2,8 +2,7 @@
 
 import '@ui5/webcomponents-fiori/dist/FlexibleColumnLayout.js';
 import type {
-  FlexibleColumnLayoutAccessibilityRoles,
-  FlexibleColumnLayoutAccessibilityTexts,
+  FCLAccessibilityAttributes,
   FlexibleColumnLayoutColumnLayout,
   FlexibleColumnLayoutLayoutChangeEventDetail
 } from '@ui5/webcomponents-fiori/dist/FlexibleColumnLayout.js';
@@ -13,11 +12,37 @@ import type { CommonProps, Ui5CustomEvent, Ui5DomRef, UI5WCSlotsNode } from '../
 
 interface FlexibleColumnLayoutAttributes {
   /**
-   * Defines the visibility of the arrows,
-   * used for expanding and shrinking the columns.
+   * Defines additional accessibility attributes on different areas of the component.
+   *
+   * The accessibilityAttributes object has the following fields,
+   * where each field is an object supporting one or more accessibility attributes:
+   *
+   *  - **startColumn**: `startColumn.role` and `startColumn.name`.
+   *  - **midColumn**: `midColumn.role` and `midColumn.name`.
+   *  - **endColumn**: `endColumn.role` and `endColumn.name`.
+   *  - **startSeparator**: `startSeparator.role` and `startSeparator.name`.
+   *  - **endSeparator**: `endSeparator.role` and `endSeparator.name`.
+   *
+   * The accessibility attributes support the following values:
+   *
+   * - **role**: Defines the accessible ARIA landmark role of the area.
+   * Accepts the following values: `none`, `complementary`, `contentinfo`, `main` or `region`.
+   *
+   * - **name**: Defines the accessible ARIA name of the area.
+   * Accepts any string.
+   *
+   * **Note:** Available since [v2.0.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.0.0) of **@ui5/webcomponents-fiori**.
+   * @default {}
+   */
+  accessibilityAttributes?: FCLAccessibilityAttributes;
+
+  /**
+   * Specifies if the user is allowed to change the columns layout by dragging the separator between the columns.
+   *
+   * **Note:** Available since [v2.0.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.0.0) of **@ui5/webcomponents-fiori**.
    * @default false
    */
-  hideArrows?: boolean;
+  disableResizing?: boolean;
 
   /**
    * Defines the columns layout and their proportion.
@@ -33,34 +58,6 @@ interface FlexibleColumnLayoutAttributes {
 }
 
 interface FlexibleColumnLayoutDomRef extends Required<FlexibleColumnLayoutAttributes>, Ui5DomRef {
-  /**
-   * An object of strings that defines additional accessibility roles for further customization.
-   *
-   * It supports the following fields:
-   *  - `startColumnRole`: the accessibility role for the `startColumn`
-   *  - `startArrowContainerRole`: the accessibility role for the first arrow container (between the `begin` and `mid` columns)
-   *  - `midColumnRole`: the accessibility role for the `midColumn`
-   *  - `endArrowContainerRole`: the accessibility role for the second arrow container (between the `mid` and `end` columns)
-   *  - `endColumnRole`: the accessibility role for the `endColumn`
-   */
-  accessibilityRoles: FlexibleColumnLayoutAccessibilityRoles;
-
-  /**
-   * An object of strings that defines several additional accessibility texts for even further customization.
-   *
-   * It supports the following fields:
-   *  - `startColumnAccessibleName`: the accessibility name for the `startColumn` region
-   *  - `midColumnAccessibleName`: the accessibility name for the `midColumn` region
-   *  - `endColumnAccessibleName`: the accessibility name for the `endColumn` region
-   *  - `startArrowLeftText`: the text that the first arrow (between the `begin` and `mid` columns) will have when pointing to the left
-   *  - `startArrowRightText`: the text that the first arrow (between the `begin` and `mid` columns) will have when pointing to the right
-   *  - `endArrowLeftText`: the text that the second arrow (between the `mid` and `end` columns) will have when pointing to the left
-   *  - `endArrowRightText`: the text that the second arrow (between the `mid` and `end` columns) will have when pointing to the right
-   *  - `startArrowContainerAccessibleName`: the text that the first arrow container (between the `begin` and `mid` columns) will have as `aria-label`
-   *  - `endArrowContainerAccessibleName`: the text that the second arrow container (between the `mid` and `end` columns) will have as `aria-label`
-   */
-  accessibilityTexts: FlexibleColumnLayoutAccessibilityTexts;
-
   /**
    * Returns the current column layout, based on both the `layout` property and the screen size.
    *
@@ -103,7 +100,7 @@ interface FlexibleColumnLayoutPropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   endColumn?: UI5WCSlotsNode;
 
@@ -114,7 +111,7 @@ interface FlexibleColumnLayoutPropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   midColumn?: UI5WCSlotsNode;
 
@@ -125,11 +122,11 @@ interface FlexibleColumnLayoutPropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   startColumn?: UI5WCSlotsNode;
   /**
-   * Fired when the layout changes via user interaction by clicking the arrows
+   * Fired when the layout changes via user interaction by dragging the separators
    * or by changing the component size due to resizing.
    */
   onLayoutChange?: (
@@ -139,7 +136,7 @@ interface FlexibleColumnLayoutPropTypes
 
 /**
  * The `FlexibleColumnLayout` implements the list-detail-detail paradigm by displaying up to three pages in separate columns.
- * There are several possible layouts that can be changed either with the component API, or by pressing the arrows, displayed between the columns.
+ * There are several possible layouts that can be changed either with the component API, or by dragging the column separators.
  *
  * ### Usage
  *
@@ -152,28 +149,36 @@ interface FlexibleColumnLayoutPropTypes
  * The component would display 1 column for window size smaller than 599px, up to two columns between 599px and 1023px,
  * and 3 columns for sizes bigger than 1023px.
  *
+ * **Note:** When the component displays more than one column, the minimal width of each column is 312px. Consequently, when the user drags a column separator to resize the columns, the minimal allowed width of any resized column is 312px.
+ *
  * ### Keyboard Handling
  *
  * #### Basic Navigation
  *
- * - [SPACE, ENTER, RETURN] - If focus is on the layout toggle button (arrow button), once activated, it triggers the associated action (such as expand/collapse the column).
- * - This component provides a build in fast navigation group which can be used via `F6 / Shift + F6` or ` Ctrl + Alt(Option) + Down /  Ctrl + Alt(Option) + Up`.
+ * When a column separator is focused,  the following keyboard
+ * shortcuts allow the user to resize the columns and change the layout:
+ *
+ * - [Shift] + [Left] or [Shift] + [Right] - Moves the separator to the left or right, which resizes the columns accordingly.
+ * - [Left] or [Right] - Moves the separator to the left or right with a bigger step, which resizes the columns accordingly.
+ * - [Home] - Moves the separator to the start position.
+ * - [End] - Moves the separator to the end position.
+ * - This component provides a build in fast navigation group which can be used via [F6] / [Shift] + [F6] / [Ctrl] + [Alt/Option] / [Down] or [Ctrl] + [Alt/Option] + [Up].
  * In order to use this functionality, you need to import the following module:
  * `import "@ui5/webcomponents-base/dist/features/F6Navigation.js"`
  *
  * #### Fast Navigation
- * This component provides a build in fast navigation group which can be used via `F6 / Shift + F6` or ` Ctrl + Alt(Option) + Down /  Ctrl + Alt(Option) + Up`.
+ * This component provides a build in fast navigation group which can be used via [F6] / [Shift] + [F6] / [Ctrl] + [Alt/Option] / [Down] or [Ctrl] + [Alt/Option] + [Up].
  * In order to use this functionality, you need to import the following module:
  * `import "@ui5/webcomponents-base/dist/features/F6Navigation.js"`
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const FlexibleColumnLayout = withWebComponent<FlexibleColumnLayoutPropTypes, FlexibleColumnLayoutDomRef>(
   'ui5-flexible-column-layout',
-  ['layout'],
-  ['hideArrows'],
+  ['accessibilityAttributes', 'layout'],
+  ['disableResizing'],
   ['endColumn', 'midColumn', 'startColumn'],
   ['layout-change'],
   () => import('@ui5/webcomponents-fiori/dist/FlexibleColumnLayout.js')

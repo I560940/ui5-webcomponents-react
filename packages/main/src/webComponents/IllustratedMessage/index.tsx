@@ -1,8 +1,7 @@
 'use client';
 
 import '@ui5/webcomponents-fiori/dist/IllustratedMessage.js';
-import type TitleLevel from '@ui5/webcomponents/dist/types/TitleLevel.js';
-import type IllustrationMessageSize from '@ui5/webcomponents-fiori/dist/types/IllustrationMessageSize.js';
+import type IllustrationMessageDesign from '@ui5/webcomponents-fiori/dist/types/IllustrationMessageDesign.js';
 import type { ReactNode } from 'react';
 import { withWebComponent } from '../../internal/withWebComponent.js';
 import type { CommonProps, Ui5DomRef, UI5WCSlotsNode } from '../../types/index.js';
@@ -10,8 +9,22 @@ import type { CommonProps, Ui5DomRef, UI5WCSlotsNode } from '../../types/index.j
 interface IllustratedMessageAttributes {
   /**
    * Receives id(or many ids) of the elements that label the component.
+   *
+   * **Note:** Available since [v1.7.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.7.0) of **@ui5/webcomponents-fiori**.
+   * @default undefined
    */
-  accessibleNameRef?: string;
+  accessibleNameRef?: string | undefined;
+
+  /**
+   * Determines which illustration breakpoint variant is used.
+   *
+   * As `IllustratedMessage` adapts itself around the `Illustration`, the other
+   * elements of the component are displayed differently on the different breakpoints/illustration designs.
+   *
+   * **Note:** Available since [v2.0.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.0.0) of **@ui5/webcomponents-fiori**.
+   * @default "Auto"
+   */
+  design?: IllustrationMessageDesign | keyof typeof IllustrationMessageDesign;
 
   /**
    * Defines the illustration name that will be displayed in the component.
@@ -40,39 +53,22 @@ interface IllustratedMessageAttributes {
   name?: string;
 
   /**
-   * Determines which illustration breakpoint variant is used.
-   *
-   * As `IllustratedMessage` adapts itself around the `Illustration`, the other
-   * elements of the component are displayed differently on the different breakpoints/illustration sizes.
-   * @default "Auto"
-   */
-  size?: IllustrationMessageSize | keyof typeof IllustrationMessageSize;
-
-  /**
    * Defines the subtitle of the component.
    *
    * **Note:** Using this property, the default subtitle text of illustration will be overwritten.
    *
    * **Note:** Using `subtitle` slot, the default of this property will be overwritten.
+   * @default undefined
    */
-  subtitleText?: string;
-
-  /**
-   * Defines the semantic level of the title.
-   *
-   * **Note:** Used for accessibility purposes only.
-   *
-   * **Note:** Doesn't take effect when `title` slot is being used.
-   * @default "H2"
-   */
-  titleLevel?: TitleLevel | keyof typeof TitleLevel;
+  subtitleText?: string | undefined;
 
   /**
    * Defines the title of the component.
    *
    * **Note:** Using this property, the default title text of illustration will be overwritten.
+   * @default undefined
    */
-  titleText?: string;
+  titleText?: string | undefined;
 }
 
 interface IllustratedMessageDomRef extends Required<IllustratedMessageAttributes>, Ui5DomRef {}
@@ -94,7 +90,7 @@ interface IllustratedMessagePropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   subtitle?: UI5WCSlotsNode;
 
@@ -107,7 +103,9 @@ interface IllustratedMessagePropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
+   *
+   * **Note:** Available since [v1.7.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.7.0) of **@ui5/webcomponents-fiori**.
    */
   title?: UI5WCSlotsNode;
 }
@@ -144,11 +142,11 @@ interface IllustratedMessagePropTypes
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const IllustratedMessage = withWebComponent<IllustratedMessagePropTypes, IllustratedMessageDomRef>(
   'ui5-illustrated-message',
-  ['accessibleNameRef', 'name', 'size', 'subtitleText', 'titleLevel', 'titleText'],
+  ['accessibleNameRef', 'design', 'name', 'subtitleText', 'titleText'],
   [],
   ['subtitle', 'title'],
   [],

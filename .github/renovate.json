@@ -1,5 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "baseBranches": ["main", "v1.29.x"],
   "extends": [
     "config:base",
     ":disableDependencyDashboard",
@@ -22,6 +23,12 @@
   ],
   "packageRules": [
     {
+      "groupName": "Rimraf",
+      "extends": ["schedule:weekly"],
+      "matchPackageNames": ["rimraf"],
+      "semanticCommitType": "chore"
+    },
+    {
       "groupName": "UI5 Web Components",
       "matchSourceUrlPrefixes": ["https://github.com/SAP/ui5-webcomponents"]
     },
@@ -31,14 +38,19 @@
       "excludePackageNames": ["@storybook/react-vite"]
     },
     {
+      "extends": ["group:storybookMonorepo", "schedule:weekly"],
+      "semanticCommitType": "chore"
+    },
+    {
       "description": "root package dependencies",
       "extends": ["schedule:weekly"],
-      "matchFiles": ["package.json"],
       "semanticCommitType": "chore",
       "groupName": "all non-major dependencies",
       "groupSlug": "root-all-minor-patch",
-      "matchPackagePatterns": ["*"],
-      "matchUpdateTypes": ["minor", "patch"]
+      "matchFileNames": ["package.json"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "excludePackageNames": ["react", "react-dom", "storybook", "rimraf"],
+      "excludePackagePatterns": ["^@storybook/", "^@ui5/"]
     },
     {
       "description": "Example & Template dependencies",

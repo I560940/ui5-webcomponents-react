@@ -16,25 +16,25 @@ interface PageAttributes {
   backgroundDesign?: PageBackgroundDesign | keyof typeof PageBackgroundDesign;
 
   /**
-   * Disables vertical scrolling of page content.
-   * If set to true, there will be no vertical scrolling at all.
+   * Defines if the footer is fixed at the very bottom of the page.
+   *
+   * **Note:** When set to true the footer is fixed at the very bottom of the page, otherwise it floats over the content with a slight offset from the bottom.
    * @default false
    */
-  disableScrolling?: boolean;
-
-  /**
-   * Defines if the footer should float over the content.
-   *
-   * **Note:** When set to true the footer floats over the content with a slight offset from the bottom, otherwise it is fixed at the very bottom of the page.
-   * @default true
-   */
-  floatingFooter?: boolean;
+  fixedFooter?: boolean;
 
   /**
    * Defines the footer visibility.
    * @default false
    */
   hideFooter?: boolean;
+
+  /**
+   * Disables vertical scrolling of page content.
+   * If set to true, there will be no vertical scrolling at all.
+   * @default false
+   */
+  noScrolling?: boolean;
 }
 
 interface PageDomRef extends Required<PageAttributes>, Ui5DomRef {}
@@ -54,7 +54,7 @@ interface PagePropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   footer?: UI5WCSlotsNode;
 
@@ -65,7 +65,7 @@ interface PagePropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   header?: UI5WCSlotsNode;
 }
@@ -80,8 +80,7 @@ interface PagePropTypes
  * The content occupies the main part of the page. Only the content area is scrollable by default.
  * This can be prevented by setting  `enableScrolling` to `false`.
  * #### Footer
- * The footer is optional and occupies the fixed bottom part of the page. Alternatively, the footer can be floating above the bottom part of the content.
- * This is enabled with the `floatingFooter` property.
+ * The footer is optional and occupies the part above the bottom part of the content. Alternatively, the footer can be fixed at the bottom of the page by enabling the `fixedFooter` property.
  *
  * **Note:** `Page` occipues the whole available space of its parent. In order to achieve the intended design you have to make sure
  * that there is enough space for the `Page` to be rendered.
@@ -89,12 +88,12 @@ interface PagePropTypes
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const Page = withWebComponent<PagePropTypes, PageDomRef>(
   'ui5-page',
   ['backgroundDesign'],
-  ['disableScrolling', 'floatingFooter', 'hideFooter'],
+  ['fixedFooter', 'hideFooter', 'noScrolling'],
   ['footer', 'header'],
   [],
   () => import('@ui5/webcomponents-fiori/dist/Page.js')

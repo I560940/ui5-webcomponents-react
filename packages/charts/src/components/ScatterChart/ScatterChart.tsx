@@ -2,7 +2,7 @@
 
 import { enrichEventWithDetails, ThemingParameters, useIsRTL, useSyncRef } from '@ui5/webcomponents-react-base';
 import type { CSSProperties } from 'react';
-import React, { forwardRef, useCallback, useRef } from 'react';
+import { forwardRef, useCallback, useRef } from 'react';
 import type { ReferenceLineProps } from 'recharts';
 import {
   CartesianGrid,
@@ -133,6 +133,7 @@ const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>((props, ref) 
   const {
     dataset,
     loading,
+    loadingDelay,
     noLegend,
     noAnimation,
     tooltipConfig,
@@ -147,7 +148,7 @@ const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>((props, ref) 
     ...rest
   } = props;
 
-  const chartConfig = {
+  const chartConfig: ScatterChartProps['chartConfig'] = {
     yAxisVisible: false,
     xAxisVisible: true,
     gridStroke: ThemingParameters.sapList_BorderColor,
@@ -200,7 +201,7 @@ const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>((props, ref) 
     },
     [onDataPointClick, preventOnClickCall.current]
   );
-  const isBigDataSet = dataset?.length > 30 ?? false;
+  const isBigDataSet = dataset?.length > 30;
 
   const xMeasure = measures.find(({ axis }) => axis === 'x');
   const yMeasure = measures.find(({ axis }) => axis === 'y');
@@ -216,6 +217,7 @@ const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>((props, ref) 
     <ChartContainer
       dataset={dataset}
       loading={loading}
+      loadingDelay={loadingDelay}
       Placeholder={ChartPlaceholder ?? ScatterChartPlaceholder}
       ref={componentRef}
       style={style}
@@ -224,6 +226,7 @@ const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>((props, ref) 
       resizeDebounce={chartConfig.resizeDebounce}
       {...propsWithoutOmitted}
     >
+      {/*@ts-expect-error: todo not yet compatible with React19*/}
       <ScatterChartLib
         onClick={onClickInternal}
         margin={marginChart}
@@ -237,7 +240,7 @@ const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>((props, ref) 
         {chartConfig.xAxisVisible && (
           <XAxis
             type={'number'}
-            key={xMeasure?.accessor}
+            key={typeof xMeasure?.accessor !== 'function' ? xMeasure?.accessor : xMeasure?.label}
             name={xMeasure?.label}
             dataKey={xMeasure?.accessor}
             xAxisId={0}
@@ -263,7 +266,7 @@ const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>((props, ref) 
           name={yMeasure?.label}
           axisLine={chartConfig.yAxisVisible}
           tickLine={tickLineConfig}
-          key={yMeasure?.accessor}
+          key={typeof yMeasure?.accessor !== 'function' ? yMeasure?.accessor : yMeasure?.label}
           dataKey={yMeasure?.accessor}
           tickFormatter={yMeasure?.formatter}
           interval={0}
@@ -272,7 +275,12 @@ const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>((props, ref) 
           margin={yMeasure?.label ? { left: 200 } : 0}
           orientation={isRTL === true ? 'right' : 'left'}
         />
-        <ZAxis name={zMeasure?.label} dataKey={zMeasure?.accessor} range={[0, 5000]} key={zMeasure?.accessor} />
+        <ZAxis
+          name={zMeasure?.label}
+          dataKey={zMeasure?.accessor}
+          range={[0, 5000]}
+          key={typeof zMeasure?.accessor !== 'function' ? zMeasure?.accessor : zMeasure?.label}
+        />
         {dataset?.map((dataSet, index) => {
           return (
             <Scatter
@@ -285,13 +293,11 @@ const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>((props, ref) 
               name={dataSet?.label}
               key={dataSet?.label}
               fill={dataSet?.color ?? `var(--sapChart_OrderedColor_${(index % 11) + 1})`}
-              isAnimationActive={noAnimation === false}
+              isAnimationActive={!noAnimation}
             />
           );
         })}
         {!noLegend && (
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
           <Legend
             verticalAlign={chartConfig.legendPosition}
             align={chartConfig.legendHorizontalAlign}
@@ -329,11 +335,6 @@ const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>((props, ref) 
     </ChartContainer>
   );
 });
-
-ScatterChart.defaultProps = {
-  noLegend: false,
-  noAnimation: false
-};
 
 ScatterChart.displayName = 'ScatterChart';
 

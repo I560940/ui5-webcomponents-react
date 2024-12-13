@@ -7,13 +7,15 @@ import type { CommonProps, Ui5DomRef } from '../../types/index.js';
 interface ComboBoxItemAttributes {
   /**
    * Defines the additional text of the component.
+   * @default undefined
    */
-  additionalText?: string;
+  additionalText?: string | undefined;
 
   /**
    * Defines the text of the component.
+   * @default undefined
    */
-  text?: string;
+  text?: string | undefined;
 }
 
 interface ComboBoxItemDomRef extends Required<ComboBoxItemAttributes>, Ui5DomRef {}
@@ -23,8 +25,8 @@ interface ComboBoxItemPropTypes extends ComboBoxItemAttributes, Omit<CommonProps
 /**
  * The `ComboBoxItem` represents the item for a `ComboBox`.
  *
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  * @abstract
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
  */
 const ComboBoxItem = withWebComponent<ComboBoxItemPropTypes, ComboBoxItemDomRef>(
   'ui5-cb-item',

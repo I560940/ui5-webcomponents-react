@@ -12,12 +12,15 @@ export interface FilterGroupItemPropTypes extends CommonProps {
    * Defines the label of the `FilterGroupItem`.
    *
    * __Note:__ This label is used for the search in the filter configuration dialog.
+   *
+   * @default ""
    */
   label?: string;
   /**
    * Defines the group name of the filter.
    *
-   * __Note:__ If no `groupName` is set, the name defaults to "Basic".
+   *
+   * @default "Basic"
    */
   groupName?: string;
   /**
@@ -37,13 +40,14 @@ export interface FilterGroupItemPropTypes extends CommonProps {
    */
   required?: boolean;
   /**
-   * Defines whether the filter is visible.
+   * Defines whether the filter is hidden.
+   *
    */
-  visible?: boolean;
+  hidden?: boolean;
   /**
-   * Defines whether the filter is visible in the `FilterBar` or only in the filter configuration dialog.
+   * Defines whether the filter is hidden in the `FilterBar` or only in the filter configuration dialog.
    */
-  visibleInFilterBar?: boolean;
+  hiddenInFilterBar?: boolean;
   /**
    * Defines whether the `groupName` of the `FilterGroupItems` is displayed in the filter configuration dialog.
    */

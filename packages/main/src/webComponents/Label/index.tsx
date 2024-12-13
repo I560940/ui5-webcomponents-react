@@ -11,8 +11,9 @@ interface LabelAttributes {
    * Defines the labeled input by providing its ID.
    *
    * **Note:** Can be used with both `Input` and native input.
+   * @default undefined
    */
-  for?: string;
+  for?: string | undefined;
 
   /**
    * Defines whether an asterisk character is added to the component text.
@@ -36,7 +37,7 @@ interface LabelAttributes {
    * Defines how the text of a component will be displayed when there is not enough space.
    *
    * **Note:** for option "Normal" the text will wrap and the words will not be broken based on hyphenation.
-   * @default "None"
+   * @default "Normal"
    */
   wrappingType?: WrappingType | keyof typeof WrappingType;
 }
@@ -64,7 +65,7 @@ interface LabelPropTypes extends LabelAttributes, Omit<CommonProps, keyof LabelA
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const Label = withWebComponent<LabelPropTypes, LabelDomRef>(
   'ui5-label',

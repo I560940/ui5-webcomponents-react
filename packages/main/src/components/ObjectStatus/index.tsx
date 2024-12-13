@@ -6,6 +6,7 @@ import {
   VALUE_STATE_SUCCESS,
   VALUE_STATE_WARNING
 } from '@ui5/webcomponents/dist/generated/i18n/i18n-defaults.js';
+import ValueState from '@ui5/webcomponents-base/dist/types/ValueState.js';
 import alertIcon from '@ui5/webcomponents-icons/dist/alert.js';
 import errorIcon from '@ui5/webcomponents-icons/dist/error.js';
 import informationIcon from '@ui5/webcomponents-icons/dist/information.js';
@@ -13,9 +14,8 @@ import successIcon from '@ui5/webcomponents-icons/dist/sys-enter-2.js';
 import { useI18nBundle, useStylesheet } from '@ui5/webcomponents-react-base';
 import { clsx } from 'clsx';
 import type { MouseEventHandler, ReactNode } from 'react';
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import type { IndicationColor } from '../../enums/index.js';
-import { ValueState } from '../../enums/index.js';
 import {
   ARIA_OBJ_STATUS_DESC,
   ARIA_OBJ_STATUS_DESC_INACTIVE,
@@ -35,7 +35,7 @@ export interface ObjectStatusPropTypes extends CommonProps {
    *
    * @since 0.16.6
    */
-  active?: boolean;
+  interactive?: boolean;
 
   /**
    * Defines the icon in front of the `ObjectStatus` text.
@@ -66,9 +66,11 @@ export interface ObjectStatusPropTypes extends CommonProps {
   children?: ReactNode;
 
   /**
-   * Defines the value state of the <code>ObjectStatus</code>. <br><br> Available options are: <ul> <li><code>None</code></li> <li><code>Error</code></li> <li><code>Warning</code></li> <li><code>Success</code></li> <li><code>Information</code></li> </ul>
+   * Defines the value state of the `ObjectStatus`.
    *
    * Since version 0.17.0 the state property also accepts values from enum `IndicationColor`.
+   *
+   * @default `"None"`
    */
   state?: ValueState | keyof typeof ValueState | IndicationColor | keyof typeof IndicationColor;
 
@@ -94,15 +96,13 @@ export interface ObjectStatusPropTypes extends CommonProps {
   stateAnnouncementText?: string;
 
   /**
-   * Fires when the user clicks/taps on active text.
+   * Fires when the user clicks/taps on an interactive text.
    *
-   * __Note:__ This prop has no effect if `active` is not set to `true`.
-   *
-   * __Note:__ In order to support legacy code, `HTMLDivElement` is still supported even though the `click` event is never fired if the component isn't `active`.
+   * __Note:__ This prop has no effect if `interactive` is not set to `true`.
    *
    * @since 0.16.6
    */
-  onClick?: MouseEventHandler<HTMLButtonElement | HTMLDivElement>;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
 const getStateSpecifics = (state, showDefaultIcon, userIcon, stateAnnouncementText, i18nTexts) => {
@@ -115,25 +115,25 @@ const getStateSpecifics = (state, showDefaultIcon, userIcon, stateAnnouncementTe
   }
   if (!invisibleText || renderDefaultIcon) {
     switch (state) {
-      case ValueState.Error:
+      case ValueState.Negative:
         if (renderDefaultIcon) {
-          icon = <Icon name={errorIcon} data-component-name="ObjectStatusDefaultIcon" />;
+          icon = <Icon name={errorIcon} data-component-name="ObjectStatusDefaultIcon" aria-hidden />;
         }
         if (!invisibleText) {
           invisibleText = errorStateText;
         }
         break;
-      case ValueState.Success:
+      case ValueState.Positive:
         if (renderDefaultIcon) {
-          icon = <Icon name={successIcon} data-component-name="ObjectStatusDefaultIcon" />;
+          icon = <Icon name={successIcon} data-component-name="ObjectStatusDefaultIcon" aria-hidden />;
         }
         if (!invisibleText) {
           invisibleText = successStateText;
         }
         break;
-      case ValueState.Warning:
+      case ValueState.Critical:
         if (renderDefaultIcon) {
-          icon = <Icon name={alertIcon} data-component-name="ObjectStatusDefaultIcon" />;
+          icon = <Icon name={alertIcon} data-component-name="ObjectStatusDefaultIcon" aria-hidden />;
         }
         if (!invisibleText) {
           invisibleText = warningStateText;
@@ -141,7 +141,7 @@ const getStateSpecifics = (state, showDefaultIcon, userIcon, stateAnnouncementTe
         break;
       case ValueState.Information:
         if (renderDefaultIcon) {
-          icon = <Icon name={informationIcon} data-component-name="ObjectStatusDefaultIcon" />;
+          icon = <Icon name={informationIcon} data-component-name="ObjectStatusDefaultIcon" aria-hidden />;
         }
         if (!invisibleText) {
           invisibleText = informationStateText;
@@ -158,13 +158,13 @@ const getStateSpecifics = (state, showDefaultIcon, userIcon, stateAnnouncementTe
  */
 const ObjectStatus = forwardRef<HTMLDivElement | HTMLButtonElement, ObjectStatusPropTypes>((props, ref) => {
   const {
-    state,
+    state = ValueState.None,
     showDefaultIcon,
     children,
     icon,
     className,
     style,
-    active,
+    interactive,
     inverted,
     onClick,
     emptyIndicator,
@@ -207,28 +207,29 @@ const ObjectStatus = forwardRef<HTMLDivElement | HTMLButtonElement, ObjectStatus
     classNames.normalizeCSS,
     classNames.objectStatus,
     classNames[`${state as string}`.toLowerCase()],
-    active && classNames.active,
+    interactive && classNames.active,
     inverted && !showEmptyIndicator && classNames.inverted,
     large && classNames.large,
     className
   );
 
-  const TagName = active ? 'button' : 'div';
+  const TagName = interactive ? 'button' : 'div';
 
   return (
     <TagName
-      // @ts-expect-error: both refs are allowed (attributes, etc. of HTMLButtonElement should only be used if `active` is `true`)
+      // @ts-expect-error: both refs are allowed (attributes, etc. of HTMLButtonElement should only be used if `interactive` is `true`)
       ref={ref}
       className={objStatusClasses}
       style={style}
-      onClick={active ? onClick : undefined}
-      tabIndex={active ? 0 : undefined}
+      // @ts-expect-error: onClick is only registered if the event target is a HTMLButtonElement
+      onClick={interactive ? onClick : undefined}
+      tabIndex={interactive ? 0 : undefined}
       data-icon-only={!children}
-      role={active ? 'button' : 'group'}
+      role={interactive ? 'button' : 'group'}
       {...rest}
     >
       <span className={classNames.pseudoInvisibleText} data-component-name="ObjectStatusInvisibleDescriptionContainer">
-        {active ? i18nBundle.getText(ARIA_OBJ_STATUS_DESC) : i18nBundle.getText(ARIA_OBJ_STATUS_DESC_INACTIVE)}
+        {interactive ? i18nBundle.getText(ARIA_OBJ_STATUS_DESC) : i18nBundle.getText(ARIA_OBJ_STATUS_DESC_INACTIVE)}
       </span>
       {iconToRender && (
         <span className={classNames.icon} data-icon-only={!children} data-component-name="ObjectStatusIconContainer">
@@ -248,7 +249,7 @@ const ObjectStatus = forwardRef<HTMLDivElement | HTMLButtonElement, ObjectStatus
           )}
         </span>
       )}
-      {!!invisibleText && computedChildren && (
+      {!!invisibleText && (computedChildren || iconToRender) && (
         <span className={classNames.pseudoInvisibleText} data-component-name="ObjectStatusInvisibleTextContainer">
           {invisibleText}
         </span>
@@ -258,9 +259,5 @@ const ObjectStatus = forwardRef<HTMLDivElement | HTMLButtonElement, ObjectStatus
 });
 
 ObjectStatus.displayName = 'ObjectStatus';
-
-ObjectStatus.defaultProps = {
-  state: ValueState.None
-};
 
 export { ObjectStatus };

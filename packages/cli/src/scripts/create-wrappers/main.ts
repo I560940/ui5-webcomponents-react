@@ -14,13 +14,7 @@ import { WebComponentWrapper } from './WebComponentWrapper.js';
 const WITH_WEB_COMPONENT_IMPORT_PATH = process.env.WITH_WEB_COMPONENT_IMPORT_PATH ?? '@ui5/webcomponents-react';
 
 function filterAttributes(member: CEM.ClassField | CEM.ClassMethod): member is CEM.ClassField {
-  return (
-    member.kind === 'field' &&
-    member.privacy === 'public' &&
-    !member.readonly &&
-    !member.static &&
-    member._ui5validator !== 'Object'
-  );
+  return member.kind === 'field' && member.privacy === 'public' && !member.readonly && !member.static;
 }
 
 interface Options {
@@ -53,7 +47,7 @@ export default async function createWrappers(packageName: string, outDir: string
       continue;
     }
 
-    const wrapper = new WebComponentWrapper(declaration.tagName, declaration.name, webComponentImport);
+    const wrapper = new WebComponentWrapper(declaration.tagName, declaration.name, webComponentImport, packageName);
     const attributes = declaration.members?.filter(filterAttributes) ?? [];
 
     wrapper.addNamedImport(WITH_WEB_COMPONENT_IMPORT_PATH, 'withWebComponent');
@@ -72,6 +66,7 @@ export default async function createWrappers(packageName: string, outDir: string
         .setDynamicImportPath(webComponentImport)
         .setNote(options.additionalComponentNote ?? '')
         .setIsAbstract(declaration._ui5abstract ?? false)
+        .setSince(declaration._ui5since)
     );
     wrapper.addRenderer(new ExportsRenderer());
 

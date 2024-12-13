@@ -2,6 +2,7 @@
 
 import '@ui5/webcomponents/dist/BusyIndicator.js';
 import type BusyIndicatorSize from '@ui5/webcomponents/dist/types/BusyIndicatorSize.js';
+import type BusyIndicatorTextPlacement from '@ui5/webcomponents/dist/types/BusyIndicatorTextPlacement.js';
 import type { ReactNode } from 'react';
 import { withWebComponent } from '../../internal/withWebComponent.js';
 import type { CommonProps, Ui5DomRef } from '../../types/index.js';
@@ -21,14 +22,21 @@ interface BusyIndicatorAttributes {
 
   /**
    * Defines the size of the component.
-   * @default "Medium"
+   * @default "M"
    */
   size?: BusyIndicatorSize | keyof typeof BusyIndicatorSize;
 
   /**
    * Defines text to be displayed below the component. It can be used to inform the user of the current operation.
+   * @default undefined
    */
-  text?: string;
+  text?: string | undefined;
+
+  /**
+   * Defines the placement of the text.
+   * @default "Bottom"
+   */
+  textPlacement?: BusyIndicatorTextPlacement | keyof typeof BusyIndicatorTextPlacement;
 }
 
 interface BusyIndicatorDomRef extends Required<BusyIndicatorAttributes>, Ui5DomRef {}
@@ -69,11 +77,11 @@ interface BusyIndicatorPropTypes
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const BusyIndicator = withWebComponent<BusyIndicatorPropTypes, BusyIndicatorDomRef>(
   'ui5-busy-indicator',
-  ['delay', 'size', 'text'],
+  ['delay', 'size', 'text', 'textPlacement'],
   ['active'],
   [],
   [],

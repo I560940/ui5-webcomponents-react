@@ -3,9 +3,10 @@
 import type { CommonProps } from '@ui5/webcomponents-react';
 import { enrichEventWithDetails, ThemingParameters } from '@ui5/webcomponents-react-base';
 import type { CSSProperties } from 'react';
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { PolarAngleAxis, RadialBar, RadialBarChart } from 'recharts';
 import { useOnClickInternal } from '../../hooks/useOnClickInternal.js';
+import type { IChartBaseProps } from '../../interfaces/IChartBaseProps.js';
 import { ChartContainer } from '../../internal/ChartContainer.js';
 import { PieChartPlaceholder } from '../PieChart/Placeholder.js';
 
@@ -17,8 +18,9 @@ interface RadialChartConfig {
 
   [rest: string]: any;
 }
-
-export interface RadialChartProps extends Omit<CommonProps, 'onClick' | 'children' | 'onLegendClick'> {
+export interface RadialChartProps
+  extends Omit<CommonProps, 'onClick' | 'children' | 'onLegendClick'>,
+    Pick<IChartBaseProps, 'loading' | 'loadingDelay'> {
   /**
    * The actual value which defines how much the ring is filled.
    */
@@ -92,7 +94,9 @@ const defaultDisplayValueStyles = {
  */
 const RadialChart = forwardRef<HTMLDivElement, RadialChartProps>((props, ref) => {
   const {
-    maxValue,
+    loading,
+    loadingDelay,
+    maxValue = 100,
     value,
     displayValue,
     onDataPointClick,
@@ -103,12 +107,12 @@ const RadialChart = forwardRef<HTMLDivElement, RadialChartProps>((props, ref) =>
     slot,
     noAnimation,
     chartConfig,
-    displayValueStyle,
+    displayValueStyle = defaultDisplayValueStyles,
     ...rest
   } = props;
 
   const range = [0, maxValue];
-  const dataset = [{ value }];
+  const dataset = typeof value === 'number' ? [{ value }] : [];
 
   const onDataPointClickInternal = (payload, i, event) => {
     if (payload && onDataPointClick) {
@@ -126,6 +130,8 @@ const RadialChart = forwardRef<HTMLDivElement, RadialChartProps>((props, ref) =>
 
   return (
     <ChartContainer
+      loading={loading}
+      loadingDelay={loadingDelay}
       dataset={dataset}
       ref={ref}
       Placeholder={PieChartPlaceholder}
@@ -135,6 +141,7 @@ const RadialChart = forwardRef<HTMLDivElement, RadialChartProps>((props, ref) =>
       style={style}
       {...rest}
     >
+      {/*@ts-expect-error: todo not yet compatible with React19*/}
       <RadialBarChart
         onClick={onClickInternal}
         innerRadius="90%"
@@ -149,7 +156,7 @@ const RadialChart = forwardRef<HTMLDivElement, RadialChartProps>((props, ref) =>
       >
         <PolarAngleAxis type="number" domain={range} tick={false} />
         <RadialBar
-          isAnimationActive={noAnimation === false}
+          isAnimationActive={!noAnimation}
           background={radialBarBackground}
           dataKey="value"
           fill={color ?? ThemingParameters.sapChart_OrderedColor_1}
@@ -171,12 +178,6 @@ const RadialChart = forwardRef<HTMLDivElement, RadialChartProps>((props, ref) =>
     </ChartContainer>
   );
 });
-
-RadialChart.defaultProps = {
-  maxValue: 100,
-  noAnimation: false,
-  displayValueStyle: defaultDisplayValueStyles
-};
 
 RadialChart.displayName = 'RadialChart';
 

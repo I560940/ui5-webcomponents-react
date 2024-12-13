@@ -11,19 +11,19 @@ import type { CommonProps, Ui5CustomEvent, Ui5DomRef, UI5WCSlotsNode } from '../
 interface MultiComboBoxAttributes {
   /**
    * Defines the accessible ARIA name of the component.
+   *
+   * **Note:** Available since [v1.4.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.4.0) of **@ui5/webcomponents**.
+   * @default undefined
    */
-  accessibleName?: string;
+  accessibleName?: string | undefined;
 
   /**
    * Receives id(or many ids) of the elements that label the component.
+   *
+   * **Note:** Available since [v1.4.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.4.0) of **@ui5/webcomponents**.
+   * @default undefined
    */
-  accessibleNameRef?: string;
-
-  /**
-   * Defines if the user input will be prevented, if no matching item has been found
-   * @default false
-   */
-  allowCustomValues?: boolean;
+  accessibleNameRef?: string | undefined;
 
   /**
    * Defines whether the component is in disabled state.
@@ -40,16 +40,37 @@ interface MultiComboBoxAttributes {
   filter?: ComboBoxFilter | keyof typeof ComboBoxFilter;
 
   /**
+   * Determines the name by which the component will be identified upon submission in an HTML form.
+   *
+   * **Note:** This property is only applicable within the context of an HTML Form element.
+   * **Note:** When the component is used inside a form element,
+   * the value is sent as the first element in the form data, even if it's empty.
+   *
+   * **Note:** Available since [v2.0.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.0.0) of **@ui5/webcomponents**.
+   * @default undefined
+   */
+  name?: string | undefined;
+
+  /**
    * Defines whether the value will be autcompleted to match an item
+   *
+   * **Note:** Available since [v1.4.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.4.0) of **@ui5/webcomponents**.
    * @default false
    */
   noTypeahead?: boolean;
 
   /**
+   * Defines if the user input will be prevented, if no matching item has been found
+   * @default false
+   */
+  noValidation?: boolean;
+
+  /**
    * Defines a short hint intended to aid the user with data entry when the
    * component has no value.
+   * @default undefined
    */
-  placeholder?: string;
+  placeholder?: string | undefined;
 
   /**
    * Defines whether the component is read-only.
@@ -68,6 +89,8 @@ interface MultiComboBoxAttributes {
 
   /**
    * Defines whether the clear icon of the multi-combobox will be shown.
+   *
+   * **Note:** Available since [v1.20.1](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.20.1) of **@ui5/webcomponents**.
    * @default false
    */
   showClearIcon?: boolean;
@@ -108,8 +131,9 @@ interface MultiComboBoxPropTypes
       | 'icon'
       | 'valueStateMessage'
       | 'onChange'
+      | 'onClose'
       | 'onInput'
-      | 'onOpenChange'
+      | 'onOpen'
       | 'onSelectionChange'
     > {
   /**
@@ -124,23 +148,24 @@ interface MultiComboBoxPropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   icon?: UI5WCSlotsNode;
 
   /**
    * Defines the value state message that will be displayed as pop up under the component.
+   * The value state message slot should contain only one root element.
    *
    * **Note:** If not specified, a default text (in the respective language) will be displayed.
    *
    * **Note:** The `valueStateMessage` would be displayed,
-   * when the component is in `Information`, `Warning` or `Error` value state.
+   * when the component is in `Information`, `Critical` or `Negative` value state.
    *
    * __Note:__ The content of the prop will be rendered into a [&lt;slot&gt;](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot) by assigning the respective [slot](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/slot) attribute (`slot="valueStateMessage"`).
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   valueStateMessage?: UI5WCSlotsNode;
   /**
@@ -149,17 +174,28 @@ interface MultiComboBoxPropTypes
   onChange?: (event: Ui5CustomEvent<MultiComboBoxDomRef>) => void;
 
   /**
+   * Fired when the dropdown is closed.
+   *
+   * **Note:** Available since [v2.0.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.0.0) of **@ui5/webcomponents**.
+   */
+  onClose?: (event: Ui5CustomEvent<MultiComboBoxDomRef>) => void;
+
+  /**
    * Fired when the value of the component changes at each keystroke or clear icon is pressed.
    */
   onInput?: (event: Ui5CustomEvent<MultiComboBoxDomRef>) => void;
 
   /**
-   * Fired when the dropdown is opened or closed.
+   * Fired when the dropdown is opened.
+   *
+   * **Note:** Available since [v2.0.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.0.0) of **@ui5/webcomponents**.
    */
-  onOpenChange?: (event: Ui5CustomEvent<MultiComboBoxDomRef>) => void;
+  onOpen?: (event: Ui5CustomEvent<MultiComboBoxDomRef>) => void;
 
   /**
    * Fired when selection is changed by user interaction.
+   *
+   * **Note:** Call `event.preventDefault()` inside the handler of this event to prevent its default action/s.
    */
   onSelectionChange?: (event: Ui5CustomEvent<MultiComboBoxDomRef, MultiComboBoxSelectionChangeEventDetail>) => void;
 }
@@ -183,7 +219,7 @@ interface MultiComboBoxPropTypes
  *
  * #### Picker
  * If the `MultiComboBox` is focused,
- * you can open or close the drop-down by pressing `F4`, `ALT+UP` or `ALT+DOWN` keys.
+ * you can open or close the drop-down by pressing [F4], [Alt] + [Up] or [Alt] + [Down] keys.
  * Once the drop-down is opened, you can use the `UP` and `DOWN` arrow keys
  * to navigate through the available options and select one by pressing the `Space` or `Enter` keys.
  *
@@ -195,14 +231,14 @@ interface MultiComboBoxPropTypes
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const MultiComboBox = withWebComponent<MultiComboBoxPropTypes, MultiComboBoxDomRef>(
   'ui5-multi-combobox',
-  ['accessibleName', 'accessibleNameRef', 'filter', 'placeholder', 'value', 'valueState'],
-  ['allowCustomValues', 'disabled', 'noTypeahead', 'readonly', 'required', 'showClearIcon', 'showSelectAll'],
+  ['accessibleName', 'accessibleNameRef', 'filter', 'name', 'placeholder', 'value', 'valueState'],
+  ['disabled', 'noTypeahead', 'noValidation', 'readonly', 'required', 'showClearIcon', 'showSelectAll'],
   ['icon', 'valueStateMessage'],
-  ['change', 'input', 'open-change', 'selection-change'],
+  ['change', 'close', 'input', 'open', 'selection-change'],
   () => import('@ui5/webcomponents/dist/MultiComboBox.js')
 );
 

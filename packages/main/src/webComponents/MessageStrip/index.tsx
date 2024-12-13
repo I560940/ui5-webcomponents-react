@@ -8,6 +8,16 @@ import type { CommonProps, Ui5CustomEvent, Ui5DomRef, UI5WCSlotsNode } from '../
 
 interface MessageStripAttributes {
   /**
+   * Defines the color scheme of the component.
+   * There are 10 predefined schemes.
+   * To use one you can set a number from `"1"` to `"10"`. The `colorScheme` `"1"` will be set by default.
+   *
+   * **Note:** Available since [v2.0.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.0.0) of **@ui5/webcomponents**.
+   * @default "1"
+   */
+  colorScheme?: string;
+
+  /**
    * Defines the component type.
    * @default "Information"
    */
@@ -22,6 +32,8 @@ interface MessageStripAttributes {
   /**
    * Defines whether the MessageStrip will show an icon in the beginning.
    * You can directly provide an icon with the `icon` slot. Otherwise, the default icon for the type will be used.
+   *
+   *  * **Note:** If <code>MessageStripDesign.ColorSet1</code> or <code>MessageStripDesign.ColorSet2</code> value is set to the <code>design</code> property, default icon will not be presented.
    * @default false
    */
   hideIcon?: boolean;
@@ -51,7 +63,7 @@ interface MessageStripPropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   icon?: UI5WCSlotsNode;
   /**
@@ -62,9 +74,10 @@ interface MessageStripPropTypes
 }
 
 /**
- * The `MessageStrip` component enables the embedding of app-related messages.
- * It displays 4 designs of messages, each with corresponding semantic color and icon: Information, Positive, Warning and Negative.
- * Each message can have a Close button, so that it can be removed from the UI, if needed.
+ * The ui5-message-strip component allows for the embedding of application-related messages.
+ * It supports four semantic designs, each with its own color and icon: "Information", "Positive", "Critical", and "Negative".
+ * Additionally, users can choose from two color sets ("ColorSet1" and "ColorSet2"), each containing 10 predefined color schemes.
+ * Each message shows a "Close" button, so that it can be removed from the UI, if needed.
  *
  * ### Usage
  *
@@ -75,17 +88,17 @@ interface MessageStripPropTypes
  * ### Keyboard Handling
  *
  * #### Fast Navigation
- * This component provides a build in fast navigation group which can be used via `F6 / Shift + F6` or ` Ctrl + Alt(Option) + Down /  Ctrl + Alt(Option) + Up`.
+ * This component provides a build in fast navigation group which can be used via [F6] / [Shift] + [F6] / [Ctrl] + [Alt/Option] / [Down] or [Ctrl] + [Alt/Option] + [Up].
  * In order to use this functionality, you need to import the following module:
  * `import "@ui5/webcomponents-base/dist/features/F6Navigation.js"`
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const MessageStrip = withWebComponent<MessageStripPropTypes, MessageStripDomRef>(
   'ui5-message-strip',
-  ['design'],
+  ['colorScheme', 'design'],
   ['hideCloseButton', 'hideIcon'],
   ['icon'],
   ['close'],

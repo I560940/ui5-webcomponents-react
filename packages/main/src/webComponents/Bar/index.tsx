@@ -1,7 +1,7 @@
 'use client';
 
-import '@ui5/webcomponents-fiori/dist/Bar.js';
-import type BarDesign from '@ui5/webcomponents-fiori/dist/types/BarDesign.js';
+import '@ui5/webcomponents/dist/Bar.js';
+import type BarDesign from '@ui5/webcomponents/dist/types/BarDesign.js';
 import type { ReactNode } from 'react';
 import { withWebComponent } from '../../internal/withWebComponent.js';
 import type { CommonProps, Ui5DomRef, UI5WCSlotsNode } from '../../types/index.js';
@@ -31,7 +31,7 @@ interface BarPropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   endContent?: UI5WCSlotsNode;
 
@@ -42,7 +42,7 @@ interface BarPropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   startContent?: UI5WCSlotsNode;
 }
@@ -65,13 +65,13 @@ interface BarPropTypes
  * ### Keyboard Handling
  *
  * #### Fast Navigation
- * This component provides a build in fast navigation group which can be used via `F6 / Shift + F6` or ` Ctrl + Alt(Option) + Down /  Ctrl + Alt(Option) + Up`.
+ * This component provides a build in fast navigation group which can be used via [F6] / [Shift] + [F6] / [Ctrl] + [Alt/Option] / [Down] or [Ctrl] + [Alt/Option] + [Up].
  * In order to use this functionality, you need to import the following module:
  * `import "@ui5/webcomponents-base/dist/features/F6Navigation.js"`
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const Bar = withWebComponent<BarPropTypes, BarDomRef>(
   'ui5-bar',
@@ -79,7 +79,7 @@ const Bar = withWebComponent<BarPropTypes, BarDomRef>(
   [],
   ['endContent', 'startContent'],
   [],
-  () => import('@ui5/webcomponents-fiori/dist/Bar.js')
+  () => import('@ui5/webcomponents/dist/Bar.js')
 );
 
 Bar.displayName = 'Bar';

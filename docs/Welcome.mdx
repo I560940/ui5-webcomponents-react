@@ -25,7 +25,7 @@ In addition to that, UI5 Web Components for React is providing complex component
 
 ## Requirements
 
-- [React](https://www.npmjs.com/package/react) and [React-DOM](https://www.npmjs.com/package/react-dom) (**16.14.0 or higher**)
+- [React](https://www.npmjs.com/package/react) and [React-DOM](https://www.npmjs.com/package/react-dom) (**18.0.0 or higher**)
 - [Node.js](https://nodejs.org/) (**LTS version**)
 - If you're using [TypeScript](https://www.typescriptlang.org/) we recommend version **4.7** or later.
 
@@ -40,7 +40,7 @@ In about an hour you will create a business dashboard from scratch and get famil
 
 ### Examples & Templates
 
-You can find a curated list of project templates and examples on our [Project Templates & Examples page](https://sap.github.io/ui5-webcomponents-react/main/?path=/docs/project-templates-examples--docs).
+You can find a curated list of project templates and examples on our [Project Templates & Examples page](?path=/docs/project-templates-examples--docs).
 
 ### Add `@ui5/webcomponents-react` to an existing app
 
@@ -148,7 +148,7 @@ You can find all available interfaces of the main package [here](https://github.
 Small app with a popover opened by clicking a button including type declarations:
 
 ```tsx
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import type { ButtonPropTypes, PopoverDomRef, PopoverPropTypes } from '@ui5/webcomponents-react';
 import { ThemeProvider, Button, Popover } from '@ui5/webcomponents-react';
 
@@ -159,7 +159,7 @@ export default function App() {
   const handleClick: ButtonPropTypes['onClick'] = (e) => {
     setOpen(true);
   };
-  const handleAfterClose: PopoverPropTypes['onAfterClose'] = (e) => {
+  const handleAfterClose: PopoverPropTypes['onClose'] = (e) => {
     setOpen(false);
   };
 
@@ -168,7 +168,7 @@ export default function App() {
       <Button id="opener" onClick={handleClick}>
         Open Popover
       </Button>
-      <Popover ref={popoverRef} opener="opener" open={open} onAfterClose={handleAfterClose}>
+      <Popover ref={popoverRef} opener="opener" open={open} onClose={handleAfterClose}>
         Content
       </Popover>
     </ThemeProvider>

@@ -1,266 +1,764 @@
+import './MigrationGuide.css';
 import { Footer, TableOfContent } from '@sb/components';
 import { Meta } from '@storybook/blocks';
+import { MessageStrip } from '@ui5/webcomponents-react';
 
 <Meta title="Migration Guide" />
 
-# Migration Guide
-
-<br />
+# Migration Guide (v1 to v2)
 
 _The most important breaking changes of the corresponding releases are outlined here.
 For a full list of all changes, please refer to [the list of releases](https://github.com/SAP/ui5-webcomponents-react/releases)
 or the [changelog](?path=/docs/change-log--page)._
 
-<br />
+> **Older releases**  
+> This migration guide only covers breaking changes when updating from v1 to v2.
+> For migration guides for older releases, please refer to our [Migration Guide Archive](https://github.com/SAP/ui5-webcomponents-react/blob/main/docs/MigrationGuide.archive.md).
 
-<TableOfContent headingSelector="h2" />
+<TableOfContent headingSelector="h2, h3" />
 
-## From 0.28.x to 1.0.1
+## Codemod
 
-### Removal of deprecated props
+To make the migration to UI5 Web Components (for React) v2 easier,
+we provide a codemod which tries to transform most of the breaking changes.
 
-The following props were deprecated in previous versions and have now been removed.
-
-**ActionSheet**
-
-The prop `alwaysShowHeader` has been removed as is not specified by the Fiori Design Guidelines. <br />
-In addition, the `a11yConfig.actionSheetMobileContent.ariaLabel` has been removed as well. You can use the `accessibleName` prop as replacement.
-
-**AnalyticalTable**
-
-The props `onRowSelected` and `onColumnsReordered` have been removed in favor for a more streamlined naming pattern. <br />
-Please use the new prop names `onRowSelect` and `onColumnsReorder`.
-
-**DynamicPageTitle**
-
-The props `actionsOverflowButton` and `navigationActionsOverflowButton` have been removed. <br />
-If needed, you can pass a custom overflow button for the respective toolbar by using the `actionsToolbarProps={{ overflowButton: <Button />}}` and `navigationActionsToolbarProps={{ overflowButton: <Button />}}` props.
-
-In addition, the `onToolbarOverflowChange` event has been removed as well. Previously, this event contained a property `origin` with the value of `actions` or `navigationActions` in order to distinguish between the toolbars. <br />
-Please use `onOverflowChange` of the respective toolbar props object instead (`actionsToolbarProps={{ onOverflowChange: yourHandler }}` and `navigationActionsToolbarProps={{ onOverflowChange: yourHandlerForNavigationActions }}`).
-
-### FilterBar: implement new design specification
-
-The Design for the `FilterBar` component had some major updates, so we've updated the component accordingly.
-One of these changes is, that the optional search field (passed via the `search` prop), is no longer available in the `Filters` dialog.
-
-**The following props are removed without replacement as they are no longer specified by the design:**
-
-- `showClearButton`
-- `showGo`
-- `onFiltersDialogClear`
-- `showSearchOnFiltersDialog`
-- `loading` <br />
-  In order to place a loading indicator on the `FilterBar`, please wrap it into the `BusyIndicator` component.
-
-**The following props have been renamed without further modifications:**
-
-- `variant` --> `header`
-- `showRestoreButton` --> `showResetButton`
-
-**The following props have been renamed and changed their logic for a more streamlined API:**
-
-- `filterBarExpanded` --> `filterBarCollapsed` <br />
-  Previously, `filterBarExpanded` was defaulted to `true`. This prop has been replaced by `filterBarCollapsed` (inactive by default).
-- `showFilterConfiguration` --> `hideFilterConfiguration` <br />
-  Previously, `showFilterConfiguration` was defaulted to `true`. This prop has been replaced by `hideFilterConfiguration` (inactive by default).
-- `useToolbar` --> `hideToolbar` <br />
-  If you wanted to hide the toolbar of the `FilterBar`, you could set the prop `useToolbar` to `false` in earlier versions. This prop has been replaced by `hideToolbar={true}`.
-
-**The following event handlers have changed their payload:**
-
-- `onFiltersDialogSelectionChange` <br />
-  The event type changed to `UI5CustomEvent` and the properties `elements` and `toggledElements` have been removed. <br />
-  You can now use `element` to access the most recently interacted row and `checked` to get the current selection state.
-  If you need to access all selected rows, you can use the `selectedRows` property.
-- `onRestore` and `onClear` <br />
-  The `dialogSearch` property has been removed from the event payload as the search field in the dialog is no longer available.
-- `onGo` <br />
-  The `toggledElements` property has been removed
-- `onFiltersDialogOpen` <br />
-  The property `dialog` has been removed. If you need to access the filter dialog HTML element, you might use the new prop `onAfterFiltersDialogOpen`
-  on the `FilterBar` which is fired after the filter dialog has been opened.
-
-**Migration Example (removed props and event handlers are not listed for brevity):**
-
-```jsx
-// component with 0.28.x
-<FilterBar
-    variant={<Title>Header</Title>}
-    showRestoreButton
-    filterBarExpanded={false}
-    showFilterConfiguration={false}
-    useToolbar={false}
+<MessageStrip
+  hideCloseButton
+  design="Critical"
+  children={
+    <>
+      The codemod is a best efforts attempt to help you migrate the breaking change. Please review the generated code
+      thoroughly!
+      <br />
+      <strong>
+        Applying the codemod might break your code formatting, so please don't forget to run prettier and/or eslint
+        after you've applied the codemod!
+      </strong>
+    </>
+  }
 />
-
-// becomes with 1.0.0
-<FilterBar
-    header={<Title>Header</Title>}
-    showResetButton
-    filterBarCollapsed
-    hideFilterConfiguration
-    hideToolbar
-/>
-```
-
-### VariantManagement: removed option to show the "Cancel" button
-
-The "Cancel" button is not part of the design guidelines anymore, so the prop `showCancelButton` has been removed without replacement.
-
-## From 0.27.x to 0.28.0
-
-### AnalyticalTable: Scaling the table
-
-Scaling the table via the CSS `scale()` function is now only supported if the abscissa (`sx`) is passed to the `scaleXFactor` prop. `scaleXFactor` only accepts values of type `number`.
-
-Before 0.28.0:
-
-```jsx
-<div style={{ transform: 'scale(0.5)' }}>
-  <AnalyticalTable data={data} columns={columns} />
-</div>
-```
-
-Now:
-
-```jsx
-<div style={{ transform: 'scale(0.5)' }}>
-  <AnalyticalTable data={data} columns={columns} scaleXFactor={0.5} />
-</div>
-```
-
-### MessageItem: new default value for `type`
-
-The default value `type` value of the `MessageItem` component has been changed from `ValueState.None` to `ValueState.Error`.
-
-### ObjectPage: `portalContainer` prop removed
-
-The prop `portalContainer` has been removed from the `ObjectPage` as it is not used anymore.
-
-## From 0.25.x to 0.26.0
-
-### Removed deprecated entrypoints
-
-In version 0.26.0, we have removed several legacy exports which have been deprecated a couple of months ago.
-This affects all exports using the following pattern:
-
-```js
-import { COMPONENT_NAME } from '@ui5/webcomponents-react/dist/COMPONENT_NAME';
-import { UTIL_NAME } from '@ui5/webcomponents-react-base/dist/UTIL_NAME';
-import { CHART_NAME } from '@ui5/webcomponents-react-charts/dist/CHART_NAME';
-```
-
-You can now shorten all your imports by removing the `/dist/NAME` part to match the following pattern:
-
-```js
-import { COMPONENT_NAME } from '@ui5/webcomponents-react';
-import { UTIL_NAME } from '@ui5/webcomponents-react-base';
-import { CHART_NAME } from '@ui5/webcomponents-react-charts';
-```
-
-In case the file you are trying to import is not available, please raise an [issue](https://github.com/SAP/ui5-webcomponents-react/issues/new?labels=bug&template=bug_report.md).
-
-### Removed polyfills
-
-In 0.26.0, we have removed the polyfill imports `@ui5/webcomponents-react-base/polyfill/Safari` (all features supported now) and `@ui5/webcomponents-react-base/polyfill/IE11` (end of life).
-As a consequence, the internal dependencies of `@ui5/webcomponents-react-base` are cleaned up as well,
-so you'll most likely need to install `resize-observer-polyfill` on your own for running tests with Jest (see next section).
 
 ```shell
-npm install resize-observer-polyfill --save-dev
-# or if you are using yarn
-yarn add resize-observer-polyfill --dev
+npx @ui5/webcomponents-react-cli@next codemod --transform v2 \
+    --src ./path/to/src \
+    --typescript # only if you use TypeScript in your project, omit if you use JavaScript
 ```
 
-### Improved Jest Setup
+## General changes
 
-In order to run Tests with Jest, there has always been the need of adding additional polyfills to the Jest environment.
-With 0.26.0, things are changing a little:
+### Removed `react-jss`
 
-1. You have to install `resize-observer-polyfill` on your own because it's not longer a dependency of `@ui5/webcomponents-react-base`.
+UI5 Web Components for React is no longer relying on `react-jss` internally, hence the dependency is now removed and the `react-jss` ThemeProvider is no longer rendered as part of our `ThemeProvider`.
+If you are relying on `react-jss` in your application, please make sure to render your own `react-jss` ThemeProvider:
 
-```
-npm install resize-observer-polyfill --save-dev
-```
+```tsx
+import { ThemeProvider } from '@ui5/webcomponents-react';
+import { ThemingParameters } from '@ui5/webcomponents-react-base';
+import { ThemeProvider as ReactJssThemeProvider } from 'react-jss';
 
-2. We now offer an improved way of adding the additional APIs to the Jest environment by exposing a file which is setting up the
-   jest environment for you. You can import it via `import '@ui5/webcomponents-react/jestSetup.js';`.
-
-If you are using `create-react-app`, your simplified `src/setupTests.js` file looks like:
-
-```js
-import ResizeObserverPolyfill from 'resize-observer-polyfill';
-import '@ui5/webcomponents-react/jestSetup.js';
-
-window.ResizeObserver = ResizeObserverPolyfill;
+function MyRootComponent() {
+  return (
+    <ThemeProvider>
+      <ReactJssThemeProvider theme={ThemingParameters}>{/* your app content goes here */}</ReactJssThemeProvider>
+    </ThemeProvider>
+  );
+}
 ```
 
-### New API for `AnalyticalCardHeader`
+### Changes Exclusive to TypeScript
 
-The `AnalyticalCardHeader` component has been refactored to match the latest design specifications.
-As a consequence, the API has changed:
+- Removed `dangerouslySetInnerHTML` from general prop types since it was never intended to be used with our library.
+  If you've previously used this prop and the component didn't change with the update, then it might still work, but you'll probably need to suppress the TypeScript error.
+
+### Scrollbar Styling
+
+Starting with v2, the `ThemeProvider` will apply the Fiori styles to all scrollbars on the page.
+If you have previously used our global style classes `sapScrollBar` or `inheritingSapScrollBar`, you can now remove them.
+
+To opt-out of this behavior, you can add the `.ui5-content-native-scrollbars` class to the element to prevent the scrollbar styling from being applied.
+
+More details can be found in our [Styling Knowledge Base](?path=/docs/knowledge-base-styling--docs#scrollbars).
+
+## Spacing
+
+The `spacing` variables of our base package (`@ui5/webcomponents-react-base`) have been removed.
+Most variables can be replaced by applying the corresponding CSS classes from the `@sap-ui/common-css` package to your element, for all others you can find the respective CSS properties and values below.
+
+**Full Documentation of Common CSS classes:**
+
+- [Margins](https://sap.github.io/fundamental-styles/?path=/docs/common-css-margins--docs)
+- [Paddings](https://sap.github.io/fundamental-styles/?path=/docs/common-css-padding--docs)
+
+### Common CSS substitute classes
+
+<details>
+    <summary>Show</summary>
+
+| Removed Variable                    | Equivalent Common CSS Class   |
+| ----------------------------------- | ----------------------------- |
+| **All Around Margins**              |                               |
+| `sapUiTinyMargin`                   | `.sap-margin-tiny`            |
+| `sapUiSmallMargin`                  | `.sap-margin-small`           |
+| `sapUiMediumMargin`                 | `.sap-margin-medium`          |
+| `sapUiLargeMargin`                  | `.sap-margin-large`           |
+| **Single Side Margins**             |                               |
+| `sapUiTinyMarginTop`                | `.sap-margin-top-tiny`        |
+| `sapUiSmallMarginTop`               | `.sap-margin-top-small`       |
+| `sapUiMediumMarginTop`              | `.sap-margin-top-medium`      |
+| `sapUiLargeMarginTop`               | `.sap-margin-top-large`       |
+| `sapUiTinyMarginBottom`             | `.sap-margin-bottom-tiny`     |
+| `sapUiSmallMarginBottom`            | `.sap-margin-bottom-small`    |
+| `sapUiMediumMarginBottom`           | `.sap-margin-bottom-medium`   |
+| `sapUiLargeMarginBottom`            | `.sap-margin-bottom-large`    |
+| `sapUiTinyMarginBegin`              | `.sap-margin-begin-tiny`      |
+| `sapUiSmallMarginBegin`             | `.sap-margin-begin-small`     |
+| `sapUiMediumMarginBegin`            | `.sap-margin-begin-medium`    |
+| `sapUiLargeMarginBegin`             | `.sap-margin-begin-large`     |
+| `sapUiTinyMarginEnd`                | `.sap-margin-end-tiny`        |
+| `sapUiSmallMarginEnd`               | `.sap-margin-end-small`       |
+| `sapUiMediumMarginEnd`              | `.sap-margin-end-medium`      |
+| `sapUiLargeMarginEnd`               | `.sap-margin-end-large`       |
+| **Horizontal Margins**              |                               |
+| `sapUiTinyMarginBeginEnd`           | `.sap-margin-x-tiny`          |
+| `sapUiSmallMarginBeginEnd`          | `.sap-margin-x-small`         |
+| `sapUiMediumMarginBeginEnd`         | `.sap-margin-x-medium`        |
+| `sapUiLargeMarginBeginEnd`          | `.sap-margin-x-large`         |
+| **Vertical Margins**                |                               |
+| `sapUiTinyMarginTopBottom`          | `.sap-margin-y-tiny`          |
+| `sapUiSmallMarginBeginEnd`          | `.sap-margin-y-small`         |
+| `sapUiMediumMarginTopBottom`        | `.sap-margin-y-medium`        |
+| `sapUiLargeMarginTopBottom`         | `.sap-margin-y-large`         |
+| **Responsive Margins**              |                               |
+| `sapUiResponsiveMargin`             | `.sap-margin-responsive`      |
+| **Negative Margins**                |                               |
+| `sapUiTinyNegativeMarginBeginEnd`   | `.sap-margin-tiny-negative`   |
+| `sapUiSmallNegativeMarginBeginEnd`  | `.sap-margin-small-negative`  |
+| `sapUiMediumNegativeMarginBeginEnd` | `.sap-margin-medium-negative` |
+| `sapUiLargeNegativeMarginBeginEnd`  | `.sap-margin-large-negative`  |
+| **All Around Padding**              |                               |
+| `sapUiContentPadding`               | `.sap-padding`                |
+| **Responsive Paddings**             |                               |
+| `sapUiResponsiveContentPadding`     | `.sap-padding-responsive`     |
+| **Horizontal Paddings**             |                               |
+| `sapUiTinyPaddingBeginEnd`          | `.sap-padding-x-tiny`         |
+| `sapUiSmallPaddingBeginEnd`         | `.sap-padding-x-small`        |
+| `sapUiMediumPaddingBeginEnd`        | `.sap-padding-x-medium`       |
+| `sapUiLargePaddingBeginEnd`         | `.sap-padding-x-large`        |
+| **No Padding**                      |                               |
+| `sapUiNoContentPadding`             | `.sap-padding-none`           |
+
+</details>
+
+### Removed variables without substitute
+
+<details>
+    <summary>Show</summary>
+
+| Removed Variable      | Property and Value             |
+| --------------------- | ------------------------------ |
+| `sapUiNoMargin`       | `margin: 0 !important;`        |
+| `sapUiNoMarginTop`    | `margin-top: 0 !important;`    |
+| `sapUiNoMarginBottom` | `margin-bottom: 0 !important;` |
+| `sapUiForceWidthAuto` | `width: auto !important;`      |
+
+</details>
+
+## Removed hooks
+
+### `useResponsiveContentPadding`
+
+The `useResponsiveContentPadding` hook has been removed.
+You can now apply responsive content paddings by applying the `sap-content-paddings-container` class from `@sap-ui/common-css` package to your element.
+You can find a more detailed documentation [here](?path=/docs/knowledge-base-common-css--docs#content-paddings).
+
+## Replaced Components
+
+### AnalyticalCard
+
+The deprecated `AnalyticalCard` component has been replaced with the `Card` web component as a drop-in replacement:
+
+```tsx
+// v1
+import { AnalyticalCard, AnalyticalCardHeader } from '@ui5/webcomponents-react';
+
+function MyComponent() {
+  return (
+    <AnalyticalCard header={<AnalyticalCardHeader />}>
+      <span>My Content</span>
+    </AnalyticalCard>
+  );
+}
+
+// v2
+import { AnalyticalCardHeader, Card } from '@ui5/webcomponents-react';
+
+function MyComponent() {
+  return (
+    <Card header={<AnalyticalCardHeader />}>
+      <span>My Content</span>
+    </Card>
+  );
+}
+```
+
+### DynamicPage
+
+The `DynamicPage` component has been replaced with the `ui5-dynamic-page` web component. This comes with a few breaking changes:
+
+#### Replaced Props
+
+- `backgroundDesign` is not available anymore. To set the background of the page you can use standard CSS and the respective CSS variables instead:
+  - **List:** `var(--sapGroup_ContentBackground)`
+  - **Solid:** `var(--sapBackgroundColor)`
+  - **Transparent:** `transparent`
+- `alwaysShowContentHeader` has been renamed to `headerPinned`
+- `headerCollapsed` has been renamed to `headerSnapped`
+- `headerContentPinnable` (default: `true`) has been replaced by `hidePinButton` (default: `false`)
+- `footer` has been replaced by `footerArea` and is now a `slot`
+- `headerContent` has been replaced by `headerArea` and is now a `slot`
+- `headerTitle` has been replaced by `titleArea` and is now a `slot`
+
+**Events:**
+
+- `onPinnedStateChange` has been replaced by `onPinButtonToggle`.
+- `onToggleHeaderContent` has been replaced by `onTitleToggle`.
+
+  ```jsx
+  // v1
+  function DynamicPageComponent(props) {
+    const [pinned, setPinned] = useState(false);
+    const [expanded, setExpanded] = useState(true);
+    return (
+      <DynamicPage
+        {...props}
+        onPinnedStateChange={(pinned) => setPinned(pinned)}
+        onToggleHeaderContent={(visible) => {
+          setExpanded(visible);
+        }}
+      />
+    );
+  }
+
+  // v2
+  function DynamicPageComponent(props) {
+    const [pinned, setPinned] = useState(false);
+    const [expanded, setExpanded] = useState(true);
+    return (
+      <DynamicPage
+        {...props}
+        onPinButtonToggle={(event) => setPinned(event.target.headerPinned)}
+        onTitleToggle={(event) => {
+          setExpanded(!event.target.headerSnapped);
+        }}
+      />
+    );
+  }
+  ```
+
+#### Removed Props
+
+- `preserveHeaderStateOnScroll`: You should be able to achieve the same behavior with the `headerPinned` prop.
+- `showHideHeaderButton`: Hiding the expand/collapse button is not supported by design anymore.
+
+### DynamicPageHeader
+
+The `DynamicPageHeader` component has been replaced with the `ui5-dynamic-page-header` web component.
+Since the `ObjectPage` isn't compatible with the `DynamicPageHeader` web component, please use the `ObjectPageHeader` component in the `ObjectPage` instead.
+
+### DynamicPageTitle
+
+The `DynamicPageTitle` component has been replaced with the `ui5-dynamic-page-title` web component. This comes with a few breaking changes listed below.
+Since the `ObjectPage` isn't compatible with the `DynamicPageTitle` web component, please use the `ObjectPageTitle` component in the `ObjectPage` instead.
+
+#### Replaced Props
+
+- `actions` has been replaced by `actionsBar` and is now a `slot`. Instead of passing actions (e.g. `Buttons`) directly, it is now recommended to use the `Toolbar` component in order to preserve the intended design.
+- `navigationActions` has been replaced by `navigationBar` and is now a `slot`. Instead of passing actions (e.g. `Buttons`) directly, it is now recommended to use the `Toolbar` component in order to preserve the intended design.
+- `subHeader` has been renamed to `subheading` and is now a slot.
+- `header` has been renamed to `heading` and is now a `slot`. The `font-size` isn't automatically adjusted anymore, so to keep the intended design you can leverage the new `snappedHeading` prop and apply the corresponding CSS Variables yourself. (see example below)
+
+  Example:
+
+  ```jsx
+  <DynamicPageTitle
+    heading={<Title style={{ fontSize: 'var(--sapObjectHeader_Title_FontSize)' }}>Header Title</Title>}
+    snappedHeading={
+      <Title style={{ fontSize: 'var(--sapObjectHeader_Title_SnappedFontSize)' }}>Snapped Header Title</Title>
+    }
+  />
+  ```
+
+#### Removed Props
+
+- `showSubHeaderRight` is not defined by the global design guidelines and is therefore not available with the new web component.
+- `actionsToolbarProps` is not necessary anymore, as you now can pass a `Toolbar` yourself.
+- `navigationActionsToolbarProps` is not necessary anymore, as you now can pass a `Toolbar` yourself.
+- `expandedContent` is now part of the `subheading` prop, so if you've rendered a `MessageStrip` below the `subHeader` for example, you can now render the subheading and additional content both in the same slot.
+- `snappedContent` is now part of the `snappedSubheading` prop, so if you've rendered a `MessageStrip` below the `subHeader` for example, you can now render the subheading and additional content both in the same slot.
+
+  Example for combined `subHeader` and `expanded/snappedContent` in `subheading`/`snappedSubheading`:
+
+  ```jsx
+  <DynamicPageTitle
+    subheading={
+      <>
+        <Label>Subheader</Label>
+        <MessageStrip>Information (only visible if header content is expanded)</MessageStrip>
+      </>
+    }
+    snappedSubheading={
+      <>
+        <Label>Snapped Subheader</Label>
+        <MessageStrip>Information (only visible if header content is collapsed (snapped))</MessageStrip>
+      </>
+    }
+  />
+  ```
+
+### Form
+
+The `Form` component has been replaced with the `ui5-form` Web Component.
+You can use the new `Form` component as a feature complete replacement of the old Form component with the important differences to mention:
+
+1. You can't mix `FormGroup`s and `FormItem`s as children of the Form. Either only use `FormItem`s or only `FormGroup`s with `FormItem`s inside.
+2. Additional HTML elements between `Form / FormGroup / FormItem` are not allowed. You can still use custom React components if they render a `FormGroup` or `FormItem` as most outer element (or a fragment).
+
+```tsx
+// v1
+import { Form, FormGroup, FormItem } from '@ui5/webcomponents-react';
+
+function MyComponent() {
+  return (
+    <Form
+      backgroundDesign="Solid"
+      titleText="My Form"
+      labelSpanS={1}
+      labelSpanM={2}
+      labelSpanL={3}
+      labelSpanXL={4}
+      columnsS={1}
+      columnsM={2}
+      columnsL={3}
+      columnsXL={4}
+      as={'form'}
+    >
+      <FormGroup titleText="My Form Group" as="h5">
+        <FormItem label={'MyLabel'}>{/* FormItem Content */}</FormItem>
+      </FormGroup>
+    </Form>
+  );
+}
+
+// v2
+import { Form, FormGroup, FormItem, Label } from '@ui5/webcomponents-react';
+
+function MyComponent() {
+  return (
+    // `backgroundDesign` and `as` have been removed without replacement
+    <Form
+      // `titleText` has been renamed to `headerText`
+      headerText="My Form"
+      // the `columnsX` props have been merged into the `layout` string
+      layout="S1 M2 L3 XL4"
+      // the `labelSpanX` props have been merged into the `labelSpan` string
+      labelSpan="S1 M2 L3 XL4"
+    >
+      {/* `titleText` has been renamed to `headerText`, `as` has been removed */}
+      <FormGroup headerText="My Form Group">
+        {/* the `label` prop has been renamed to a `labelContent` slot.
+             It doesn't support strings anymore, it's recommended to use the `Label` component in this slot. */}
+        <FormItem labelContent={<Label>MyLabel</Label>}>{/* FormItem Content */}</FormItem>
+      </FormGroup>
+    </Form>
+  );
+}
+```
+
+### Loader
+
+There is no longer a concept of a Loader component defined by the UX guidelines. To indicate a loading state, it is now recommended using the `BusyIndicator` instead.
+For backwards compatibility, the Loader is still available in the `@ui5/webcomponents-react-compat` package, but it may lack accessibility features and no longer receives feature updates.
+
+#### Replacing `Loader` with `BusyIndicator`
+
+Unfortunately, there is no general rule of thumb for how to replace the `Loader` component with the `BusyIndicator` component. In most cases it should be sufficient wrapping your component inside the `BusyIndicator`, as shown below:
 
 ```jsx
-function OldApi() {
+// v1
+
+<Card header={<CardHeader titleText="Card Header" />}>
+  <Loader />
+  <div style={{ height: '400px', padding: '1rem' }}>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sed felis tristique, molestie tellus id, rutrum
+    urna. Quisque mattis risus imperdiet gravida accumsan. Proin elementum efficitur diam eu interdum.
+  </div>
+</Card>
+
+// v2
+
+<Card header={<CardHeader titleText="Card Header" />}>
+  <BusyIndicator active delay={0}>
+    <div style={{ height: '400px', padding: '1rem' }}>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sed felis tristique, molestie tellus id,
+      rutrum urna. Quisque mattis risus imperdiet gravida accumsan. Proin elementum efficitur diam eu interdum.
+    </div>
+  </BusyIndicator>
+</Card>
+```
+
+However, for components that apply complex styles such as `absolute/fixed` positioning, this might not be the case, as the `BusyIndicator` brings its own set of styles.
+In such instances, we recommend positioning the `BusyIndicator` above the element that should receive a loading indicator e.g. via `position: absolute`.
+If you encounter any issues migrating to the `BusyIndicator`, please feel free to reach out via [GitHub Discussions](https://github.com/SAP/ui5-webcomponents-react/discussions) or create an [Issue](https://github.com/SAP/ui5-webcomponents-react/issues/new/choose) if the behavior seems like a bug.
+
+#### Keep the `Loader`
+
+If you'd like to keep the `Loader` component instead of the `BusyIndicator` component, you now need to include the `@ui5/webcomponents-react-compat` package in your dependencies and adjust all import paths accordingly:
+
+```ts
+// v1
+import { Loader } from '@ui5/webcomponents-react';
+
+// v2
+import { Loader } from '@ui5/webcomponents-react-compat';
+```
+
+### Text
+
+The `Text` component has been replaced with the `ui5-text` Web Component.
+
+The following props have been removed:
+
+- `wrapping`
+  Can be achieved via the `maxLines` property. If `maxLines` is set to `1`, the text will not wrap, otherwise it will wrap.
+- `renderWhitespace`
+  Can be achieved by adding `white-space: pre-wrap;` via inline styles or `className` to the `Text` component.
+- `hyphenated` and `emptyIndicator`
+  These props are currently not supported by the new `ui5-text` component. You can follow this [feature request](https://github.com/SAP/ui5-webcomponents/issues/9244) for updates.
+
+```tsx
+// v1
+import { Text } from '@ui5/webcomponents-react';
+
+function MyComponent() {
+  return <Text wrapping={false}>Lorem Impsum</Text>;
+}
+
+// v2
+import { Text } from '@ui5/webcomponents-react';
+
+function MyComponent() {
+  return <Text maxLines={1}>Lorem Impsum</Text>;
+}
+```
+
+### Toolbar
+
+The `Toolbar` component has been replaced with the UI5 Web Components Toolbar component (which was previously exported in this project as `ToolbarV2`).
+The old `Toolbar` implementation has been moved to the `@ui5/webcomponents-react-compat` package with all its subcomponents:
+
+- `ToolbarSeparator`
+- `ToolbarSpacer`
+- `OverflowToolbarButton`
+- `OverflowToolbarToggleButton`
+- enum `ToolbarDesign`
+- enum `ToolbarStyle`
+
+Although the old `Toolbar` is still available in the `@ui5/webcomponents-react-compat` package, we strongly recommend to migrate to the new `Toolbar` instead.
+
+As the new `Toolbar` is a completely different component, we can't offer a proper migration guide, so it's best to check the [Toolbar documentation](?path=/docs/layouts-floorplans-toolbar--docs) and update your implementation accordingly with the new components.
+
+## Components with API Changes
+
+### ActionSheet
+
+The prop `portalContainer` has been removed as it is no longer needed due to the [popover API](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API) which is now used in the UI5 Web Components.
+For a better aligned API, the `showCancelButton` prop has been replaced wih the `hideCancelButton` prop and the logic has been inverted. Also, the `a11yConfig` prop has been renamed to `accessibilityAttributes`.
+
+```tsx
+// v1
+import { ActionSheet, Button } from '@ui5/webcomponents-react';
+
+function MyComponent() {
   return (
-    <AnalyticalCardHeader
-      titleText="Title"
-      subtitleText="Subtitle"
-      arrowIndicator={DeviationIndicator.Up} // renamed to `trend`
-      showIndicator={true} // removed, please use `trend={DeviationIndicator.None}` in future
-      indicatorState={ValueState.Error} // removed without replacement
-      value="100"
-      unit="k" // renamed to `scale`
-      valueState={ValueState.Success} // renamed to `state`, allowed enum values coming from `ValueColor`
-      target="100" // replaced with `children`. Use the `NumericSideIndicator` component.
-      deviation="50" // replaced with `children`. Use the `NumericSideIndicator` component.
-      description="Additional Description"
-      counter="Hello Counter" // renamed to `status`
-      counterState={ValueState.Error} // removed without replacement
-      currency="CURRENCY" // renamed to `unitOfMeasurement`
-      onClick={(e) => {}}
-    />
+    <ActionSheet showCancelButton={false} a11yConfig={{ actionSheetMobileContent: { role: 'menu' } }}>
+      <Button>Action 1</Button>
+    </ActionSheet>
   );
 }
 
-// will become
+// v2
+import { ActionSheet, Button } from '@ui5/webcomponents-react';
 
-function NewAPI() {
+function MyComponent() {
   return (
-    <AnalyticalCardHeader
-      titleText="Title"
-      subtitleText="Subtitle"
-      trend={DeviationIndicator.Up}
-      value="100"
-      scale="k"
-      state={ValueColor.Good}
-      description="Additional Description"
-      status="Hello Counter"
-      unitOfMeasurement="CURRENCY"
-      onClick={(e) => {}}
-    >
-      <NumericSideIndicator titleText="Target" number="100" />
-      <NumericSideIndicator titleText="Deviation" number="50" />
-    </AnalyticalCardHeader>
+    <ActionSheet hideCancelButton accessibilityAttributes={{ actionSheetMobileContent: { role: 'menu' } }}>
+      <Button>Action 1</Button>
+    </ActionSheet>
   );
 }
 ```
 
-## From 0.23.x to 0.24.0
+### AnalyticalTable
 
-- The deprecated `tooltip` prop has been removed, please use the native `title` attribute instead. (This does not remove the `tooltip` prop of the `Button`, `ToggleButton` or `SegmentedButtonItem`.)
-- The deprecated `useConsolidatedRef` hook has been removed, please use `useSyncRef` instead.
-- The deprecated `StyleClassHelper` class has been removed, please use `clsx` instead or implement your own `className` constructor.
+**Renamed or Changed Props:**
 
-## From 0.21.x to 0.22.0
+- `alwaysShowSubComponent` has been removed, please use `subComponentsBehavior` with `AnalyticalTableSubComponentsBehavior.Visibe` instead.
+- The default value of `sortable` (`true`) has been removed. To allow sorting in your table please set `sorting` to `true` yourself.
 
-**useI18nBundle:** The `useI18nBundle` hook must now be used in the context of the `ThemeProvider`.
+**Removed Props:**
 
-You will not need to change anything in your app's code base, since all components should already be wrapped by the `ThemeProvider`, but now you have to make sure that even your test components are wrapped inside of it.
-Otherwise, translatable components will likely not render.
+- `portalContainer` has been removed as it's no longer needed due to the [Popover API](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API) used in the `Popover` ui5 web component.
 
-## Older releases
+**Renamed Enums:**
 
-If you are looking for migration guides for older releases, please take a look into our [Migration Guide Archive](https://github.com/SAP/ui5-webcomponents-react/blob/main/docs/MigrationGuide.archive.md).
+Names of the following enums have changed:
+
+- `TableScaleWidthMode` is now `AnalyticalTableScaleWidthMode`
+- `TableSelectionBehavior` is now `AnalyticalTableSelectionBehavior`
+- `TableSelectionMode` is now `AnalyticalTableSelectionMode`
+- `TableVisibleRowCountMode` is now `AnalyticalTableVisibleRowCountMode`
+
+**Changed Enums:**
+
+- The properties and values for the `AnalyticalTableSelectionMode` enum has been changed.
+  - `SingleSelect` is now `Single`
+  - `MultiSelect` is now `Multiple`.
+
+**[Column Properties](?path=/docs/data-display-analyticaltable--docs#column-properties) Changes**
+
+- `canReorder` has been removed, please use `disableDragAndDrop` instead.
+
+```jsx
+// v1
+const columns = [{ ...otherProperties, canReorder: false }];
+
+<AnalyticalTable
+  {...otherProps}
+  columns={columns}
+  alwaysShowSubComponent
+  scaleWidthMode={TableScaleWidthMode.Grow}
+  selectionBehavior={TableSelectionBehavior.Row}
+  selectionMode={TableSelectionMode.MultiSelect}
+  // selectionMode={TableSelectionMode.SingleSelect}
+  visibleRowCountMode={TableVisibleRowCountMode.Interactive}
+/>;
+
+// v2
+const columns = [{ ...otherProps, disableDragAndDrop: true }];
+
+<AnalyticalTable
+  {...otherProps}
+  columns={columns}
+  subComponentsBehavior={AnalyticalTableSubComponentsBehavior.Visible}
+  scaleWidthMode={AnalyticalTableScaleWidthMode.Grow}
+  selectionBehavior={AnalyticalTableSelectionBehavior.Row}
+  selectionMode={AnalyticalTableSelectionMode.Multiple}
+  // selectionMode={AnalyticalTableSelectionMode.Single}
+  visibleRowCountMode={AnalyticalTableVisibleRowCountMode.Interactive}
+/>;
+```
+
+### Expandable Text
+
+The prop `portalContainer` has been removed as it is no longer needed due to the [popover API](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API) which is now used in the UI5 Web Components.
+As the underlying `Text` component has been replaced with the UI5 Web Component, some inherited props `hyphenated` and `emptyIndicator` from the `Text` component have been removed.
+You can follow this [feature request](https://github.com/SAP/ui5-webcomponents/issues/9244) for updates.
+
+### FilterGroupItem
+
+For a better aligned API, the `visible` and `visibleInFilterBar` (defaulted to `true)` props has been replaced with `hidden` and `hiddenInFilterBar` (no default value).
+You only need to apply changes to your code if `visible` or `visibleInFilterBar` have been set to `false`:
+
+```tsx
+// v1
+import { FilterBar, FilterGroupItem, Input } from '@ui5/webcomponents-react';
+
+function MyComponent() {
+  return (
+    <FilterBar>
+      <FilterGroupItem visible={false}>
+        <Input />
+      </FilterGroupItem>
+      <FilterGroupItem visibleInFilterBar={false}>
+        <Input />
+      </FilterGroupItem>
+      <FilterGroupItem>
+        <Input />
+      </FilterGroupItem>
+    </FilterBar>
+  );
+}
+
+// v2
+import { FilterBar, FilterGroupItem, Input } from '@ui5/webcomponents-react';
+
+function MyComponent() {
+  return (
+    <FilterBar>
+      <FilterGroupItem hidden>
+        <Input />
+      </FilterGroupItem>
+      <FilterGroupItem hiddenInFilterBar>
+        <Input />
+      </FilterGroupItem>
+      <FilterGroupItem>
+        <Input />
+      </FilterGroupItem>
+    </FilterBar>
+  );
+}
+```
+
+### MessageBox
+
+- `onClose` is now a plain callback function and no `CustomEvent` anymore. It receives two parameters, `action` and `escPressed`.
+
+```jsx
+// v1
+// onClose?: (event: CustomEvent<{ action: MessageBoxAction }>) => void;
+
+<MessageBox
+  onClose={(event) => {
+    console.log(event.detail.action);
+  }}
+>
+  {children}
+</MessageBox>
+
+// v2
+// onClose?: (action: MessageBoxActionType | undefined, escPressed?: true) => void;
+
+<MessageBox
+  onClose={(action, escPressed) => {
+    console.log(action, escPressed);
+  }}
+>
+  {children}
+</MessageBox>
+
+```
+
+### Modals
+
+All Modal helper hooks have been removed. They can be replaced with the regular methods:
+
+- `useShowDialog` --> `showDialog`
+- `useShowPopover` --> `showPopover`
+- `useShowResponsivePopover` --> `showResponsivePopover`
+- `useShowMenu` --> `showMenu`
+- `useShowMessageBox` --> `showMessageBox`
+- `useShowToast` --> `showToast`
+
+The regular methods are now general purpose, so they can be used both inside the React content (components) as well as outside of the React context (redux, redux-saga, etc.).
+
+### ObjectPage
+
+The newly introduced `DynamicPage` web component comes with its own `DynamicPageHeader` and `DynamicPageTitle` components, which are unfortunately incompatible with our `ObjectPage` implementation.
+Please use the `ObjectPageHeader` or `ObjectPageTitle` component instead.
+
+**Removed Props:**
+
+- `showHideHeaderButton`: Hiding the expand/collapse button is not supported by design anymore.
+- `showTitleInHeaderContent`: Showing the `headerTitle` as part of the `headerContent` is [not supported by design anymore](https://experience.sap.com/fiori-design-web/object-page/#dynamic-page-header-mandatory).
+
+**Refactored Props:**
+
+- `headerContent` has been renamed to `headerArea` and now only accepts the `ObjectPageHeader` component.
+- `headerTitle` has been renamed to `titleArea` and now only accepts the `ObjectPageTitle` component.
+- `headerContentPinnable` has been renamed to `hidePinButton` and the logic has been inverted. The pin button is now shown by default.
+
+**Renamed Props:**
+
+- `a11yConfig` has been renamed to `accessibilityAttributes`
+- `a11yConfig.dynamicPageAnchorBar` has been renamed to `accessibilityAttributes.objectPageAnchorBar`
+- `alwaysShowContentHeader` has been renamed to `headerPinned`
+- `footer` has been renamed to `footerArea`
+- `onToggleHeaderContent` has been renamed to `onToggleHeaderArea`
+- `onPinnedStateChange` has been renamed to `onPinButtonToggle`
+
+Also, the namings of internal `data-component-name` attributes have been adjusted accordingly. E.g. `data-component-name="DynamicPageTitleSubHeader"` has been renamed to `data-component-name="ObjectPageTitleSubHeader"`
+
+### ObjectPageTitle (f.k.a. DynamicPageTitle)
+
+_The `ObjectPageTitle` component is the renamed implementation of the old (React only) `DynamicPageTitle` component. Now, it should only be used in the `ObjectPage`._
+
+**Removed Props:**
+
+- `actionsToolbarProps`: Since it's now recommended passing the `Toolbar` component directly, this prop is redundant.
+- `navigationActionsToolbarProps`: Since it's now recommended passing the `Toolbar` component directly, this prop is redundant.
+- `showSubHeaderRight`: Displaying the subheader in the same line as the header is not supported by design anymore.
+
+**Refactored Props:**
+
+- `actions` has been renamed to `actionsBar`. Instead of single actions, the `Toolbar` component should now be passed.
+- `navigationActions` has been renamed to `navigationBar`. Instead of single actions, the `Toolbar` component should now be passed. The `ObjectPageTitle` still offers support for the legacy `Toolbar`.
+
+_The `ObjectPageTitle` still offers support for the legacy `Toolbar`. You can find out more about this [here](?path=/docs/layouts-floorplans-objectpage--docs#legacy-toolbar-support)._
+
+```jsx
+// v1
+<DynamicPageTitle
+  showSubHeaderRight
+  actionsToolbarProps={{ style: { background: 'red' } }}
+  navigationActionsToolbarProps={{ style: { background: 'red' } }}
+  actions={
+    <>
+      <Button>Action 1</Button>
+      <Button>Action 2</Button>
+    </>
+  }
+  navigationActions={
+    <>
+      <Button>Navigation-Action 1</Button>
+      <Button>Navigation-Action 2</Button>
+    </>
+  }
+/>
+
+// v2
+<ObjectPageTitle
+  // `showSubHeaderRight` has been removed without replacement
+
+  // You can now pass all toolbar props directly to the toolbar,
+  // making `actionsToolbarProps` and `navigationActionsToolbarProps` redundant
+  actionsBar={
+    <Toolbar design="Transparent" style={{ background: 'red' }}>
+      <ToolbarButton text="Action 1" />
+      <ToolbarButton text="Action 2" />
+    </Toolbar>
+  }
+  navigationBar={
+    <Toolbar design="Transparent" style={{ background: 'red' }}>
+      <ToolbarButton text="Navigation-Action 1" />
+      <ToolbarButton text="Navigation-Action 2" />
+    </Toolbar>
+  }
+/>
+```
+
+### ObjectPageSection
+
+The prop `titleText` is now required and the default value `true` has been removed for the `titleTextUppercase` prop to comply with the updated Fiori design guidelines.
+
+### ObjectPageSubSection
+
+The prop `titleText` is now required.
+
+### ObjectStatus
+
+For better alignment with the UI5 Web Components the `active` prop has been renamed to `interactive`.
+
+### ThemeProvider
+
+The prop `withoutModalsProvider` has been removed.
+In order to provide a place for the `Modals` helper to mount the popovers, you have to render the new `Modals` component in your application tree.
+
+## Enum Changes
+
+For better alignment with the UI5 Web Components, the following enums have been renamed:
+
+- `MessageBoxActions` has been renamed to `MessageBoxAction`
+- `MessageBoxTypes` has been renamed to `MessageBoxType`
+- `Themes` has been renamed to `Theme`
 
 <Footer />

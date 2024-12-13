@@ -1,6 +1,7 @@
 'use client';
 
 import '@ui5/webcomponents/dist/Avatar.js';
+import type { AvatarAccessibilityAttributes } from '@ui5/webcomponents/dist/Avatar.js';
 import type AvatarColorScheme from '@ui5/webcomponents/dist/types/AvatarColorScheme.js';
 import type AvatarShape from '@ui5/webcomponents/dist/types/AvatarShape.js';
 import type AvatarSize from '@ui5/webcomponents/dist/types/AvatarSize.js';
@@ -10,10 +11,23 @@ import type { CommonProps, Ui5DomRef, UI5WCSlotsNode } from '../../types/index.j
 
 interface AvatarAttributes {
   /**
+   * Defines the additional accessibility attributes that will be applied to the component.
+   * The following field is supported:
+   *
+   * - **hasPopup**: Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by the button.
+   * Accepts the following string values: `dialog`, `grid`, `listbox`, `menu` or `tree`.
+   *
+   * **Note:** Available since [v2.0.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v2.0.0) of **@ui5/webcomponents**.
+   * @default {}
+   */
+  accessibilityAttributes?: AvatarAccessibilityAttributes;
+
+  /**
    * Defines the text alternative of the component.
    * If not provided a default text alternative will be set, if present.
+   * @default undefined
    */
-  accessibleName?: string;
+  accessibleName?: string | undefined;
 
   /**
    * Defines the background color of the desired image.
@@ -45,6 +59,7 @@ interface AvatarAttributes {
    * `<Avatar fallback-icon="alert">`
    *
    * See all the available icons in the [Icon Explorer](https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html).
+   * @default "employee"
    */
   fallbackIcon?: string;
 
@@ -62,15 +77,17 @@ interface AvatarAttributes {
    * **Note:** If no icon or an empty one is provided, by default the "employee" icon should be displayed.
    *
    * See all the available icons in the [Icon Explorer](https://sdk.openui5.org/test-resources/sap/m/demokit/iconExplorer/webapp/index.html).
+   * @default undefined
    */
-  icon?: string;
+  icon?: string | undefined;
 
   /**
    * Defines the displayed initials.
    *
    * Up to three Latin letters can be displayed as initials.
+   * @default undefined
    */
-  initials?: string;
+  initials?: string | undefined;
 
   /**
    * Defines if the avatar is interactive (focusable and pressable).
@@ -101,14 +118,16 @@ interface AvatarPropTypes extends AvatarAttributes, Omit<CommonProps, keyof Avat
    * Defines the optional badge that will be used for visual affordance.
    *
    * **Note:** While the slot allows for custom badges, to achieve
-   * the Fiori design, please use `Badge` with `Icon`
+   * the Fiori design, you can use the `Tag` with `Icon`
    * in the corresponding `icon` slot, without text nodes.
    *
    * __Note:__ The content of the prop will be rendered into a [&lt;slot&gt;](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot) by assigning the respective [slot](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/slot) attribute (`slot="badge"`).
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
+   *
+   * **Note:** Available since [v1.7.0](https://github.com/SAP/ui5-webcomponents/releases/tag/v1.7.0) of **@ui5/webcomponents**.
    */
   badge?: UI5WCSlotsNode;
 
@@ -129,16 +148,16 @@ interface AvatarPropTypes extends AvatarAttributes, Omit<CommonProps, keyof Avat
  *
  * ### Keyboard Handling
  *
- * - [SPACE, ENTER, RETURN] - Fires the `click` event if the `interactive` property is set to true.
- * - [SHIFT] - If [SPACE] is pressed, pressing [SHIFT] releases the component without triggering the click event.
+ * - [Space] / [Enter] or [Return] - Fires the `click` event if the `interactive` property is set to true.
+ * - [Shift] - If [Space] is pressed, pressing [Shift] releases the component without triggering the click event.
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const Avatar = withWebComponent<AvatarPropTypes, AvatarDomRef>(
   'ui5-avatar',
-  ['accessibleName', 'colorScheme', 'fallbackIcon', 'icon', 'initials', 'shape', 'size'],
+  ['accessibilityAttributes', 'accessibleName', 'colorScheme', 'fallbackIcon', 'icon', 'initials', 'shape', 'size'],
   ['disabled', 'interactive'],
   ['badge'],
   [],

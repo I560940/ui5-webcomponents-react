@@ -1,9 +1,9 @@
 'use client';
 
-import { ThemingParameters, useIsomorphicId } from '@ui5/webcomponents-react-base';
+import { ThemingParameters } from '@ui5/webcomponents-react-base';
 import type { CSSProperties } from 'react';
-import React, { forwardRef } from 'react';
-import type { TooltipProps } from 'recharts';
+import { forwardRef, useId } from 'react';
+import type { TooltipProps, YAxisProps } from 'recharts';
 import { useLongestYAxisLabel } from '../../hooks/useLongestYAxisLabel.js';
 import { usePrepareDimensionsAndMeasures } from '../../hooks/usePrepareDimensionsAndMeasures.js';
 import { usePrepareTrendMeasures } from '../../hooks/usePrepareTrendMeasures.js';
@@ -44,9 +44,8 @@ interface MeasureConfig extends IChartMeasure {
 interface DimensionConfig extends IChartDimension {
   /**
    * Interval of axis label which defines the number that controls how many ticks are rendered on the x axis
-   * @default 0
    */
-  interval?: number;
+  interval?: YAxisProps['interval'];
 }
 
 export interface ColumnChartWithTrendProps
@@ -107,6 +106,7 @@ type AvailableChartTypes = 'line' | 'bar' | string;
 const ColumnChartWithTrend = forwardRef<HTMLDivElement, ColumnChartWithTrendProps>((props, ref) => {
   const {
     loading,
+    loadingDelay,
     dataset,
     style,
     className,
@@ -120,9 +120,9 @@ const ColumnChartWithTrend = forwardRef<HTMLDivElement, ColumnChartWithTrendProp
     ...rest
   } = props;
 
-  const syncId = useIsomorphicId();
+  const syncId = useId();
 
-  const chartConfig = {
+  const chartConfig: ColumnChartWithTrendProps['chartConfig'] = {
     yAxisVisible: false,
     xAxisVisible: true,
     gridStroke: ThemingParameters.sapList_BorderColor,
@@ -178,6 +178,7 @@ const ColumnChartWithTrend = forwardRef<HTMLDivElement, ColumnChartWithTrendProp
           tooltipConfig={lineTooltipConfig}
           noAnimation={noAnimation}
           loading={loading}
+          loadingDelay={loadingDelay}
           onClick={onClick}
           syncId={syncId}
           style={{ ...style, height: `calc(${style?.height} * 0.2)` }}
@@ -202,6 +203,7 @@ const ColumnChartWithTrend = forwardRef<HTMLDivElement, ColumnChartWithTrendProp
         noAnimation={noAnimation}
         noLegend={noLegend}
         loading={loading}
+        loadingDelay={loadingDelay}
         onClick={onClick}
         onDataPointClick={onDataPointClick}
         syncId={syncId}
@@ -218,11 +220,6 @@ const ColumnChartWithTrend = forwardRef<HTMLDivElement, ColumnChartWithTrendProp
     </div>
   );
 });
-
-ColumnChartWithTrend.defaultProps = {
-  noLegend: false,
-  noAnimation: false
-};
 
 ColumnChartWithTrend.displayName = 'ColumnChartWithTrend';
 

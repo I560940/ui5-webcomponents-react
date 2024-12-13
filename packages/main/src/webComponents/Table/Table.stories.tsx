@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import TableGrowingMode from '@ui5/webcomponents/dist/types/TableGrowingMode.js';
 import { useState } from 'react';
-import { TableGrowingMode } from '../../enums/index.js';
-import { Label } from '../Label/index.js';
 import { TableCell } from '../TableCell/index.js';
-import { TableColumn } from '../TableColumn/index.js';
+import { TableGrowing } from '../TableGrowing/index.js';
+import { TableHeaderCell } from '../TableHeaderCell/index.js';
+import { TableHeaderRow } from '../TableHeaderRow/index.js';
 import { TableRow } from '../TableRow/index.js';
 import { Table } from './index.js';
 
@@ -11,10 +12,31 @@ const meta = {
   title: 'Data Display / Table',
   component: Table,
   argTypes: {
-    columns: { control: { disable: true } },
+    headerRow: { control: { disable: true } },
+    features: { control: { disable: true } },
     children: { control: { disable: true } }
   },
-  args: {},
+  args: {
+    headerRow: (
+      <TableHeaderRow sticky>
+        <TableHeaderCell width={'12rem'}>
+          <span>Product</span>
+        </TableHeaderCell>
+        <TableHeaderCell minWidth={'800px'}>
+          <span>Supplier</span>
+        </TableHeaderCell>
+        <TableHeaderCell minWidth={'600px'}>
+          <span>Dimensions</span>
+        </TableHeaderCell>
+        <TableHeaderCell minWidth={'600px'}>
+          <span>Weight</span>
+        </TableHeaderCell>
+        <TableHeaderCell>
+          <span>Price</span>
+        </TableHeaderCell>
+      </TableHeaderRow>
+    )
+  },
   tags: ['package:@ui5/webcomponents']
 } satisfies Meta<typeof Table>;
 
@@ -24,60 +46,39 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: (args) => {
     return (
-      <Table
-        {...args}
-        columns={
-          <>
-            <TableColumn style={{ width: '12rem' }}>
-              <Label>Product</Label>
-            </TableColumn>
-            <TableColumn minWidth={800} popinText="Supplier">
-              <Label>Supplier</Label>
-            </TableColumn>
-            <TableColumn minWidth={600} popinText="Dimensions" demandPopin>
-              <Label>Dimensions</Label>
-            </TableColumn>
-            <TableColumn minWidth={600} popinText="Weight" demandPopin>
-              <Label>Weight</Label>
-            </TableColumn>
-            <TableColumn>
-              <Label>Price</Label>
-            </TableColumn>
-          </>
-        }
-      >
+      <Table {...args}>
         <TableRow>
           <TableCell>
-            <Label>Notebook Basic</Label>
+            <span>Notebook Basic</span>
           </TableCell>
           <TableCell>
-            <Label>Very Best Screens</Label>
+            <span>Very Best Screens</span>
           </TableCell>
           <TableCell>
-            <Label>30 x 18 x 3cm</Label>
+            <span>30 x 18 x 3cm</span>
           </TableCell>
           <TableCell>
-            <Label>4.2KG</Label>
+            <span>4.2KG</span>
           </TableCell>
           <TableCell>
-            <Label>956EUR</Label>
+            <span>956EUR</span>
           </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>
-            <Label>Notebook Basic 17HT-1001</Label>
+            <span>Notebook Basic 17HT-1001</span>
           </TableCell>
           <TableCell>
-            <Label>Very Best Screens</Label>
+            <span>Very Best Screens</span>
           </TableCell>
           <TableCell>
-            <Label>29 x 17 x 3.1cm</Label>
+            <span>29 x 17 x 3.1cm</span>
           </TableCell>
           <TableCell>
-            <Label>4.5KG</Label>
+            <span>4.5KG</span>
           </TableCell>
           <TableCell>
-            <Label>1249EUR</Label>
+            <span>1249EUR</span>
           </TableCell>
         </TableRow>
       </Table>
@@ -86,15 +87,18 @@ export const Default: Story = {
 };
 
 export const GrowingTable: Story = {
-  render: () => {
+  render: (args) => {
     const createRows = (indexOffset) => {
       return new Array(25).fill('').map((_, index) => (
         <TableRow key={`${index + indexOffset}-row`}>
           <TableCell>
-            <Label>{index + indexOffset}</Label>
+            <span>{index + indexOffset}</span>
           </TableCell>
           <TableCell>
-            <Label>Placeholder</Label>
+            <span>Placeholder</span>
+          </TableCell>
+          <TableCell>
+            <span>Placeholder 2</span>
           </TableCell>
         </TableRow>
       ));
@@ -105,21 +109,9 @@ export const GrowingTable: Story = {
     };
     return (
       <div style={{ height: '250px', overflow: 'auto' }}>
-        <Table
-          onLoadMore={onLoadMore}
-          growing={TableGrowingMode.Scroll}
-          columns={
-            <>
-              <TableColumn>
-                <Label>Column 1</Label>
-              </TableColumn>
-              <TableColumn>
-                <Label>Column 2</Label>
-              </TableColumn>
-            </>
-          }
-        >
+        <Table {...args}>
           {rows}
+          <TableGrowing slot="features" onLoadMore={onLoadMore} type={TableGrowingMode.Button} />
         </Table>
       </div>
     );

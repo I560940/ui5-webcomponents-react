@@ -6,6 +6,12 @@ import type { CommonProps, Ui5CustomEvent, Ui5DomRef, UI5WCSlotsNode } from '../
 
 interface CardHeaderAttributes {
   /**
+   * Defines the additional text.
+   * @default undefined
+   */
+  additionalText?: string | undefined;
+
+  /**
    * Defines if the component would be interactive,
    * e.g gets hover effect, gets focus outline and `click` event is fired, when pressed.
    * @default false
@@ -13,19 +19,16 @@ interface CardHeaderAttributes {
   interactive?: boolean;
 
   /**
-   * Defines the status text.
-   */
-  status?: string;
-
-  /**
    * Defines the subtitle text.
+   * @default undefined
    */
-  subtitleText?: string;
+  subtitleText?: string | undefined;
 
   /**
    * Defines the title text.
+   * @default undefined
    */
-  titleText?: string;
+  titleText?: string | undefined;
 }
 
 interface CardHeaderDomRef extends Required<CardHeaderAttributes>, Ui5DomRef {}
@@ -40,7 +43,7 @@ interface CardHeaderPropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   action?: UI5WCSlotsNode;
 
@@ -51,7 +54,7 @@ interface CardHeaderPropTypes
    * Since you can't change the DOM order of slots when declaring them within a prop, it might prove beneficial to manually mount them as part of the component's children, especially when facing problems with the reading order of screen readers.
    *
    * __Note:__ When passing a custom React component to this prop, you have to make sure your component reads the `slot` prop and appends it to the most outer element of your component.
-   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/?path=/docs/knowledge-base-handling-slots--docs).
+   * Learn more about it [here](https://sap.github.io/ui5-webcomponents-react/v2/?path=/docs/knowledge-base-handling-slots--docs).
    */
   avatar?: UI5WCSlotsNode;
   /**
@@ -64,7 +67,7 @@ interface CardHeaderPropTypes
 
 /**
  * The `CardHeader` is a component, meant to be used as a header of the `Card` component.
- * It displays valuable information, that can be defined with several properties, such as: `titleText`, `subtitleText`, `status`
+ * It displays valuable information, that can be defined with several properties, such as: `titleText`, `subtitleText`, `additionalText`
  * and two slots: `avatar` and `action`.
  *
  * ### Keyboard handling
@@ -72,11 +75,11 @@ interface CardHeaderPropTypes
  *
  *
  *
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  */
 const CardHeader = withWebComponent<CardHeaderPropTypes, CardHeaderDomRef>(
   'ui5-card-header',
-  ['status', 'subtitleText', 'titleText'],
+  ['additionalText', 'subtitleText', 'titleText'],
   ['interactive'],
   ['action', 'avatar'],
   ['click'],

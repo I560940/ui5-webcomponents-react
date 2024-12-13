@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Text } from '../../components/Text';
-import { BusyIndicatorSize } from '../../enums';
+import BusyIndicatorSize from '@ui5/webcomponents/dist/types/BusyIndicatorSize.js';
+import { Text } from '../../webComponents/Text';
 import { Select } from '../Select';
 import { BusyIndicator } from './index';
 
@@ -9,7 +9,7 @@ const meta = {
   component: BusyIndicator,
   argTypes: { children: { control: { disable: true } } },
   args: {
-    size: BusyIndicatorSize.Medium,
+    size: BusyIndicatorSize.M,
     delay: 1000,
     active: true
   },

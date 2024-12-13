@@ -1,29 +1,8 @@
-import TurndownService from 'turndown';
-
 let ui5TagNameToComponentNameMap: Record<string, string> = {};
 
 export function setGlobalTagNameMap(map: typeof ui5TagNameToComponentNameMap) {
   ui5TagNameToComponentNameMap = map;
 }
-
-const turndownService = new TurndownService({
-  headingStyle: 'atx',
-  codeBlockStyle: 'fenced'
-});
-
-turndownService.addRule('ui5-link', {
-  filter: (node) => node.nodeName === 'UI5-LINK' && !!node.getAttribute('href'),
-  replacement: (content, node) => {
-    // @ts-expect-error: types seem to be incorrect
-    const href = node.getAttribute('href');
-    // @ts-expect-error: types seem to be incorrect
-    let title = node.getAttribute('title') ?? '';
-    if (title) {
-      title = ` "${title}"`;
-    }
-    return `[${content}](${href}${title})`;
-  }
-});
 
 function replaceUi5TagNames(text: string) {
   let newText = text.replaceAll(/`([\w\d-]+)`/g, (match, tagName) => {
@@ -66,6 +45,7 @@ export function mapWebComponentTypeToPrimitive(type: string): string | null {
   switch (type) {
     case 'sap.ui.webc.base.types.Integer':
     case 'sap.ui.webc.base.types.Float':
+    case 'number':
       return 'number';
     case 'string':
       return 'string';
@@ -77,4 +57,8 @@ export function mapWebComponentTypeToPrimitive(type: string): string | null {
     default:
       return null;
   }
+}
+
+export function sinceFilter(ui5since: string | undefined) {
+  return ui5since && !ui5since.startsWith('0') && !ui5since.includes('-rc');
 }

@@ -8,20 +8,23 @@ import type { CommonProps, Ui5CustomEvent, Ui5DomRef } from '../../types/index.j
 interface ShellBarItemAttributes {
   /**
    * Defines the count displayed in the top-right corner.
+   * @default undefined
    */
-  count?: string;
+  count?: string | undefined;
 
   /**
    * Defines the name of the item's icon.
+   * @default undefined
    */
-  icon?: string;
+  icon?: string | undefined;
 
   /**
    * Defines the item text.
    *
    *   **Note:** The text is only displayed inside the overflow popover list view.
+   * @default undefined
    */
-  text?: string;
+  text?: string | undefined;
 }
 
 interface ShellBarItemDomRef extends Required<ShellBarItemAttributes>, Ui5DomRef {}
@@ -31,6 +34,8 @@ interface ShellBarItemPropTypes
     Omit<CommonProps, keyof ShellBarItemAttributes | 'onClick'> {
   /**
    * Fired, when the item is pressed.
+   *
+   * **Note:** Call `event.preventDefault()` inside the handler of this event to prevent its default action/s.
    */
   onClick?: (event: Ui5CustomEvent<ShellBarItemDomRef, ShellBarItemClickEventDetail>) => void;
 }
@@ -41,8 +46,8 @@ interface ShellBarItemPropTypes
  *
  *
  *
+ * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/)
  * @abstract
- * __Note__: This is a UI5 Web Component! [Repository](https://github.com/SAP/ui5-webcomponents) | [Documentation](https://sap.github.io/ui5-webcomponents/playground/)
  */
 const ShellBarItem = withWebComponent<ShellBarItemPropTypes, ShellBarItemDomRef>(
   'ui5-shellbar-item',
