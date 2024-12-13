@@ -37,7 +37,7 @@ const GanttChartStaticVerticalLine: React.FC<GanttChartStaticVerticalLine> = ({ 
           left: `-${rectOffset}px`,
           width: `${rectSize}px`,
           height: `${rectSize}px`,
-          backgroundColor: isHovered ? 'green' : ThemingParameters.sapLegendColor2,
+          backgroundColor: ThemingParameters.sapLegendColor2,
           transform: 'rotate(45deg)'
         }}
       />
@@ -50,7 +50,6 @@ const GanttChartStaticVerticalLine: React.FC<GanttChartStaticVerticalLine> = ({ 
             backgroundColor: `${ThemingParameters.sapBackgroundColor}`,
             border: `1px solid ${ThemingParameters.sapField_TextColor}`,
             borderRadius: '4px',
-            margin: '5px',
             padding: '10px',
             fontSize: '14px'
           }}
