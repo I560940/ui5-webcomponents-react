@@ -1,5 +1,5 @@
 import { ThemingParameters } from '@ui5/webcomponents-react-base';
-import React from 'react';
+import React, { useState } from 'react';
 
 interface GanttChartStaticVerticalLine {
   time: number;
@@ -11,28 +11,35 @@ interface GanttChartStaticVerticalLine {
  * Component that renders a vertical line in the Gantt chart. This line is static and does not move.
  */
 const GanttChartStaticVerticalLine: React.FC<GanttChartStaticVerticalLine> = ({ GanttStart, totalDuration, time }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const lineStype = isHovered ? 'solid' : 'dashed';
+  const left = ((time + 1 - GanttStart) / totalDuration) * 100;
+  const rectSize = 5;
+  const rectOffset = Math.sqrt(rectSize ** 2) / 2;
   return (
     <div
       style={{
         position: 'absolute',
-        left: `${((time + 1 - GanttStart) / totalDuration) * 100}%`,
+        left: `${left}%`,
         top: -5,
         width: 1,
         height: '105%',
-        pointerEvents: 'none',
-        borderLeft: `1px dashed ${ThemingParameters.sapLegendColor2}`
+        borderLeft: `1px ${lineStype} ${ThemingParameters.sapLegendColor2}`
       }}
     >
       <div
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        title="Today"
         style={{
-          top: '-1px',
+          top: `-1px`,
           position: 'absolute',
-          left: '-2.3px',
-          width: `4px`,
-          height: `4px`,
+          left: `-${rectOffset}px`,
+          width: `${rectSize}px`,
+          height: `${rectSize}px`,
           backgroundColor: ThemingParameters.sapLegendColor2,
-          transform: 'rotate(45deg)',
-          pointerEvents: 'none'
+          transform: 'rotate(45deg)'
         }}
       />
     </div>
