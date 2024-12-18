@@ -24,6 +24,7 @@ const GanttChartStaticVerticalLine = ({ GanttStart, totalDuration, time }) => {
     React.createElement('div', {
       onMouseEnter: () => setIsHovered(true),
       onMouseLeave: () => setIsHovered(false),
+      title: 'Today',
       style: {
         top: `-1px`,
         position: 'absolute',
@@ -33,24 +34,7 @@ const GanttChartStaticVerticalLine = ({ GanttStart, totalDuration, time }) => {
         backgroundColor: ThemingParameters.sapLegendColor2,
         transform: 'rotate(45deg)'
       }
-    }),
-    isHovered &&
-      React.createElement(
-        'div',
-        {
-          style: {
-            position: 'absolute',
-            top: '-30px',
-            left: `20px`,
-            backgroundColor: `${ThemingParameters.sapBackgroundColor}`,
-            border: `1px solid ${ThemingParameters.sapField_TextColor}`,
-            borderRadius: '4px',
-            padding: '10px',
-            fontSize: '14px'
-          }
-        },
-        'Today'
-      )
+    })
   );
 };
 export { GanttChartStaticVerticalLine };

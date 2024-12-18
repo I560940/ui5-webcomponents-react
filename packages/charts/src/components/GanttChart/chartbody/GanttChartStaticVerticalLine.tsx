@@ -17,7 +17,6 @@ const GanttChartStaticVerticalLine: React.FC<GanttChartStaticVerticalLine> = ({ 
   const left = ((time + 1 - GanttStart) / totalDuration) * 100;
   const rectSize = 5;
   const rectOffset = Math.sqrt(rectSize ** 2) / 2;
-
   return (
     <div
       style={{
@@ -32,6 +31,7 @@ const GanttChartStaticVerticalLine: React.FC<GanttChartStaticVerticalLine> = ({ 
       <div
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        title="Today"
         style={{
           top: `-1px`,
           position: 'absolute',
@@ -42,22 +42,6 @@ const GanttChartStaticVerticalLine: React.FC<GanttChartStaticVerticalLine> = ({ 
           transform: 'rotate(45deg)'
         }}
       />
-      {isHovered && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '-30px',
-            left: `20px`,
-            backgroundColor: `${ThemingParameters.sapBackgroundColor}`,
-            border: `1px solid ${ThemingParameters.sapField_TextColor}`,
-            borderRadius: '4px',
-            padding: '10px',
-            fontSize: '14px'
-          }}
-        >
-          Today
-        </div>
-      )}
     </div>
   );
 };
