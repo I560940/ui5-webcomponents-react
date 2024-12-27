@@ -28,6 +28,7 @@ export interface GanttChartProps extends CommonProps {
   onTaskClick?: (parentId: string, task: IGanttChartTask, event: React.MouseEvent) => void;
   onEventClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
   onLegendClick?: (event: React.MouseEvent) => void;
+  onScaleChange?: (scale: number) => void;
   showAnnotation?: boolean;
   showStatus?: boolean;
   showVerticalLineOnHover?: boolean;
@@ -44,6 +45,7 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
     onTaskClick,
     onEventClick,
     onLegendClick,
+    onScaleChange,
     annotations,
     showAnnotation,
     showVerticalLineOnHover,
@@ -102,10 +104,17 @@ const GanttChart = forwardRef<HTMLDivElement, GanttChartProps>((props, fRef) => 
     }
   };
 
+  const handleScaleChange = (value) => {
+    if (onScaleChange) {
+      onScaleChange(value);
+    }
+    setChartBodyScale(value);
+  };
+
   return (
     <div ref={fRef} {...rest}>
       <GanttChartZoomSlider
-        onScale={(value: number) => setChartBodyScale(value)}
+        onScale={handleScaleChange}
         onLegendClick={onLegendClick}
         dimensions={dimensions}
         resetScroll={resetScroll}

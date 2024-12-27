@@ -10,6 +10,7 @@ export interface GanttChartProps extends CommonProps {
     onTaskClick?: (parentId: string, task: IGanttChartTask, event: React.MouseEvent) => void;
     onEventClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
     onLegendClick?: (event: React.MouseEvent) => void;
+    onScaleChange?: (scale: number) => void;
     showAnnotation?: boolean;
     showStatus?: boolean;
     showVerticalLineOnHover?: boolean;
