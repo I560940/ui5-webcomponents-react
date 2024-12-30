@@ -41,7 +41,11 @@ export const GanttChartZoomSlider = (props: GanttChartZoomSliderProps) => {
     }
   };
   useEffect(() => {
-    onScale(Math.pow(SCALE_FACTOR, sliderValue));
+    let calculatedValue = Math.pow(SCALE_FACTOR, sliderValue);
+    if (calculatedValue < 1) {
+      calculatedValue = 1;
+    }
+    onScale(calculatedValue);
   }, [onScale, sliderValue]);
 
   const handleClick = (event: React.MouseEvent) => {
