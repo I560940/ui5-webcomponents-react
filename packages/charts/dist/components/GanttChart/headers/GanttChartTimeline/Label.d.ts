@@ -8,5 +8,6 @@ export interface LabelProps {
     x: number;
     y: number | string;
     dy: number;
+    textColor?: string;
 }
 export declare const Label: (props: PropsWithChildren<LabelProps>) => React.JSX.Element;
