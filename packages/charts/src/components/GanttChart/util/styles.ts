@@ -8,7 +8,7 @@ const styles = {
   main: {
     backgroundColor: ThemingParameters.sapBaseColor,
     display: 'grid',
-    wodth: 'auto',
+    width: 'auto',
     gap: 0
   },
 
@@ -16,7 +16,6 @@ const styles = {
 
   columnTitle: {
     position: 'absolute',
-    // borderRight: solidOutline,
     marginBlockEnd: '-0.5px',
     textAlign: 'center',
     fontSize: '13px',

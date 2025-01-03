@@ -112,7 +112,7 @@ export const GanttChartBodyColumn = (props: GanttChartBodyColumnProps) => {
       className={classes.bodyContainer}
       ref={bodyConRef}
       style={{
-        width: unscaledBodyWidth,
+        width: unscaledBodyWidth + 12,
         height: height,
         cursor: getCursor(),
         overflowX: 'auto',

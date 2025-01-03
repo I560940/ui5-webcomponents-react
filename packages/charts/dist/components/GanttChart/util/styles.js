@@ -6,13 +6,12 @@ const styles = {
     main: {
         backgroundColor: ThemingParameters.sapBaseColor,
         display: 'grid',
-        wodth: 'auto',
+        width: 'auto',
         gap: 0
     },
     bodyContainer: { overflow: 'hidden' },
     columnTitle: {
         position: 'absolute',
-        // borderRight: solidOutline,
         marginBlockEnd: '-0.5px',
         textAlign: 'center',
         fontSize: '13px',

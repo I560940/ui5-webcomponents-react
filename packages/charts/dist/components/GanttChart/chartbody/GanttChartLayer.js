@@ -13,6 +13,6 @@ const GanttChartLayer = ({ ignoreClick = false, isAnnotation, children, name }) 
     if (isAnnotation) {
         return (React.createElement("div", { "data-component-name": name, className: classes.layer, style: { position: position, pointerEvents: pointerEvents } }, children));
     }
-    return (React.createElement("svg", { "data-component-name": name, width: "100%", height: "100%", style: { position: position, pointerEvents: pointerEvents } }, children));
+    return (React.createElement("svg", { "data-component-name": name, width: "100%", height: "100%", style: { position: position, pointerEvents: pointerEvents, overflow: 'visible' } }, children));
 };
 export { GanttChartLayer };

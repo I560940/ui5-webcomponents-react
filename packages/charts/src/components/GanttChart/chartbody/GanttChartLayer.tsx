@@ -36,7 +36,7 @@ const GanttChartLayer = ({ ignoreClick = false, isAnnotation, children, name }: 
       data-component-name={name}
       width="100%"
       height="100%"
-      style={{ position: position, pointerEvents: pointerEvents }}
+      style={{ position: position, pointerEvents: pointerEvents, overflow: 'visible' }}
     >
       {children}
     </svg>
