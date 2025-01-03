@@ -29,7 +29,7 @@ export const GanttChartTimeline = (props: GanttChartTimelineProps) => {
 
   return (
     <div className={classes.columnLabel} style={style} data-component-name="GanttChartTimeline">
-      <svg height={height} width="100%" fontFamily="inherit" fontSize={FONT_SIZE}>
+      <svg height={height} width="100%" fontFamily="inherit" fontSize={FONT_SIZE} overflow={'visible'}>
         {segmentWidth > SEGMENT_WIDTH_FULL_LABEL ? (
           <MonthsDaysLabel segmentWidth={segmentWidth} months={monthsDays} />
         ) : null}

@@ -41,7 +41,7 @@ export const GanttChartBodyColumn = (props) => {
         }
     };
     return (React.createElement("div", { "data-component-name": "GanttChartBodyContainer", className: classes.bodyContainer, ref: bodyConRef, style: {
-            width: unscaledBodyWidth,
+            width: unscaledBodyWidth + 12,
             height: height,
             cursor: getCursor(),
             overflowX: 'auto',

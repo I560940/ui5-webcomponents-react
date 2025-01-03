@@ -46,6 +46,7 @@ export const GanttChartRow = ({
       x="0"
       y={`${rowIndex * rowHeight + ROW_CONTRACT_DURATION_HEIGHT}`}
       width="100%"
+      overflow={'visible'}
       height={`${rowHeight}`}
       style={{ pointerEvents: 'none' }}
       data-component-name="GanttChartRow"

@@ -52,7 +52,7 @@ export const GanttChartRowGroup = (props: GanttChartRowGroupProps) => {
   }, [dataset, openRowIndexes, openSubRowIndexes]);
 
   return (
-    <svg width="100%" height="100%">
+    <svg width="100%" height="100%" overflow={'visible'}>
       <GanttContractDuration contractDuration={contractDuration} />
       {flattenedDataset.map((data, index) => {
         return (
