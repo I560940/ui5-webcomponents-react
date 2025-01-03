@@ -1,3 +1,4 @@
+import { ThemingParameters } from '@ui5/webcomponents-react-base';
 import React from 'react';
 import type { QuarterMonths, TimelineUnit } from '../../types/GanttChartTypes.js';
 import { LABEL_Y_BOTTOM_HALF, LABEL_Y_MID_HALF, LABEL_Y_OFFSET, LABEL_Y_TOP_HALF } from '../../util/constants.js';
@@ -25,6 +26,7 @@ export const QuartersMonthsLabel = (props: QuartersMonthsLabelProps) => {
       x={xPosition * segmentWidth - (segmentWidth * month.days) / 2}
       y={LABEL_Y_BOTTOM_HALF}
       dy={LABEL_Y_OFFSET}
+      textColor={ThemingParameters.sapTextColor}
     >
       {month.name}
     </Label>
@@ -45,6 +47,7 @@ export const QuartersMonthsLabel = (props: QuartersMonthsLabelProps) => {
                 x={acc.previousTotal * segmentWidth + (segmentWidth * quarter.quarter.days) / 2}
                 y={LABEL_Y_MID_HALF}
                 dy={LABEL_Y_OFFSET}
+                textColor={ThemingParameters.sapButton_Lite_TextColor}
               >
                 {quarter.quarter.name}
               </Label>

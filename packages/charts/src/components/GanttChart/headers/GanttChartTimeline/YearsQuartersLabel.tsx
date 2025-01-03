@@ -2,6 +2,7 @@ import React from 'react';
 import type { TimelineUnit, YearQuarters } from '../../types/GanttChartTypes.js';
 import { LABEL_Y_BOTTOM_HALF, LABEL_Y_MID_HALF, LABEL_Y_OFFSET, LABEL_Y_TOP_HALF } from '../../util/constants.js';
 import { Label } from './Label.js';
+import { ThemingParameters } from '@ui5/webcomponents-react-base';
 
 export interface YearsQuartersLabelProps {
   segmentWidth: number;
@@ -25,6 +26,7 @@ export const YearsQuartersLabel = (props: YearsQuartersLabelProps) => {
       x={xPosition * segmentWidth - (segmentWidth * month.days) / 2}
       y={LABEL_Y_BOTTOM_HALF}
       dy={LABEL_Y_OFFSET}
+      textColor={ThemingParameters.sapTextColor}
     >
       {month.name}
     </Label>
@@ -45,6 +47,7 @@ export const YearsQuartersLabel = (props: YearsQuartersLabelProps) => {
                 x={acc.previousTotal * segmentWidth + (segmentWidth * year.year.days) / 2}
                 y={LABEL_Y_MID_HALF}
                 dy={LABEL_Y_OFFSET}
+                textColor={ThemingParameters.sapButton_Lite_TextColor}
               >
                 {year.year.name}
               </Label>
