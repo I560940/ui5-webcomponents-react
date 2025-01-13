@@ -109,4 +109,5 @@ export interface IEventsGroup {
     events: IGanttChartEvent[];
     startTime: number;
     positionPx: number;
+    groupIcon?: string;
 }
