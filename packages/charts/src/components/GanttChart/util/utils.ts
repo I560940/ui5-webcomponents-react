@@ -265,7 +265,5 @@ const setGroupIcon = (groups: IEventsGroup[]): IEventsGroup[] => {
 
 const checkIfAllIconsInGroupAreTheSame = (group: IGanttChartEvent[]): boolean => {
   const firstIcon = group[0].icon;
-  console.log(group)
-  console.log(group.every((event) => event.icon === firstIcon))
   return group.every((event) => event.icon === firstIcon);
 };
