@@ -1,5 +1,5 @@
 import React from 'react';
-import type { IGanttChartEvent, IGanttChartTask } from '../types/GanttChartTypes.js';
+import type { IGanttChartTask } from '../types/GanttChartTypes.js';
 interface GanttTaskProps {
     /**
      * The unique id of the task. This is used to get the position
@@ -30,16 +30,11 @@ interface GanttTaskProps {
      */
     handleTaskClick: (parentId: string, task: IGanttChartTask, event: React.MouseEvent) => void;
     hideTooltip: () => void;
-    contractStartDate: string;
-    chartBodyScale: number;
-    ganttChartBodyWidth: number;
-    handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
     task: IGanttChartTask;
     parentId: string;
-    shouldEventsBeGrouped: boolean;
 }
 export declare const GanttTask: {
-    ({ id, startTime, duration, totalDuration, GanttStart, showTooltip, hideTooltip, handleTaskClick, contractStartDate, ganttChartBodyWidth, chartBodyScale, handleEventsClick, task, parentId, shouldEventsBeGrouped }: GanttTaskProps): React.JSX.Element;
+    ({ id, startTime, duration, totalDuration, GanttStart, showTooltip, hideTooltip, handleTaskClick, task, parentId }: GanttTaskProps): React.JSX.Element;
     displayName: string;
 };
 export {};

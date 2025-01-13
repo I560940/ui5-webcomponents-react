@@ -12,6 +12,7 @@ interface GanttChartEventProps {
   events: IGanttChartEvent[];
   position: number | string;
   handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
+  groupIcon?: string;
 }
 
 export const GanttChartEvent = ({
@@ -19,7 +20,8 @@ export const GanttChartEvent = ({
   shiftIconPx = 0,
   events = [],
   position,
-  handleEventsClick
+  handleEventsClick,
+  groupIcon = null
 }: GanttChartEventProps) => {
   const handleEventClickEvent = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -32,7 +34,7 @@ export const GanttChartEvent = ({
       width={iconSize}
       height="100%"
       transform={`translate(${-shiftIconPx}, 0)`}
-      style={{ overflow: 'visible', pointerEvents: 'none' }}
+      style={{ overflow: 'visible', pointerEvents: 'auto', zIndex: 100, position: 'absolute' }}
     >
       <div
         style={{
@@ -40,13 +42,13 @@ export const GanttChartEvent = ({
           alignItems: 'center',
           height: '48px',
           width: '48px',
-          zIndex: 2,
+          zIndex: 200,
           pointerEvents: 'auto',
           cursor: 'pointer'
         }}
         onClick={handleEventClickEvent}
       >
-        <Icon name={events[0].icon} style={{ width: iconSize, color: events[0].color }} />
+        <Icon name={groupIcon? groupIcon : events[0].icon} style={{ width: iconSize, color: events[0].color }} />
         {events.length > 1 && (
           <span
             style={{

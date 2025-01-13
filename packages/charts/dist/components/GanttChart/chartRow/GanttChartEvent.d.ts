@@ -9,6 +9,7 @@ interface GanttChartEventProps {
     events: IGanttChartEvent[];
     position: number | string;
     handleEventsClick: (events: IGanttChartEvent[], e: React.MouseEvent) => void;
+    groupIcon?: string;
 }
-export declare const GanttChartEvent: ({ iconSize, shiftIconPx, events, position, handleEventsClick }: GanttChartEventProps) => React.JSX.Element;
+export declare const GanttChartEvent: ({ iconSize, shiftIconPx, events, position, handleEventsClick, groupIcon }: GanttChartEventProps) => React.JSX.Element;
 export {};

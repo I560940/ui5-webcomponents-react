@@ -184,7 +184,7 @@ export const groupOverlappingEvents = (
 
   const sortedEvents = eventsWithPositions.sort((a, b) => a.positionPx - b.positionPx);
 
-  const overlapThresholdPx = iconSize;
+  const overlapThresholdPx = iconSize + 4;
 
   const groups: IEventsGroup[] = [];
   let currentGroup: IGanttChartEvent[] = [];
@@ -241,6 +241,31 @@ export const groupOverlappingEvents = (
       positionPx: currentGroup[0].positionPx
     });
   }
+  return setGroupIcon(groups);
+};
 
-  return groups;
+const setGroupIcon = (groups: IEventsGroup[]): IEventsGroup[] => {
+  return groups.map((group) => {
+    if(group.events.length === 1) {
+      return group;
+    }
+    if (checkIfAllIconsInGroupAreTheSame(group.events)) {
+      return {
+        ...group,
+        groupIcon: group.events[0].icon
+      };
+    } else {
+      return {
+        ...group,
+        groupIcon: 'gantt-bars'
+      };
+    }
+  });
+};
+
+const checkIfAllIconsInGroupAreTheSame = (group: IGanttChartEvent[]): boolean => {
+  const firstIcon = group[0].icon;
+  console.log(group)
+  console.log(group.every((event) => event.icon === firstIcon))
+  return group.every((event) => event.icon === firstIcon);
 };

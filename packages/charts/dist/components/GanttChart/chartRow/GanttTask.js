@@ -1,14 +1,10 @@
 import { throttle } from '@ui5/webcomponents-react-base';
 import React, { useEffect, useRef, useState } from 'react';
 import { HOVER_OPACITY, NORMAL_OPACITY, THROTTLE_INTERVAL } from '../util/constants.js';
-import { getStartTime, groupOverlappingEvents } from '../util/utils.js';
-import { GanttChartEvent } from './GanttChartEvent.js';
-export const GanttTask = ({ id, startTime, duration, totalDuration, GanttStart, showTooltip, hideTooltip, handleTaskClick, contractStartDate, ganttChartBodyWidth, chartBodyScale, handleEventsClick, task, parentId, shouldEventsBeGrouped }) => {
+export const GanttTask = ({ id, startTime, duration, totalDuration, GanttStart, showTooltip, hideTooltip, handleTaskClick, task, parentId }) => {
     const [opacity, setOpacity] = useState(NORMAL_OPACITY);
     const rectRef = useRef(null);
     const [shouldRectBeVisible, setShouldRectBeVisible] = useState(false);
-    const [eventIconShift, setEventIconShift] = useState(0);
-    const [groupedEvents, setGroupedEvents] = useState([]);
     const EVENT_ICON_SIZE = 16;
     useEffect(() => {
         const rectElement = rectRef.current;
@@ -18,11 +14,9 @@ export const GanttTask = ({ id, startTime, duration, totalDuration, GanttStart, 
             const width = rectElement.getBBox().width;
             if (width - 2 > EVENT_ICON_SIZE) {
                 setShouldRectBeVisible(true);
-                setEventIconShift(0);
             }
             else {
                 setShouldRectBeVisible(false);
-                setEventIconShift(Math.abs(width - EVENT_ICON_SIZE - 1));
             }
         };
         updateRectVisibility(); // Initial check
@@ -34,19 +28,6 @@ export const GanttTask = ({ id, startTime, duration, totalDuration, GanttStart, 
             resizeObserver.disconnect();
         };
     }, [rectRef]);
-    useEffect(() => {
-        setGroupedEvents(shouldEventsBeGrouped
-            ? groupOverlappingEvents(task.events, contractStartDate, startTime, totalDuration, ganttChartBodyWidth, EVENT_ICON_SIZE)
-            : []);
-    }, [
-        task.events,
-        contractStartDate,
-        startTime,
-        totalDuration,
-        chartBodyScale,
-        ganttChartBodyWidth,
-        shouldEventsBeGrouped
-    ]);
     const onMouseLeave = (evt) => {
         evt.stopPropagation();
         hideTooltip();
@@ -76,9 +57,6 @@ export const GanttTask = ({ id, startTime, duration, totalDuration, GanttStart, 
                 stroke: shouldRectBeVisible ? '#788FA6' : 'none',
                 strokeWidth: 1.5,
                 zIndex: 1
-            }, onMouseLeave: onMouseLeave, onMouseMove: onMouseMove, onClick: handleClickEvent }, task.tooltipText && React.createElement("title", null, task.tooltipText)),
-        shouldEventsBeGrouped
-            ? groupedEvents.map((group) => (React.createElement(GanttChartEvent, { key: group.key, events: group.events, iconSize: EVENT_ICON_SIZE, position: `${(group.startTime / totalDuration) * 100}%`, handleEventsClick: handleEventsClick })))
-            : task.events.map((event) => (React.createElement(GanttChartEvent, { key: event.id, events: [event], iconSize: EVENT_ICON_SIZE, shiftIconPx: eventIconShift, position: `${((getStartTime(contractStartDate, event.date) + 1.2 - GanttStart) / totalDuration) * 100}%`, handleEventsClick: handleEventsClick })))));
+            }, onMouseLeave: onMouseLeave, onMouseMove: onMouseMove, onClick: handleClickEvent }, task.tooltipText && React.createElement("title", null, task.tooltipText))));
 };
 GanttTask.displayName = 'GanttTask';

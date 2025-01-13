@@ -1,7 +1,14 @@
-import React from 'react';
-import type { DateRange, IGanttChartRow, IGanttChartEvent, IGanttChartTask } from '../types/GanttChartTypes.js';
+import React, { useEffect, useState } from 'react';
+import type {
+  DateRange,
+  IGanttChartRow,
+  IGanttChartEvent,
+  IGanttChartTask,
+  IEventsGroup
+} from '../types/GanttChartTypes.js';
 import { ROW_CONTRACT_DURATION_HEIGHT } from '../util/constants.js';
-import { countTaskDuration, getStartTime } from '../util/utils.js';
+import { countTaskDuration, getStartTime, groupOverlappingEvents } from '../util/utils.js';
+import { GanttChartEvent } from './GanttChartEvent.js';
 import { GanttTask } from './GanttTask.js';
 
 interface GanttChartRowProps {
@@ -41,6 +48,45 @@ export const GanttChartRow = ({
   shouldEventsBeGrouped,
   ...rest
 }: GanttChartRowProps) => {
+  const [rowDataEvents, setRowDataEvents] = useState<IGanttChartEvent[]>([]);
+  const [groupedRowDataEvents, setGroupedRowDataEvents] = useState<IEventsGroup[]>([]);
+  const EVENT_ICON_SIZE = 16;
+
+  useEffect(() => {
+    const events: IGanttChartEvent[] = [];
+    rowData.tasks?.forEach((task) => {
+      if (task.events) {
+        task.events.forEach((event) => {
+          events.push(event);
+        });
+      }
+    });
+    setRowDataEvents(events);
+  }, [rowData]);
+
+  useEffect(() => {
+    setGroupedRowDataEvents(
+      shouldEventsBeGrouped
+        ? groupOverlappingEvents(
+            rowDataEvents,
+            contractDuration.dateStart,
+            getStartTime(contractDuration?.dateStart, rowData?.tasks[0]?.dateStart),
+            totalDuration,
+            ganttChartBodyWidth,
+            EVENT_ICON_SIZE
+          )
+        : []
+    );
+  }, [
+    rowDataEvents,
+    contractDuration,
+    rowData,
+    totalDuration,
+    chartBodyScale,
+    ganttChartBodyWidth,
+    shouldEventsBeGrouped
+  ]);
+
   return (
     <svg
       x="0"
@@ -64,16 +110,24 @@ export const GanttChartRow = ({
             showTooltip={showTooltip}
             hideTooltip={hideTooltip}
             handleTaskClick={handleTaskClick}
-            contractStartDate={contractDuration.dateStart}
-            chartBodyScale={chartBodyScale}
-            ganttChartBodyWidth={ganttChartBodyWidth}
-            handleEventsClick={handleEventsClick}
             task={task}
             parentId={rowData.id}
-            shouldEventsBeGrouped={shouldEventsBeGrouped}
           />
         );
       })}
+
+      <g>
+        {groupedRowDataEvents.map((group) => (
+          <GanttChartEvent
+            key={group.key}
+            events={group.events}
+            iconSize={EVENT_ICON_SIZE}
+            position={`${(group.startTime / totalDuration) * 100}%`}
+            handleEventsClick={handleEventsClick}
+            groupIcon={group?.groupIcon}
+          />
+        ))}
+      </g>
     </svg>
   );
 };
