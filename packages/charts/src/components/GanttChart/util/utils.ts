@@ -257,7 +257,7 @@ const setGroupIcon = (groups: IEventsGroup[]): IEventsGroup[] => {
     } else {
       return {
         ...group,
-        groupIcon: 'gantt-bars'
+        groupIcon: 'dimension'
       };
     }
   });
