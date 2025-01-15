@@ -212,14 +212,12 @@ const setGroupIcon = (groups) => {
         else {
             return {
                 ...group,
-                groupIcon: 'gantt-bars'
+                groupIcon: 'dimension'
             };
         }
     });
 };
 const checkIfAllIconsInGroupAreTheSame = (group) => {
     const firstIcon = group[0].icon;
-    console.log(group);
-    console.log(group.every((event) => event.icon === firstIcon));
     return group.every((event) => event.icon === firstIcon);
 };
